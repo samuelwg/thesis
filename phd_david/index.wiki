@@ -1,0 +1,11 @@
+﻿= David Garcia PhD documentation =
+
+* [[Proposal.pdf Original proposal]]
+* [[TODO.html Tasks]]
+* [[Exercises.html First Exercises]]
+* [[Exercise-IntensityCompensation.html Intensity Compensation]]
+* [[Exercise-IncoherenceCompensation.html Incoherence Compensation]]
+* [[reviews/Reviews.html Literature reviews]]
+
+
+

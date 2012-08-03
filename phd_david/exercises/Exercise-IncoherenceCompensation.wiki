@@ -1,0 +1,215 @@
+﻿= Incoherence compensation =
+
+== Problem ==
+
+Due to small missplacements of speakers and microphones during HRTF database recording,
+higher frequencies tend to be attenuated more than lower frequencies.
+Missplacements cause waves reaching the listener with a different delays.
+Delay implies dephase, and the more dephase the less both waves sum up.
+Because the same delay causes a dephase which is proportional to the frequency,
+the higher the frequency the higher the attenuation.
+
+== Simulation ==
+
+Such errors have several degrees of freedom: the microphone position and each speaker position.
+A very simple case is having correct listener location at the center and
+correct orientation for each each speaker
+but introducing gaussian error to the distance to each the speaker.
+The following code simulates the effect of such error:
+
+Code: python
+TODO: Place the code 
+
+Figure: fig:IncoherenceSimulation IncoherenceSimulation.png 
+Simulated spectral amplitude decrease due to random displacements on the speaker distance.
+
+Doing the simulation we detect that the results are:
+* Sensible to the mean variation
+* Sensible to the number of speakers
+* Hardly repeatable
+
+Also, the function after the first lobe is very sensible to the sample set.
+And this unstability have a higher impact on the inverse filter.
+
+== Analysis ==
+
+Equation:
+	N(t) = \frac 1 {\sigma\sqr{2\pi}} e^{-\frac{t^2} {2\sigma^2} } \\
+	S(w,t) = e^{jwt} \\
+	H(w) = \int_{-\infty}^{\infty} N(t) S(w,t) dt \\
+	H(w) = \int_{-\infty}^{\infty} \frac 1 {\sigma\sqr{2\pi}} e^{-\frac{t^2} {2\sigma^2} } e^{jwt} dt \\
+	H(w) = e^{- \frac{\sigma^2 w^2} 2} \\
+	\frac 1 {H(w)} = e ^ {\frac{\sigma^2 w^2} 2} \\
+
+The inverse filter does not converge so we need to find a minimal phase equivalent.
+
+TODO: Should we?
+
+
+Maxima code:
+Code: python
+sine(w, t) := exp(%%i * w * t);
+normal(t) := 1/(s*sqrt(2*%%pi))*exp(-t^2/(2*s^2));
+inverse = integrate(1/integrate(sine(w,t)*normal(t),t,-inf,inf)*sine(w,t),w);
+
+Equation:
+	Inverse(t) = \frac {\sqr{2\pi}} \sigma i e^{\frac{t^2}{2\sigma^2}} \log (erf ( \frac 1 {\sqr{2}} (\sigma w i - \sigma^{-1} t )))
+
+
+
+
+
+== Obtaining the standard speaker deviation from the HRTF database ==
+
+So, we found analytically the inverse filter that can be used to compensate
+frequency dependant attenuation caused by small missplacements on the speakers.
+But such filter depends on the standard deviation of the speakers.
+We can obtain such data given an HRTF database by measuring for each HRTF
+the time until the first significative maxima or minima.
+
+Such delay is not the delay to the sphere center `C` 
+as HRTF's are recored at the ear position of the subject 
+but we can deduce it if we know the nominal radius
+and the distance between the ears.
+
+Figure: fig:earToCentralDelay earToCentralDelay.png
+`R'` is the displaced distance from the center to the speaker,
+`R_r` is the measured distance to the right ear,
+`h` is the distance from the center to the right ear, and
+`\beta` is the angle that forms the vector to the speaker with the line crossing both ears and the center.
+
+From the triangles on figure \ref{fig:earToCentralDelay} we can deduce that:
+
+Equation:
+R'\sin\beta = R_r\sin\alpha \\
+\sin\alpha = \frac { R' \sin\beta } {R_r} \\
+\cos\alpha = \sqrt{ 1 - \frac{R'^2 \sin^2\beta} {R_r^2} } = \frac 1 {R_r} \sqrt{R_r^2 - R'^2 \sin^2\beta}
+
+On the other hand we have that:
+Equation:
+R'\cos\beta + R_r\cos\alpha = h \\
+R'\cos\beta + \sqrt{R_r^2 - R'^2 \sin^2\beta} = h \\
+\sqrt{R_r^2 - R'^2 \sin^2\beta} = h - R'\cos\beta \\
+R_r^2 - R'^2 \sin^2\beta = h^2 - 2hR'\cos\beta + R'^2\cos^2\beta \\
+R'^2 - 2hR'\cos\beta + h^2 - R_r^2 = 0 \\
+R' = \frac 1 2    2h\cos\beta \pm \frac 1 2 \sqrt{ 4h^2 \cos^2\beta - 4(h^2-R_r^2)  } \\
+R' = h\cos\beta \pm \sqrt{ R_r^2 - h^2 \sin^2\beta  }
+
+We need to take the MINUS sign in this equation to satisfy `h = R'+R_r` when `\beta=0`.
+So how to compute `\beta` given the elevation `\theta` and the azimut `\phi`?
+Equation:
+\cos\beta = y = \cos\theta \sin\phi
+
+While for the sinus:
+Equation:
+\sin^2\beta = x^2 + z^2 = \cos^2\theta\cos^2\phi + \sin^2\theta
+
+So we finally obtain that:
+Equation:
+R' = h y \pm \sqrt{ R_r^2 - h^2 (x^2+y^2)  }
+
+:DGG: Toni, fixa-t'hi que no necessitem pas les dos orelles.
+
+Applied to the KEMAR database it gives aproximatelly a standard deviation of 3.2 cm.
+
+TODO: Still some adjustements must be taken as several IR give a delay between 1 and 10 distorting the result.
+
+
+
+== Velocity to presure effect ==
+
+TODO: I have not fully understood which is the factor that applies to H_v
+
+We are distributing the sound pressure by a factor of `(1-\cos\theta)`.
+To know how this affects the pressure relative to using a constant factor,
+we should compare the volume of such cardioid to the volume of an sphere.
+
+Equation:
+	\int_0^\pi (1 - \cos\theta) 2\pi \sin\theta d\theta = \pi \int_0^\pi (2\sin\theta - \sin 2\theta) = \pi \[\cos\theta - \frac 1 2 \cos 2\theta \]_0^{\pi} = 2\pi
+
+Equation:
+	\frac {2/pi} {3/4\pi} = \frac 8 3
+
+== Simulating errors of the microphone placement ==
+
+Implications of errors introduced on the microphone placement
+migth be different to errors on the distance to a speaker.
+Errors on the microphone placement delay similarly the signal comming from close speakers,
+so signals will be more coherent.
+
+Being `\vec r` the vector from the ideal center to a speaker `i`,
+and `\vec a` a random displacement.
+
+Equation:
+	|\vec r'_i|^2 = |\vec r_i + \vec a| = (r_{ix} + a_x)^2 + (r_{iy} + a_y)^2 + (r_{iz} + a_z)^2 = \\
+		(r_{ix}^2 + r_{iy}^2 + r_{iz}^2) + 2 (r_{ix} a_x + r_{iy} a_y + r_{iz} a_z) + (a_x^2 + a_y^2 + a_z^2) = \\
+		|\vec r_i|^2 + 2 \vec r_i \cdot \vec a + |\vec a|^2 = 
+		|\vec r_i|^2 + 2 |\vec r_i| |\vec a| \cos \gamma_i + |\vec a|^2 = \\
+		R^2 ( 1 + 2 x \cos \gamma_i + x^2 )
+
+Where `x = \frac {|\vec a|}{|\vec r_i|}` is a random displacement (normal distribution) 
+which is constant for a given setup
+and relative to the module of the nominal speaker distance,
+and `\gamma_i` is a random angle (uniform distribution),
+which is constant for a given setup,
+between the displacement vector and the nominal position vector of each speaker,
+
+The relative increase of distance in function of the movement can be expressed like that:
+
+Equation:
+	{|\vec r`_i|} = R \sqr {1 + 2 x \cos \gamma_i + x^2}
+
+Where `R` is the nominal distance to any speaker.
+Expressed as time:
+Equation:
+	t = \frac R c \sqr {1 + 2 x \cos \gamma_i + x^2} = T \sqr {1 + 2 x \cos \gamma_i + x^2}
+
+
+Notice that, if we consider an infinitesimal density of speakers,
+sending a pulse to all the speakers will cause the same impulse response
+whatever the error vector direction.
+So the only significative random variable is `x` which is the module of such displacement
+normalized by the nominal distance to every speaker and obeys a normal distribution.
+
+Given a concrete microphone displacement,
+all the speakers at a given `\gamma_i` to the displacement vector have the same delay.
+So that the impulse is proportional to
+Equation:
+	\frac {2\pi \sin\gamma } { 4 \pi } = \frac 1 2 \sin\gamma
+
+So for a given frequency `w`, and a random displacement `x`, we can compute the transfer function of a sinusoid like that:
+Equation:
+	D(w,x) = \\
+	\int_0^{\pi} \sin\gamma e^ {jwt } d\gamma = \\
+	\int_0^{\pi} \sin\gamma e^ {jwT (\sqr {1 + 2 x \cos \gamma + x^2}-1) } d\gamma = \\
+	\frac 1 {2x} \int_{1+2x+x^2}^{1-2x+x^2} e ^{jwT\sqrt u - jwT} du = \\
+	\frac 1 {2x} \int_{(1+x)^2}^{(1-x)^2} e ^{jwT\sqrt u -jwT} du = \\
+	\frac 1 {2x} \[ 2 \frac { (1 - j w T \sqrt u) e^{j wT \sqrt u -jwT}  } { w^2 T^2 }  \]_{(1+x)^2}^{(1-x)^2} = \\
+	\frac 1 {xw^2T^2} \[  (1 - j w T \sqrt u) e^{jwT \sqrt u -jwT} \]_{(1+x)^2}^{(1-x)^2} = \\
+	\frac 1 {xw^2T^2} \[ (1 - j w T (1-x)) e^{-jwTx} - (1 - j w T (1+x)) e^{jwTx}  \] = \\
+
+Expressing it as a function of `t=Tx`:
+Equation:
+	D(w,t) = \frac 1 {tTw^2} \[ (1 - jw(T-t)) e^{-jwt} - (1 - jw(T+t)) e^{jwt}  \] = \\
+
+Now that we know which is the impulse response for a given `x`,
+let's compute it given a normal distribution of `x`:
+
+Remember that the normal distribution was:
+Equation:
+	N(t) = \frac 1 {\sigma\sqr{2\pi}} e^{-\frac{t^2} {2\sigma^2} } \\
+
+So lets integrate filtered fasor of frequency `w`, `D(w,t)` multiplied
+by the probability that such delay exists:
+Equation:
+	H(w) = \int_{-\infty}^\infty N(t) D(w,t) dt = \\
+
+
+
+
+
+
+
+
+
+

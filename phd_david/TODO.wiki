@@ -1,0 +1,114 @@
+﻿= Tasks =
+
+
+- Take objective localization cues
+	- ITD, ILD
+	- Analytic, delay, full
+	- Already in papers
+
+- Compiling contributions
+
+- ambisonics
+	- theory, formalisms...
+	- error as distance-frequency (kr)
+	- effect of the number of speakers
+	- effect of speaker missplacement (new)
+- head difraction modeling
+	- simplistic models: snowball...
+	- measured hrtfs
+	- hrtfs interpolation
+	- objective measures of localization cues
+	- subjective methods of measuring localization effectiveness
+- analysis of the excess filter
+	- hrtf as a field
+	- analytical expressions for hrtf SH
+	- excess filter for ambisonics
+	- dropping idealizations
+		+ non spherical head
+		+ continuous speaker array
+		+ full difraction
+		- 3d
+	- effect on objective location cues
+		- why ambisonics works
+- compensation
+	- h0^{-1}
+		- is minimum phase
+		- script to compare minimum phase property of H0 for all db's
+	- hn^{-1}
+	- equalizing for plane waves eg. for most sources in front
+	- using ideal filters vs. using measured filters
+- User tests
+	- AB tests (mushra between compensation estrategies)
+	- localization error with compensation
+
+
+
+
+
+
+
+
+
+
+= Old Tasks =
+
+
+
+== Room reconstruction ==
+
+* Room reconstruction implementation
+** '''[DONE]''' Having the raytracer working in my box
+** Run parametric room construction
+** Wave comparator
+** Implement gradient descent
+* Room reconstruction evaluation
+** Run the system with a synthesized reverberated sound
+** Run the system with a real sound
+* Room reconstruction to change room parameters
+
+== Binaural synthesis ==
+
+* Transcribe the demonstration that Venice algorithm also keeps the intensity
+
+* Missing cap compensation on intensity
+** Check whether obtained values satisfies the Z component
+** Compute the values with `\theta = 40^o`
+** Compare intensity compensation values with pressure compensation values
+
+* Incoherence compensation
+** '''[DONE]''' Simulate the effect of distance error over the final impulse response
+** '''[DONE]''' Analitically deduce the results of the simulation
+** Implement a minimun phase filter that compensates such effect
+** Simulate whether displacements on the microphone displacements has less variance than speaker displacements.
+** How to estimate the standard error deviation given the aggregated HRTF
+
+* Deduce the aproximated factor between `\vec v` and p aggregated HRTF's
+* Try equalized HRTF MIT KEMAR database
+* Look for other HRTF databases
+
+* Paper
+
+* '''[DONE]''' prepare Kreuzer database
+** '''[DONE]''' Read the files
+** '''[DONE]''' Compensate the phase -> inverse phase + plus an ofset proportional to the wave number
+** '''[DONE]''' Demonstrate that the sync is proportional to the delta disparity with the sample
+* Generate the equivalent IR
+** '''[DONE]''' Try to remove extra dense ir's -> Too irregular
+** Ask a new version: layout, phase
+* Try direct sound convolution
+** '''[DONE]''' Generate the database description file (.hrtfs)
+** '''(current)''' Build a loader of an arbitrary layout database
+** Build the network
+** Try it
+
+
+== Literature reviews ==
+
+* Collect BiBTeX for subversion papers
+* Transcribe review notes into WiKo format
+* Read and review more papers
+
+
+
+
+

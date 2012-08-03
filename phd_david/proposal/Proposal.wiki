@@ -1,0 +1,462 @@
+﻿@title: Relating audio and 3D scenarios in audiovisual productions
+
+
+
+%(toc)s
+
+= Introduction and motivation =
+Label:sec:Motivation
+
+Audiovisual productions, such as films or video games,
+combine two main elements: audio and video.
+In the last years, technologies for rendering video from synthetically
+designed 3D scenes have achieved a great degree of realism,
+both doing real-time and off-line rendering.
+Regarding audio, current productions have achieved
+a high degree of realism and are capable of making the audience feel
+totally immersed in the intended scenario.
+However, in contrast to video rendering, 
+the audio production process is still quite a hand crafted job,
+lacking any automatism that uses such scene definition.
+Therefore, achieving a minimal level of realism presently demands
+a high amount of skills and effort to audio engineers.
+
+To illustrate the lack of relation between audio and video
+in the course of a audiovisual production, let us consider
+the work-flow of a high-end film production.
+After the shooting stage, 
+the audio engineer is given a set of audio tracks recorded on site,
+together with a low resolution version of the images shot.
+Even if the images have been synthesized with computer graphics technologies,
+all that the audio engineer receives is the rendered video, with no
+metadata whatsoever describing the geometry, 
+nor the materials,
+nor the positions of the sound sources in the scene.
+Thus, one of the first tasks of the audio engineer is to figure out
+what sort of reverberation should the sounds have by staring at the video.
+
+Later in the postproduction stage, the audio engineer needs to know
+in which sort of exhibition system(s) will the production be playbacked.
+In a typical Japanese production, such exhibition systems might easily
+be 5.1, 7.1 and even 22.2 @cite:hamasaki surround setups.
+This implies that a different editing and mixing must be done for all such options,
+obliging the audio engineer to carefully fine tune a large number of channels.
+
+The described ''state of affairs'' certainly calls for research
+to provide solutions and automatization of the audiovisual work-flow.
+The general goal of the research project presented here is
+that of binding 3D and audio once and for all.
+That is, binding audio material of audiovisual productions and the scenario
+they are intended to be sounding in,
+so that most of the 3D audio rendering process
+can be done automatically and, when required, in real-time.
+
+At a more detailed level, the research will focus on four aspects of this general goal:
+* '''Reverb Automatization, aka Audio Rendering:''' capturing the acoustic properties of a 3D scenario
+* '''Physical coding:''' coding the necessary magnitudes of the acoustic field that guarantees adaptability to any exhibition system.
+* '''3D decoding:''' reproducing as faithfully as possible the acoustic field given any 2D or 3D exhibition system
+* '''Environment acoustic inference:''' inferring a plausible scenario given an audio recording
+
+
+= State of the art =
+
+This section describes the state of the art
+of the several fields related to this research.
+Such state of the are will be explained fitting the
+four different aspects we are addressing in this research
+as enumerated in the previous section.
+
+== Audio rendering: Capturing 3D scene acoustics ==
+
+In order to capture how the scenario modifies the perception of the sound,
+the sound wave must be simulated considering its interactions
+with the scenario's geometry and materials.
+From such a simulation one should expect obtaining the same measures
+that would be obtained by a microphone placed at the listener position within the virtual scenario.
+
+Under normal levels of sound pressure,
+all transformations over the wave can be considered linear.
+That means that the way an scenario modifies a wave from a source point to
+a target point can be fully characterized by an impulse response.
+An impulse response is a signal that has a flat frequency distribution,
+so recording or simulating how it propagates from the source point
+to the listener point contains information on how each frequency is modified.
+By having just the impulse response, we can obtain the response of any other sound
+by using the impulse response as a filter,
+that is convolving the emitted signal with the impulse response.
+Note that an impulse response is tied to a given source and listener positions.
+
+In summary, the first problem to solve can be formalized as follows:
+Finding the impulse response that characterizes how the signal is transformed 
+from a source position to a listener position while traversing the scenario.
+The literature explores two main families of algorithms that pursue such a goal:
+* Wave-based methods
+* Geometric methods
+
+Wave-based methods compute a discrete approximation of the solution to the wave equation,
+which is the equation that describes the sound propagation through an environment @cite:ComputationalFluidDynamics.
+Several wave-based methods exists such as
+Finite Elements Method (FEM),
+Boundary Elements Method (BEM) @cite:seybertBEM, and
+Finite-Difference Time Domain (FDTD) @cite:FDTD.
+Although all of them are computationally expensive,
+the growing computing capabilities of standard computers
+have made them an interesting path to take.
+
+Geometric methods more widely used because they are cheaper computationally.
+They exploit the fact that light and sound propagation share a number of the similarities
+in order to use a number of techniques that have been using in computer graphics
+to visually render 3D scenes.
+Of course, such techniques as is do not take into account some phenomena that
+can be neglected with light such as diffraction and interference, so
+computer graphics methods must be modified to consider them.
+Commonly used techniques in this family are
+Image Source @cite:nironenImageSource, Ray Tracing@cite:farinaRayTracing and Beam Tracing @cite:funkhouserBeamTracing.
+
+== Physical encoding ==
+
+In order to reproduce the acoustic field as closely as possible to a real situation,
+it is not enough to encode only the pressure signal at one point.
+The reason is that the pressure field is omnidirectional,
+it does not contain any information about the direction of the incoming waves.
+
+Ambisonics @cite:AmbisonicsDotNet was the first technology to recognize this fact,
+and to propose the recording of other magnitudes beyond the pressure signal.
+The principle behind this technology is to decompose the pressure of the acoustic field
+at one point into spherical harmonics, 
+and to record the time varying coefficients of such harmonics.
+In particular, the coefficients corresponding to the first spherical harmonic
+coincides with the pressure signal at that point.
+Similarly, the coefficients corresponding to the next three spherical harmonics
+coincide with the three components of the velocity vector of the air fluid at that point.
+
+Ambisonics systems based on first four spherical harmonics (pressure and velocity)
+are called First Order Ambisonics.
+Those using harmonics beyond these are named Higher Order Ambisonics (HOA).
+
+The extra information contained in harmonics beyond the pressure signal can
+be used in the reproduction stage to create a more faithful acoustic field
+capable of localizing sounds (perceiving them from the right direction).
+
+As it happens with any expansions of a function in a given basis,
+the more coefficients are encoded, the less error is made 
+in extrapolating the field beyond the recording point @cite:Gerzon.
+This implies that HOA typically exhibit a larger sweet spot
+(region where the sound field is reproduced correctly)
+than First Order Ambisonics.
+
+FAO has been implemented successfully in a professional microphone
+(Soundfile @cite:SoundfieldDotCom), widely used nowadays in broadcasting
+and music recordings. 
+However HOA still lacks of the corresponding microphone due to the
+larger number of channels that need to be recorded.
+
+
+== Decoding to exhibitions systems ==
+
+Exhibition systems for localized audio can be classified 
+into ''binaural technologies'' and ''loudspeaker arrays technologies''.
+Binaural technologies are the ones that reproduce the sound as it
+were sounding at each ear.
+They use earphones to reproduce the sound so two channels are decoded.
+Loudspeaker arrays are systems that use sets of many loudspeakers
+placed arround the listener to reproduce the desired wave field.
+They normally decode as many channels as loudspeakers.
+
+
+=== Binaural technology ===
+
+Binaural technologies encode into two channels several of the cues
+that the brain actually uses to locate sound sources
+using the sound perceived by each ear.
+Such cues are then fed directly to the earphones
+as the sound as they were arriving from an external wavefield. 
+
+The brain uses several cues to determine which is the source event localization @cite:Blauert.
+The most important ones are 
+Interaural Time Differences (ITD) for the low frequencies
+and
+Interaural Level Differences (ILD) for the high frequencies
+@cite:LordRayleigh1907.
+Low frequencies can diffract around the head and reach both ears whichever the direction they come from,
+but they reach each ear with a different delay.
+The brain is able to detect such delay and triangulate the position.
+Such triangulation is harder for higher frequencies as the
+time delay goes beyond the wave period.
+But high frequencies are not able to diffract around the head
+and, thus, the head filter out such frequencies and different sound levels reach each ear.
+A simple decoding technique for binaural synthesis consists on appling ILD and ITD to the incoming audio.
+
+%%TODO: A figure illustrating the ITD
+
+Interaural differences are important cues but not the only ones.
+Sound events located within the axial plain,
+that is equidistant to both ears,
+can still be successfully located by our brain.
+One of the most important cues our brain uses in that case 
+is the different filtering that the pinnae, the external ear,
+does to the sound depending on the incoming direction.
+
+%%TODO: A figure for the axial plane
+%%TODO: A figure for a pinna
+
+Most cues, such as ITD, ILD, pinna filtering, torso reflections...
+can be captured in a Head Related Impulse Response (HRIR),
+that is the response to an impulse signal coming from a given direction referred to the head.
+They are often named by their frequency domain equivalent:
+the Head Related Transfer Response (HRTF).
+HRTF's databases are obtained by sampling HRTF functions
+at different directions.
+So a more sophisticated method to decode binaural channels
+consists in convolving the incoming audio with the HRTF functions
+which is closer to the direction the sound source is relative to the listener.
+
+There several methods to obtain HRTF databases.
+Some databases, such as the one made available by the MIT @cite:MitHrtf,
+are measured using a manikin.
+Some others, such as the ones offered by the IRCAM @cite:IrcamHrtf,
+have been recorded by inserting microphones on the ears of real subjects.
+Due to the costs of doing the meassures,
+lately some efforts are driven towards the simulation of HRTF functions
+using a geometrical 3D model of the subject @cite:KreuzerHrtf.
+In any case, HRTF's are very dependant on the subject,
+so that an HRTF database measured for a given subject,
+can lead to bad localization results used with a different subject.
+Some studies have been done on relating HRTF's to subject's anthropometric measures,
+but they are very limited both in the extension of the analysis and the applicability of the results
+@cite:Satarzadeh_Anthropometry.
+
+The brain uses more cues than enforce the main ones.
+One of them, could be called audio parallax in a analogy to visual parallax.
+Visual parallax is a sensation of depth we get when objects in the scene
+change their projection differently on the cornea due to a change of position
+of the object or the viewer.
+By analogy, head movements or sound source movements create differences
+on localization cues that can help to better detect them.
+Some experiments @cite:MinnaarHeadMovement confirm
+that adding head tracking to modify the HRTF accordantly
+enhances the localization of sources.
+
+Also visual cues are important to enforce sound event localization cues,
+so that they can void any acoustical cue.
+This is why listening experiments should avoid providing any visual cue that can distort the results
+@cite:Blauert.
+
+Direct convolution of the sound with the HRTF just works when coding direct sound.
+When having an Ambisonics representation of the signal,
+such the one we are obtaining from the audio rendering,
+other methods should apply.
+Higgins proposes an computational optimal method @cite:WigginsPhd
+which converts the database into a set of equivalent
+HRTF functions to be convoluted with each Ambisonics component.
+
+
+=== Loudspeaker arrays (surround systems) ===
+
+
+Until 1931, all loudspeakers reproduction systems were essentially mono.
+Even if more than one loudspeaker was used, they share the same single audio channel.
+Blumlein invented and patented stereo technology @cite:Blumlein,
+which is capable of locating sound sources within a 60 degrees range in front of the listener.
+It was not until the 90s that systems with a higher number of channels were standardised,
+mainly thanks to the incorporation of 5.1 systems in cinema theaters.
+These provided a reasonably good localization within the whole horizontal plane of the listener,
+despite some deficiencies in the back, mostly due to the lack of speakers in that range.
+
+%%TODO: figure of a 5.1 configuration
+
+The present situation is that new exhibition systems with more loudspeakers are competing in the market.
+Some of them include the ability to place sound source out of the horizontal plane
+by means of placing loudspeakers at different height levels.
+The latest one, at the moment, is the 22.2 system in standardisation process by the NHK in Japan
+@cite:hamasaki,
+@cite:hamasaki2,
+@cite:hamasaki3.
+
+The state of the art regarding production of audio material for such systems
+is twofold.
+On the one hand, most such productions have inherited the techniques from stereo and 5.1:
+essentially simple amplitude panning. 
+Indeed, hardly any production exploits the full possibilities of surround sound,
+as most of the audio is playbacked through the frontal loudspeakers due to constraints
+such as images being presented always in front of the audience.
+
+On the other hand, recent efforts have focused in exploiting the Ambisonics technique described above.
+At the decoding stage, the problem is to find the signals to be fed to the loudspeakers
+of a given reproduction system, such that the spherical harmonics of the pressure field
+at the listener position is as close as possible to those recorded or computed at the encoding stage.
+This is a problem that requires both physical and psycho-acoustical considerations.
+The goal is typically to define a suitable cost function the minimization of which
+leads to a compromise among all such consideration @cite:Gerzon, @cite:mooreTabuSearch.
+Unfortunately the cost functions are typically highly non-linear,
+leading to a search space full of local minima.
+
+
+Before concluding this section, it is worth pointing out that
+the last decade has witnessed the irruption of an alternative
+exhibition system named Wave Field Synthesis (WFS).
+Based on the exploitation of the Huygens principle,
+it theoretically allows the reproduction of the exact acoustic
+field within the complete listening space.
+However we will not research into this topic due to the fact
+that WFS requires such a large number of loudspeakers (typically above 100)
+that it constraints its application to very special high-end events.
+For more information see @cite:Daniel_WFSvsAmbisonics.
+
+
+== 3D Acoustics Inference ==
+
+The problem of 3D Acoustics Inference (3D-AI) consist in
+finding a 3D environment which is able to cast the same
+acoustic properties that a given recorded audio.
+That is still a new field of research.
+The closer research that has been undertaken is possibly the topic of
+inferring source localization given some kind of recording.
+Two approaches have led to rather successful results:
+* emulating human localization mechanisms on binaural recordings @cite:NeuralBinauralSourceLocalization,
+* recording the acoustic field with multiple microphones to deduce the source location from the different delays on the arrival time @cite:trinnovTetramic.
+
+In any case, to the best of our knowledge,
+there is no literature on the more complex problem of 3D-AI.
+
+= Proposal =
+
+The research will focus on the four aspects of the audio workflow mentioned in section \ref{sec:Motivation}.
+
+== Audio Rendering ==
+
+Concerning audio rendering, the main goal of this research
+is enhancing the physical accuracy and the speed of existing methods.
+At this point, several opportunities can be foreseen.
+One could be enhancing the physical accuracy of geometric models
+by considering effects such as diffraction and interference,
+typically out of reach of the geometrical approximation.
+Another possibility would be building hybrid algorithms 
+by combining geometrical methods and wave-based ones such as FDTD
+to enhance the accuracy on lower frequencies of the former.
+The problems to solve in hybrid models is to find out the band
+in which each simulation should be valid, how to mix both results
+and how to speed up the wave-based methods using that band limitation.
+
+== Physical encoding ==
+
+As mentioned in the state of the art,
+Ambisonics technology offers a novel and powerful way to capture
+acoustic fields.
+While it has been used extensively used in microphone technology for recording real events,
+it has hardly penetrated into the field of acoustic simulations for audiovisual productions.
+First Order Ambisonics (FOA) is currently being implemented into simulations
+by the Audio Group at Barcelona Media, producing rather successful initial results.
+
+However, it is conceivable that the major advantage of incorporating Ambisonics to simulations
+will come from Higher Order Ambisonics (HOA).
+The benefit of using HOA components is the widening of the sweet spot and the increase of localization accuracy.
+Note that virtually all problems found in incorporating HOA to microphones
+are not present in computer simulations.
+Essentially, when placing a large number of microphones almost coincidently,
+they shadow each other.
+Another problem is that microphones have directivity patterns that vary with frequency,
+spoiling the principles of Ambisonics beyond 8-9KHz.
+Of course those mechanical problems will be absent in our simulations.
+
+We plan to apply Ambisonics encoding to the reverberation part of the audio
+but not necessarily to the direct sound.
+The reason is that in many applications, localization is of crucial relevance
+(e.g. video games), and Ambisonics,
+until certain high order, spread the localization of the sources.
+Direct sound and early reflections can be processed directly
+using HRTF's or a simple panning algorithm.
+
+Direct sound and the early reflections can be computed
+faster than the reverberation cue that needs more rebounds in a geometric simulation.
+On the other hand, early rebounds and direct sound provide the information
+to localize the sound so they need frequent updates.
+The reverberant cue is more stochastic and 
+it provides more information about the scenario itself than location.
+It does not change that much with movements of the listener or the source unless the enclosing room changes.
+So a possible optimization of the process could be
+separating the codification into 
+the reverberant cue component and the direct sound plus early reflections at different update rates.
+
+== Exhibition system decoding ==
+
+Regarding the decoding, we will proceed in three fronts:
+
+'''Algorithm design.'''
+We will study and design signal processing algorithms
+to decode the three-dimensional surround recordings
+into sets of signals to feed the loudspeaker systems.
+These algorithms should be flexible enough
+to provide optimal decoding of the surround signal sets to any desired
+3D exhibition system and they should be downwards compatible with existing two-dimensional setups.
+Of course, this research must be based on physical principles and
+the algorithms have to be validated by means of psychoacoustic tests.
+It is important for these algorithms to provide virtually any number of output channels.
+The idea is that once the Ambisonics components are correctly encoded with a few channels,
+these are stored and delivered to the end user,
+whose equipment will perform the optimal decoding to match the listening setup.
+This approach will overcome the problems related to the preparation, storage and distribution of many
+different formats, and it will surmount the limitations of media and band-
+width, allowing the whole information to be easily stored on optical discs
+or streamed over the web and subsequently decoded.
+
+'''Binaural decodification'''
+Still a lot of enhancements can be done on binaural decoding.
+While the algorithm to compute the Ambisonics equivalent HRTFs
+supposes an infinitesimal and uniformly distributed set of HRTFs,
+most available HRTF database are not complete enough or not dense enough
+for the variation to be neglected.
+A typical example is that most measured databases are missing the lower elevations.
+Also, using ambisonics HRTF equivalents enables having a finer resolution
+than the one of the HRTF's, to do head tracking of smaller head movements.
+
+'''Speaker layout design.'''
+Here we plan to answer the question of what is
+the ideal optimal 3D reproduction system.
+Of course the answer may not be unique and perhaps it will depend on the purposes of the system.
+Basing on physical and psychoacoustic principles,
+the goal is to design a loudspeaker configuration
+to offer an accurate reconstruction of the three-dimensional soundfield 
+for improved realism.
+At the same time we will
+aim at extending the dimension of the sweet spot,
+to allow a larger number of listeners to correctly perceive the sound.
+
+
+== 3D Acoustics Inference ==
+
+The last aspect of the research is 3D Acoustics Inference.
+As stated above this is a new research line in the literature.
+We see a clear plan of research to be undertaken and exploited
+and several nice applications that such technology will provide.
+
+We will use our room acoustics simulation capabilities to
+define a parameter space (for example, room dimensions, absorption coefficients...)
+that determines the acoustics of the scene.
+Given a recorded audio track, we will define a cost function
+that defines a metric in this parameter space,
+such that the distance is zero when the simulated acoustics match those of the recording.
+By minimizing such a function we will determine the scene that better suits that audio.
+
+Research will be undertaken to investigate the properties of this procedure.
+For example: are there many local minima?
+what do they physically correspond to?
+are shoe-box-shaped geometries generic enough to fit most of the acoustics?
+if not, how much should we complicate geometries?
+in other words, how large should the parameter space be?
+
+We shall also note that the goal is not necessarily that of 
+having an identical scenario to the one present in the recording.
+For most applications inferring one that sounds indistinguishably close to the real one will be more than enough.
+
+We envisage a number of interesting applications:
+* An audio engineer wants to introduce dubbed dialogs in an recorded scene that match the acoustics properties of those recorded during shooting.
+* An audio engineer wants to modify an existing reverberation preset using high level room parameters (room size, wall materials) instead of tweaking low level impulse response parameters.
+* An audio engineer has a found a reverb that he wants to apply to dubbed dialogs and effects, that are supposed to take place in a reception at the US embassy. He uses this technology to obtain a plausible room, locates the sound sources within it and navigates freely through it hearing the change of the localization of the sources accordingly.
+* An audio engineer wants to change the localization of some sound event in a production but the scenario is not available.
+* An audio engineer wants to change the listener position from the one the microphone was to actual point of view of the final production.
+
+
+
+
+

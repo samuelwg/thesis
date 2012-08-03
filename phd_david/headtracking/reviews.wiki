@@ -1,0 +1,135 @@
+@inproceedings{
+url={{http://smcnetwork.org/files/proceedings/2010/54.pdf}},
+title={{Head in space: a head-tracking based binaural spatialization system}},
+author={{Luca A. Ludovico and Davide A. Mauro and Dario Pizzamiglio}}
+publication={{Proceedings of Sound and Music Computing Conference 2010}},
+year={2010},
+city={Barcelona},
+abstract={{
+	This paper discusses a system capable of detecting the
+	position of the listener through a head-tracking system and
+	rendering a 3D audio environment by binaural spatialization.
+	Head tracking is performed through face recognition
+	algorithms which use a standard webcam, and the result is
+	presented over headphones, like in other typical binaural
+	applications. With this system users can choose an audio
+	file to play, provide a virtual position for the source in an
+	euclidean space, and then listen to the sound as if it is
+	coming from that position. If they move their head, the signal
+	provided by the system changes accordingly in real-time,
+	thus providing a realistic effect.
+}},
+comments={{
+	Referencia a CIPIC database.
+	MaxMSP + headApi + plugins for binaural reproduction
+}}
+}
+
+
+http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.25.6264&rep=rep1&type=pdf
+	Hrtf + listener tracking with camera for desktop systems
+	Problema: latencia
+	Valencianos
+
+https://iem.at/projekte/publications/paper/demonstrator/demonstrator.pdf
+	Sound bubbles. Controllable focused sound source reproduction
+
+
+
+
+http://opencv.willowgarage.com/
+http://www.inference.phy.cam.ac.uk/opengazer/
+
+
+@article{ Murphy-Chutorian08headpose,
+author = {Erik Murphy-Chutorian and Mohan Manubhai Trivedi},
+title = {Head Pose Estimation in Computer Vision: A Survey},
+year = {2008},
+url = {{http://www.computer.org/portal/web/csdl/doi/10.1109/TPAMI.2008.106}},
+url = {{http://citeseerx.ist.psu.edu/viewdoc/summary?doi=10.1.1.159.8306}},
+url = {{ http://cvrr.ucsd.edu/publications/2008/MurphyChutorian_Trivedi_PAMI08.pdf}},
+notes = {{ Interesante resumen de tecnicas y criterios para determinar la orientacion de la cabeza.  }}
+}
+
+
+@article{
+publication={{Journal of Systemics, Cybernetics and Informatics}},
+title={{Real-Time Head Pose Estimation on Mobile Platforms}},
+author={{Jianfeng Ren and Mohammad Rahman and Nasser Kehtarnavaz and Leonardo Estevez}},
+volumen={8},
+number={3},
+year={2010},
+url={{http://www.iiisci.org/journal/CV$/sci/pdfs/GS270PF.pdf}},
+notes={{
+	Robust on near heads, seems to be fast since it works on mobiles. To look for code.
+}}
+}
+
+
+@inproceedings{
+HeadPoseDatabase,
+author={Nicolas Gourier and Daniela Hall and James L. Crowley},
+title={{Estimating Face Orientation from Robust Detection of Salient Facial Features}},
+publication={{Proceedings of Pointing 2004}},
+conference={{International Workshop on Visual Observation of Deictic Gestures}},
+city={Canbridge},
+country={UK},
+url={{http://www-prima.inrialpes.fr/perso/Gourier/Pointing04-Gourier.pdf}},
+notes={{
+	Robust but apparently slow algorithm.
+	Systematic collaborative effort for a head pose database available at:
+	http://www-prima.inrialpes.fr/perso/Gourier/Faces/HPDatabase.html
+}}
+}
+
+
+
+http://www.uow.edu.au/~koren/Papers/acra08.pdf
+S. Meers and K. Ward
+Head-Pose Tracking with a Time-of-Flight Camera
+Proceedings of the Australian Conference on Robotics and Automation
+Canberra
+Australia
+December
+2008
+	Preprocesado: Filtro mediano, descarte de fondo...
+	Localizar cabeza
+		Primeras filas con profundidad proxima
+		Considera numero de filas segun la distancia siguiendo medias antropometricas
+		Calcula el centroide y obtiene el centro aproximado
+		:-( Manos levantadas?? Otros objetos?? Multipersona??
+		:-) Para empezar ya va bien
+		Mencionan alternativa de detectar la mandibula
+	Localizar la punta de la nariz (No me queda claro como!)
+		Curvature in depth map + proximity to the camera + similar albedo in surroundings
+		Multiple candidates, pick one (how??)
+	Encontrar por hillclimbing la interseccion a partir de esferas concentricas a la nariz
+		Incluye algoritmo para obtener la interseccion
+
+
+
+http://www.uow.edu.au/~koren/Papers/cgiv09.pdf
+S. Meers and K. Ward
+Face Recognition using a Time-of-Flight Camera
+Proceedings of the 6th International Conference on Computer Graphics, Imaging and Visualization
+Tianjin
+China
+August
+2009
+
+
+Contribuciones independientes a openCV de 
+http://www.shervinemami.co.cc/openCV.html
+	Deteccion de blobs de piel
+	Identificacion de individuos por color de camiseta
+	
+
+
+
+
+
+
+
+
+
+

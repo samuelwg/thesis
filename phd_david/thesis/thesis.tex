@@ -1,0 +1,282 @@
+%
+% No cal saber gaire LaTeX per escriure una tesi.
+%
+% Afegiu el vostre text a la plantilla, i deixeu que Knuth i
+% Lamport s'encarreguin de l'aspecte.
+
+% Per crear el document en .pdf només cal fer 'pdflatex
+% aquestarxiu.tex', 'bibtex aquestarxiu' (sense extensió) i
+% 'pdflatex aquestarxiu.tex' un altre cop. Hi ha moltes eines que
+% permeten simplificar moltíssim la compilació en latex (v, p.ex.,
+% rubber: http://www.pps.jussieu.fr/~beffara/soft/rubber/)
+%
+
+% [ Tots els caràcters que segueixen el signe %, fins a final de
+%   línia, són comentaris i no es processen. ]
+%
+% En el bloc següent, delimitat per dues línies d'asteriscs,
+% s'especifica el format del document. El podeu ignorar sense
+% problemes si no sabeu LaTeX.
+%
+
+% *****************************************************************************
+
+% Aquí s'especifica quin tipus de document voleu, i quines
+% extensions (llengua, gràfics, fonts) fareu servir.
+
+\RequirePackage{fix-cm}                 % Technicalities
+\documentclass[10pt,b5paper,twoside,showtrims,openright]{memoir}
+\usepackage[utf8]{inputenc} 		% codificació dels caràcters
+\usepackage[catalan,english]{babel}	% localització de l'estil
+\usepackage{url}			% macro \url per introduir adreces
+\usepackage{amsmath}			% macros per matemàtiques
+\usepackage{amssymb}			% macros per matemàtiques
+\usepackage{amsfonts}			% macros per matemàtiques
+\usepackage[pdftex]{graphicx}		% suport per figures
+\usepackage{color}                      % per poder fer servir colors
+\usepackage[colorlinks,bookmarks,pdftex,hyperfigures,breaklinks]{hyperref} % produeix enllaços clicables
+\usepackage[T1]{fontenc}                % Nou esquema de codificació (recomanat)
+\usepackage[round,authoryear]{natbib}  % per poder fer citacions Autor-any
+%\usepackage{fixltx2e}                   % Technicalities
+
+\DeclareGraphicsExtensions{.pdf,.png} % preference order
+
+\hypersetup{
+    pdfauthor={David García Garzón},
+    pdftitle={PhD Thesis: TODO},
+}
+%% Format UPF, dues cares.
+% Recordeu que les dimensions d'A4 i B5 són (210mm,297mm) i
+% (176mm,250mm), respectivament.
+
+
+\setulmarginsandblock{30mm}{*}{1.0}  % Marges verticals (3cm a dalt, 1.0*3cm a baix)
+\setlrmarginsandblock{*}{30mm}{1.0} % Marges laterals (3cm a la dreta, 1.0*3cm l'esquerra)
+
+
+
+% Per defecte la classe 'memoir' no numera les subseccions. Que les numeri:
+\maxsecnumdepth{subsection}
+\setsecnumdepth{subsection}
+% Tampoc no inclou les subseccions a l'Índex. Que les inclogui:
+\maxtocdepth{subsection}
+\settocdepth{subsection}
+
+% Estil dels capítols (consulteu estils disponibles a
+% http://www.imf.au.dk/system/latex/artikler/MemoirChapStyles/MemoirChapStyles.pdf)
+\chapterstyle{hangnum}
+
+% Colors dels enllaços clickables (els que hi ha per defecte són molt
+% kitsch)
+\definecolor{LinkColor}{rgb}{0, 0, 0.3}
+\definecolor{ExtLinkColor}{rgb}{0, 0.3, 0}
+\hypersetup{citecolor=LinkColor,linkcolor=LinkColor,urlcolor=ExtLinkColor}
+
+
+% **********************************************************************************
+
+\input{toni_defs}
+
+% 
+% Aquí és on realment comença el document
+%
+
+\begin{document}
+
+%% Llengua
+%% ------------------------------------------------------------
+%% Modifiqueu la següent comanda segons la llengua que utilitzeu
+\selectlanguage{english}
+
+
+%% Modifiqueu la següent comanda segons la llengua que utilitzeu
+%% aquest document segueix el format suggerit per la UPF
+%% vegeu http://www.upf.edu/bibtic/guiesiajudes/tesis/quart.html
+\thispagestyle{empty}
+
+\noindent
+Llenceu aquesta pàgina i substituïu-la per aquella que us faciliti
+la Unitat d'Informació i Projecció Institucionals (UIPI),
+disponible al formulari següent\\
+\url{http://www.upf.edu/uii/sgrafics/formulari_tesi.htm}
+\cleartorecto
+
+%% Portada
+%% ------------------------------------------------------------
+%% 
+\begin{titlingpage}
+\begin{center}
+        \vspace*{1cm} % Ad libitum
+  {\Huge Como hacer una tesis y no jubilarte en el intento}
+
+        \vspace{8mm} % Ad libitum
+        {\LARGE David García Garzón}
+
+        \vspace*{\fill} % Omple l'espai vertical tant com es pugui
+        {\Large Tesi Doctoral UPF / 2012}
+
+        \vspace*{\fill}
+        {\normalsize Supervisada per}\\[2mm]
+        {\Large Dr Toni Mateos}\\[1mm]
+        {\Large Dr Vicente Lòpez}\\[1mm]
+        {\large Departament de Tecnologia}
+
+        \vspace{2cm}
+%        {\normalsize Altres informacions que calgui incloure aquí}
+\end{center}
+\newpage
+
+%% Espai reservat per DL i ISBN
+%% ------------------------------------------------------------
+\noindent
+\raisebox{0.2ex}{\textcopyright}\  2012
+David García Garzón.\\
+Dipòsit Legal:\\
+ISBN:
+
+\vspace{1cm}
+\footnotesize
+
+\noindent
+\includegraphics{cc-by-sa}
+
+\noindent
+This thesis is a free document.
+You are able to distribute it under the terms of the license
+Creative Commons - Attribution - Share Alike
+
+\noindent
+Aquesta tesi és un document lliure.
+El podeu distribuir segons els termes de la llicència
+Creative Commons - Atribució - Compartir en iguals condicions
+
+\end{titlingpage}
+\frontmatter
+
+\cleartorecto % Comença a la pàgina dreta següent
+
+
+%% Dedicatòria (opcional)
+%% ------------------------------------------------------------
+\thispagestyle{empty}
+\vspace*{\stretch{1}}
+\begin{flushright}
+  \LARGE
+  \itshape
+Dedicatòria
+\end{flushright}
+\vspace*{\stretch{4}}
+
+\cleartorecto
+
+%% Acknowledgments
+%% ------------------------------------------------------------
+\chapter*{Acknowledgments}
+\ldots
+
+\cleartorecto
+\cleartorecto
+\thispagestyle{chapter}
+\section*{Abstract}
+\selectlanguage{english}
+This is the abstract of the thesis in English.  Please, use less
+than 150 words.
+
+\selectlanguage{catalan}
+\vspace*{\fill}
+\section*{Resum}
+Vet aquí el resum de la tesi en català.  Si us plau, utilitzeu
+menys de 150 paraules.
+\vspace*{\fill}
+
+\cleartorecto
+
+\pagestyle{headings}
+%% Prefaci o pròleg
+%% ---------------------------------------------------------------------- 
+\chapter{Preface}
+Introducció a la tesi que acostuma a ressenyar-ne els mèrits, el
+valor, o també situar-la dins un context i unes circumstàncies
+determinades.
+
+\vspace{1cm}
+Aquest document es pot descarregar de
+\begin{quotation}
+%\url{http://upf.edu/dtip/~autor/tesi.pdf}
+\url{http://upf.edu/dtip/~autor/tesi.pdf}
+\end{quotation}
+\cleartorecto
+
+
+\tableofcontents % presenta la taula de continguts
+%\clearpage      % presenta la taula de figures
+%\listoffigures
+%\clearpage
+%\listoftables   % presenta la taula de taules
+
+
+%% Cos de la tesi
+%% ---------------------------------------------------------------------
+\mainmatter
+
+
+\input{content}
+
+
+\backmatter
+
+\bibliographystyle{upfstyle} % 
+\bibliography{../BinauralSynthesis} % el meu arxiu .bib de referències (sense
+                        % extensió)
+%% bibliografia
+% En aquest cas, l'escrivim nosaltres a mà. En general és molt més
+% convenient fer servir BibTeX.
+%\begin{thebibliography}{tesi}
+%  \bibitem[Gar66]{GARDNER66}
+%    Martin Gardner.
+%    \newblock \emph{More Mathematical Puzzles and Diversions}.
+%    \newblock Penguin Books
+%    \newblock (ISBN 0--14--020748--1), 1966.
+%
+%  \bibitem[GMS94]{GOOSSENS94}
+%    Michel Goossens, Frank Mittelbach and Alexander Samarin.
+%    \newblock \emph{The LaTeX Companion}.
+%    \newblock Addison-Wesley Publishing Company
+%    \newblock (ISBN 0--201--54199--8), 1994.
+%
+%  \bibitem[FAR85]{fary85}
+%    José Luis Cantero Rada, \emph{El Fary}.
+%    \newblock \emph{Yo detesto al hombre blandengue}
+%    \newblock Entrevista a Televisió Espanyola,
+%    octubre 1985.
+%  \bibitem[ONS44]{onsager1944} Lars Onsager, \newblock
+%    \emph{Crystal Statistics. I. A Two-Dimensional Model with an Order-Disorder Transition},
+%    \newblock Physical Review \textbf{65}(3-4),
+%    p 118--149, 1944.
+%\end{thebibliography}
+
+\clearpage
+
+%% índex de noms
+%\pagestyle{index}
+%\printindex
+%\cleardoublepage
+
+\pagestyle{empty}
+\null\vfil
+
+%\begin{adjustwidth}{1in}{1in}
+\begin{center}
+{\Large Colophon}
+\end{center}
+\begin{center}
+	Aquesta tesi s'ha escrit en \LaTeX\ fent servir l'editor
+        \texttt{vim}.\\
+	El cos de la lletra és XXX i a s'han utilitzat les fonts
+	YYY.
+\end{center}
+%\end{adjustwidth}
+\vfil
+
+\end{document}
+% vim:set tw=66:

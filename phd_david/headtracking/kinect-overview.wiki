@@ -1,0 +1,131 @@
+
+I have been playing with Kinect for last months.
+My PhD thesis is about spatial audio and
+having listener's head pose is extremely useful to 
+generate effective holographic audio images.
+So i wanted to have a working head pose detection with Kinect,
+a free software based one. 
+Hacking Kinect is quite far from my speciality (I am an audio guy!) ,
+but I couldn't find anything I could use, working and free as in speech.
+Most of the cool kinect hacks on youtube use the Nite openNi closed binary.
+So I had to dig into
+[http://szeliski.org/Book/ Computer]
+[http://www.cvpapers.com/ Vision]
+[ bibliography] and code it by myself.
+
+This entry will be the first one in a series explaining my progress with kinect.
+Indeed the first entries would be quite theatrical as I will explain
+things that I already did: background subtraction, movement detection,
+boundary detection, connected component analysis and, wow!
+I am starting to have something close to a skeleton.
+Don't hesitate correct me if I say something wrong or suggest me 
+better approaches than the ones I took.
+I am actually looking for such a feedback.
+
+As I publish the algorithms on the blog, 
+I will be dropping code snippets from my private subversion into a
+[https://github.com/vokimon/freenect_python_processing public github repository]
+until they are in sync, then I will move the development to GitHub.
+
+== Justifying the tools ==
+
+The short story is that I am using python asynchronous bindings to libfreenect,
+numpy/scipy for processing, cython for optimized routines and pygame for the interface.
+I will consider C++ when I have an stable algorithm and i need less flexibility or I need more efficient code.
+I will consider Qt, my favourite tool kit, when I will need an elaborated interface,
+and OpenCV when I need some algorithm that numpy or scipy do not provide and i can't code myself.
+Why that is a longer story.
+
+As they already provide some skeleton detection and they come 
+from the manufacturer, [http://www.primesense.com/ Primesense].
+I did consider using [http://www.openni.org/ OpenNi/Sensor/NITE] tandem.
+Then I realized that, on one side the framework (OpenNI) and the drivers
+(Sensor) are open but the algorithm part (NITE) is a free (as in beer) propietary binary blob.
+Not only propietary but quite hard to make it work if you compile the other components
+yourself from git, because binary compatibility.
+Also, i didn't like OpenNi, the framework. 
+It seems like it forces you too much to work the OpenNi way,
+which i felt over designed and hard to understand.
+
+[http://openkinect.org OpenKinect] is more the community I am used to,
+although people tend to publish more videos than code, but they are cool anyway ;-)
+It has no framework support, but after seeing OpenNi, I prefer that.
+It has no processing algorithms at the moment but NITE is closed so for me it is the same.
+The driver also lacks some features, like accessing the audio input.
+It would be nice to try our audio triangulation algorithms on it, but not now.
+I opted to use the asynchronous interface instead of the synchronous because
+the synchronous, is event based and it puts in the middle of any
+event based framework you are actually using for the interface.
+
+I use Python at this early stage because it let's me make quick experiments.
+Python has a notable drawback: inner loops with python suck.
+For each pixel you have to access, a lot of things are done but processing are done.
+The data cache is full of bytecode to be manipulated instead of holding processing data.
+So, the approach is: let numpy and scipy to take the control of the inner loops
+if they have the proper function, or doing some [http://cython.org Cython] code when not.
+Cython proved to be quite good at this kind of stuff.
+
+I discarded using [http://opencv.org OpenCV]'s highgui interface
+Regarding the interface, I didn't found an obvious way to 
+use raw buffers in OpenCV and I didn't like the highgui lib.
+having to convert matrix and image.
+I don't discard using OpenCV algorithms at some point,
+but having to convert from image objects scared me
+and most algorithms i used can be simply solved with numpy.
+
+Then i used pygame to get the interface although my natural option was Qt.
+Well maybe that one was not a good option as i discovered afterwards.
+Anyway, having a working pygame example, will be useful to
+free software developers
+but i didn't see any example and for sure that, having a working example,
+it will be usefull to someone aiming for using kinect in free software games.
+
+
+== Image Representation ==
+
+Freenect python bindings provides the video images in a numpy arrays.
+RGB video is (640,480,3) uint8 
+while for depth is (640,480) uint16 using just the lower 10 or 11 bits.
+
+Pygame surfarray module gaves facilities work without extra copies
+into a numpy arrays.
+It can map the same contiguous memory either as WxHx3 uint8 or as WxH uint32
+having XRGB words, X being just padding.
+
+Code: python
+import numpy as np
+size = (640,480)
+unpacked = np.zeros((size[0],size[1],4), np.uint8)
+packed = np.zeros((size[0], size[1]), np.uint32)
+# Unpacked takes quite more time although
+# it is convenient to access isolated colors
+# and doing additive math on colors without overflowing between colors
+unpacked[:,:] = (0x00, 0xff, 0x77, 0xff)
+packed[:,:] = 0x00ff77ff
+
+NumPy uses the same underlying layout for both of them but, 
+when you run the code, it takes 10 times more to fill an unpacked array
+which is a huge difference!
+The unpacked array does many unaligned access
+which is one of the 'donts' in some [pygame performance tips] I read.
+This could be optimized at numpy level but let's play with what we have today.
+
+Code: python
+unpacked[:,:1] = 0xff
+packed[:,:] = 0x00ff77ff
+
+To make the app faster I decided to make most operations in scalars (no color)
+and then if i needed that, apply a palette at the end to the raw packed color buffer.
+
+
+
+
+== Displaying ==
+
+
+
+Today code responds to the need of having several views for the different steps 
+
+
+
+

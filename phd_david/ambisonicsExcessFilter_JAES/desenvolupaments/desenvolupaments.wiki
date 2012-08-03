@@ -1,0 +1,47 @@
+Figure: fig:SphereDelay figures/SphericalHead-ShadowedDelay
+Geometry of the time of arrival formula.
+The wave is assumed to travel at a constant velocity $c$,
+even when traveling around the head spherical surface.
+
+To obtain $t_{arr}$, consider a spherical head of radius $R$ at the center of a spherical loudspeaker array
+of  radius $r$, as shown in figure~\ref{fig:SphereDelay}. The time of arrival of a sound emitted by a loudspeaker to the left ear follows the
+Woodworth/Schlosberg formula
+\bea
+c \, t_{arr}(\phi) & = &\sqrt{r^2+R^2 - 2 R r \cos\phi}  \sac \phi \in [0, \phi_0) \nn
+c \, t_{arr}(\phi) & = & \sqrt{r^2-R^2} +R ( \phi -\phi_0)  \sac \phi \in [\phi_0,\pi) \,,
+\eea
+where $\phi$ is the
+angle between two lines through the origin, one pointing at the left ear, and one pointing at the loudspeaker;
+and \ie $\phi_0 = \arccos R/r$. Note that, according to this definition, $\phi$ is a function
+of the azimuth/elevation coordinates $\phi=\phi(a,e)$ on the sphere.
+
+In the approximation where the radius of the loudspeaker array is much
+larger than the radius of the head ($r \gg R$), the formulae simplify to
+\bea
+c \, t_{arr}(\phi) & = & r - R \cos \phi  + \calo(R/r) \sac \phi \in [0,\pi/2) \,,\nn
+c \, t_{arr}(\phi) & = & r + R (\phi-\pi/2) + \calo(R/r) \sac \phi \in [\pi/2,\pi) \,.
+\eea
+It will be convenient to redefine the time coordinate so that the origin of time
+coincides with the arrival to the origin of coordinates without the head.
+Introducing $\tau = t + {r\over c}$ and $t_0=\frac R c$, we finally obtain,
+\bea
+\tau(\phi) & = & - t_0 \cos \phi  \sac \phi \in [0,\pi/2) \nn
+\tau(\phi) & = &  t_0 (\phi-\pi/2) \sac \phi \in [\pi/2,\pi) \,.
+\label{eq:sphericalHeadDelay}
+\eea
+
+If only the time-arrival is taken into account, then the HRTF is just a Dirac
+pulse with delay controlled by $\tau(\phi)$, \ie
+\be
+\label{hrtf_as_function_of_delay}
+H(t,a,e) = \delta \left( t-\tau(\phi(a,e)) \right) \,.
+\ee
+Thus, to compute the filters, all that is needed is to insert this expression
+into \bref{projection} and try to solve the integral analytically.
+
+
+We will separate the discussion for 2D and 3D spherical harmonics. 
+
+
+
+

@@ -1,0 +1,34 @@
+== Conclusions ==
+\label{sec:conclusions}
+
+A formalism has been presented for dealing with existing algorithms to convert Ambisonics to binaural,
+which introduces the concept of {\it HRTF field} and shows that its spherical harmonic components are the 
+quantities that appear naturally in such conversion. 
+This formalism has been exploited to obtain exact analytical expressions for these quantities, under a set idealized approximations.
+
+The results have been applied to the study of a very relevant practical case: 
+the excess filter perceived when listening to a plane wave sound field
+which has first been captured or encoded into Ambisonics.
+
+It has been shown and quantified that, although the excess filter does not necessarily destroy localization cues,
+it exhibits significant high frequency damping which, unless very high Ambisonics order is used,
+can ruin the quality of broad spectrum content, such as music.
+
+The most important features derived from the analytic results persist
+beyond the approximations used, as shown by comparison with results obtained from measured
+HRTF databases.
+
+An important question arises as to whether the excess filter studied here can be reduced or ameliorated.
+At first sight, the problem looks hard, because the excess filter depends in an intrincated way on the particular sound field. 
+In case of plane waves, it depends on the orientation of the incoming sound. A compensation strategy would
+therefore have to be different for every possible sound field, rendering it impractical.
+
+The formalism presented here could potentially be useful to tackle this issue, specially in the light
+of the result \bref{eq:one_hrtf_to_rule_them_all}, which shows that all Ambisonics components in a given
+order are affected by one single filter when converting to binaural. 
+This application of the formalism will be addessed in future work.
+
+
+== Acknowledgements ==
+
+TODO: cal?

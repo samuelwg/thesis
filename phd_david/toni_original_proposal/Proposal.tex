@@ -1,0 +1,387 @@
+\documentclass[12pt]{article}
+%\documentclass[11pt]{article}
+
+\include{toni_packages}
+\include{toni_definitions}
+
+\begin{document}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%\title{PhD Projects: David Garca Garzn}
+%\maketitle
+
+\section{PROJECT I: Creation of HRTF database via simulation}
+
+\subsection{Intro}
+
+Present databases of HRTF present the following problems:
+\begin{itemize}
+\item They are calculated at a fixed distance between source and mics. These
+leads to difficulty in determining the distance of the source in reproduction.
+
+\item Present artifacts due to the errors in the measuring devices (loudspeaker
+and microphones responses among them), which are difficult to equalize.
+
+\item Lack of flexibility due to the use of specific heads or mannequins.
+
+\item They are available for scientific use, but not industrial use.
+
+\end{itemize}
+
+Databases can be found at:
+
+\begin{itemize}
+\item \url{http://recherche.ircam.fr/equipes/salles/listen} It is the Listen Project,
+funded by EU, and with AKG and Ircam as partners.
+\item \url{http://interface.cipic.ucdavis.edu/index.htm} CIPIC / IDAV Database, UC Davis,
+University of California
+\item \url{http://www.itakura.nuee.nagoya-u.ac.jp/HRTF} Nagoya University, Japan,
+\item \url{http://www.ais.riec.tohoku.ac.jp} Advanced Acoustic Information Systems Lab, Japan.
+\end{itemize}
+
+\subsection{Papers needed for state of the art}
+
+\begin{itemize}
+\item For a psychoacoustics book: Blauer, {\it Spatial Hearing}.
+
+\item For a 2007 paper containing refs, \url{PROJECT-I/2007.pdf}
+
+\item For a FDTD applied to HRTF, \url{PROJECT-I/FDTD !!!.pdf}
+
+\item For one of the main papers on Binaural Technology by , there is
+an old version by Moller, \url{PROJECT-I/Fundamentals of Binaural Tech.pdf}
+and a newer one, \url{PROJECT-I/Updated Fundamentals of Binaural Tech.pdf},
+
+\item For a study on the importance of head tracking, \url{PROJECT-I/Importance of Head motion.pdf}
+
+\item For a good description, including refs to their papers, of how to simulate
+the HRTF based on physical parametrization, the same website of CIPIC,
+\url{http://interface.cipic.ucdavis.edu/index.htm/}
+
+\end{itemize}
+
+
+\subsection{Tentative Steps to follow}
+
+\begin{enumerate}
+
+\item Get to the state of the art.
+
+\item Decide the method to implement, FDTD, FEM, BEM...
+
+\item Implement it for a sphere, and test against the analytic well-known result.
+
+\item If previous step is successful, look for fine-detail 3D models of heads.
+
+\item Obtain Database. If computations are too long, perhaps use UPF cluster.
+
+\item Analysis of results, extract and model relevant cues, use spherical harmonic
+decomposition, etc.
+
+\end{enumerate}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% PROJECT II %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newpage
+\section{Project II: Ray-Tracing, Beam Tracing, others. Wave-field Synthesis?}
+
+\subsection{Intro}
+
+At the moment, we have only explored ray-tracing for rendering sound.
+There are a few features that need to be tackled:
+
+\begin{enumerate}
+
+\item Implement diffraction, which is a purely wave phenomenon, but which can be
+sometimes reproduced effectively by extending the geometrical methods.
+
+\item Explore the possibility of tackling outdoors simulation. It is important because
+we would then integrate with the Laboratori de Visualitzaci Urbana (Michele) of BM.
+
+\item Examine possible alternative geometrical methods (Beam tracing...) to Ray-Tracing.
+
+\item Examine if sound for Wave-Field Synthesis (WFS) exhibition can be generated
+with RT or others. If not, implement it.
+
+\item Integration with FDTD simulations. Produce a flexible Hybrid model.
+
+\end{enumerate}
+
+
+\subsection{Papers needed for state of the art}
+
+\begin{itemize}
+
+\item
+For a very good pedagogical exposition of geometrical methods for sound rendering,
+the course \url{PROJECT-II/Funkhouser-Course.pdf} and the paper
+\url{PROJECT-II/Funkhouser-I.pdf} by Funkhouser.
+
+\item For a book on ray-tracing, Glassner, {\it Introduction to Ray Tracing}.
+
+\item For a thesis on WFS, by J. van der Vorm, \url{PROJECT-II/Thesis on WFS.pdf}.
+
+\item For a comparison of WFS to Ambisonics, \url{PROJECT-II/WFS vs Ambisonics.pdf}.
+
+\end{itemize}
+
+
+\subsection{Tentative Steps to follow}
+
+\begin{enumerate}
+
+\item Get to the state of the art of geometrical methods, specially those
+that are not ray-tracing, and making emphasis on their capability to
+emulate diffraction.
+
+\item Look for bibliography of outdoor simulation.
+
+\item Decide if any of them performs better than RT, if so implement, if not
+implement only diffraction to ray-tracing.
+
+\item At some point, compare impulse responses to those measured by our Lab
+(Giulio's project).
+
+\item Explore the production of WFS compatible sound.
+
+\item Explore the possibility of outdoor simulation.
+
+
+\end{enumerate}
+
+\section{Project III: Improve existing decoding algorithms}
+
+\subsection{Intro}
+
+By decoding, we understand the process of, given a set of 
+pressure and velocities signals, 
+At the moment, we are using a rather stardard decoding algorithm,
+let us call it the {\it Venice algorithm}. See description in section
+\ref{sec:venice_alg}.
+It has some disadvantages:
+\begin{itemize}
+\item It does not take into account that the loudspeaker setup
+might not be equiangular, as in 5.1. This makes the energy arriving
+from the front much louder than from the back.
+\item It reproduces sound in {\it all} speakers even if it is
+a plane wave from infinity. This makes the sweetspot small
+due to the precedence effect.
+\item It is design to work well only for low frequencies, where phases
+are measurable.
+\end{itemize}
+
+Alternatively, one can use the VBAP (or stereo panning) for
+direct sound, which is great for localization purposes, as it
+uses only the 2 speakers closer to the source (3 speakers in 3D).
+However, it cannot be used for reverberant sounds where energy
+arrives from all directions.
+
+One way out of these two, is to obtain a compromise between 
+2-speakers and all-speakers philosophies. See Gerzon papers
+for it.
+
+We will be particularly interested in a completely different philosophy.
+It is based on determining how directional an audio stream is at a
+given time interval, say by defining a parameter $\eta\in[0,1]$. 
+Depending on $\eta$, we will decide the volume of all loudspeakers 
+(low $\eta$ means non-directional, all speakers turned on; 
+high $\eta$, only two speakers turned on).
+The details of the volumes can be decided by us, which is 
+a nice freedom to have...
+
+In what follows, the 3 main algorithms just commented.
+At the end, the bibliography.
+
+
+\subsubsection{Algorithm 1: the {\it Venice algorithm}}
+\label{sec:venice_alg}
+
+This algorithm requires first of all the convolutions:
+\be
+p = i * g_p \sac v_x = i * g_x \sac v_y= i* g_y \,.
+\ee
+This can be done once and for all before executing the $\b$-dependent part
+(even off-line).
+
+{\bf NOTE: } If you don't want to perform convolutions, but rather use dry sound directly,
+just define $p=v_x$ and $v_y=0$. This simulates a sound source behind you.
+If you want it in front, just set $p=-v_x$, and $v_y=0$.
+
+When we have the at our disposal $(p,v_x,v_y)$, we first perform a $\b$-rotation\footnote{With
+this convention, $\beta>0$ simulates the sound moving counter-clockwise or, more precisely,
+a listener rotating clock-wise.}
+\bea
+u_x &=& v_x\cos\b  - v_y\sin\b  \nn
+u_y &=& v_x \sin\b  + v_y\cos\b \,,
+\eea
+and, finally, the signal at each of the channels is given by
+\be
+C_i =\undos \left[ p - ( u_x \cos\a_i + u_y \sin\a_i ) \right] \sac i=1,...N_L\,.
+\ee
+
+{\bf About volumes:} The way volumes are normalized at the moment is by computing
+the complete signals $C_i$, finding the maximum value attained by all the $C_i$,
+and then dividing all $C_i$ by a number such that the new maximum is $2^{15}$, so that
+there's no clipping in a 16-bit wav output.
+
+\subsubsection{Algorithm 2: Stereo Panning, a.k.a. VBAP-2D}
+
+This is the simplest possible algorithm. It doesn't use the info about velocities, and it
+can only spatialize direct sound, not reverberations.
+
+The only input parameters are the angle $\b$ where sound is supposed
+to come from, and the audio stream $p$. Then, it first determines
+the two loudspeakers that leave $\b$ between them.
+Name them speaker $a$ and $b$, located at angles $\a_a,\a_b$.
+Arrange them such that
+\be
+\a_a < \b < \a_b \,.
+\ee
+Then, assign gains as follows
+\be
+g_1 = {\sin(\b-\a_a) \over \sin^2(\b-\a_a)+\sin^2(\a_b-\b) } \sac
+g_2=  {\sin(\a_b-\b)  \over \sin^2(\b-\a_a)+\sin^2(\a_b-\b) }\,.
+\ee
+Then, in playback, mute all speakers except $C_a$ and $C_b$, which sound as follows
+\be
+C_a = g_2 p \sac C_b = g_1 p \,.
+\ee
+
+
+\subsubsection{Algorithm 3: directionality-based algorithm}
+
+The inputs for this algorithm are (these are parameters that we must be able to tune
+real-time, so that they can be adjusted):
+\begin{enumerate}
+\item
+$n_b$: the number of samples within each bin.
+\item
+$interpol$: a parameter that can be 0 or 1, and determines whether interpolation is used or not.
+\item
+$\eta_{cutoff}$ is a cutoff for the directionality parameter.
+\item
+$\s$: controls the width of the Gaussian that governs the volume function.
+\end{enumerate}
+Default values are
+\be
+n_b=1000\sac interpol=1 \sac \eta_{cutoff}=0.92 \sac \sigma=10 \,.
+\ee
+The steps of the algorithm are
+\begin{enumerate}
+\item
+Focus on the bin to which the present sample belongs. Determine the directionality coefficient of
+this bin $\eta_1$, and the intensity vector of this bin $\vec{I}^{avg}_1$. This is simply done
+by averaging over the bin:
+\be
+\vec{I}^{avg}_1 = {1 \over n_b} \sum_{i=1}^{n_b} {2 p_i \vec{v}_i \over p_i^2+\vec{v}_i^2 } \sac \eta_1=|\vec{I}_{avg}| \,.
+%\sac \hat{d}_1 = {\vec{I}_{avg} \over |\vec{I}_{avg}|} \,.
+\ee
+Note that we always have $0\le \eta_1 \le 1$. Note that the sum only runs over samples for which
+$p_i^2+\vec{v}_i^2 \neq 0$.
+\item
+If $interpol=1$, we need to compute the same two quantities, but in using the previous or, even beter, the following bin.
+This produces $\eta_2$ and $\vec{I}^{avg}_2$.
+\item
+If $interpol=0$, then define
+\be
+\eta=\eta_1  \,.
+\ee
+\begin{itemize}
+\item
+If $\eta_1 \neq 0$, then
+\be
+\hat{d}={\vec{I}^{avg}_1 \over | \vec{I}^{avg}_1|} \,.
+\ee
+\item
+If $\eta_1 = 0$, then $\hat{d}=\vec{0}$.
+\end{itemize}
+
+
+If $interpol=1$, then define
+\be
+\eta=l_2 \eta_1 + l_1 \eta_2 \,.
+\ee
+\begin{itemize}
+\item I
+f $\eta_1\neq 0$ or $\eta_2\neq 0$, then
+\be
+\hat{d}={ l_2 \vec{I}^{avg}_1 + l_1 \vec{I}^{avg}_2  \over |  l_2 \vec{I}^{avg}_1 + l_1 \vec{I}^{avg}_2  |   }\,.
+\ee
+where $l_{1,2}$ are the proportion of distances to the left/right extreme samples $i_{L,R}$ of the bins:
+\be
+l_1 = { i - i_L \over n_b} \sac l_2 ={i_R - i \over n_b} \,.
+\ee
+\item
+If $\eta_1 = \eta_2= 0$, then $\hat{d}=\vec{0}$.
+\end{itemize}
+
+\item
+If $\eta > \eta_{cutoff}$ then $\eta = \eta_{cutoff}$.
+
+\item
+Now we have the data needed to determine the gains of each loudspeaker. First, as in other algorithms,
+define
+\be
+\hat{r}_a = (\cos \a_a,\sin \a_a) \sac a = 1,...,N_L \,.
+\ee
+Compute how close a speaker is to the direction of the incoming energy of that bin:
+\be
+x_a =- \hat{r}_a \cdot \hat{d} \sac a = 1,...,N_L \,.
+\ee
+
+\item
+Determine the gains of each loudspeaker via the following formulae:
+\bea
+g^{temp}_a &=& f(x_a,\eta,\s) \sac a=1,...,N_L \nn
+g_a &=& {g^{temp}_a \over \sum_{a=1}^{N_L} (g^{temp}_a)^2} \sac a=1,...,N_L \,.
+\eea
+where the volume control function is defined as
+\be
+f(x,\eta,\s) = \exp \left(   -  { (x-1)^2 \over \s} \, {\eta^2 \over (1-\eta)^2} \right) \,,
+\ee
+unless $\eta=0$, a case where we define $f(x,0,\s) = 1$.
+
+\item
+Finally, the signal at each loudspeaker is
+\be
+C_a = g_a p \sac a=1,...,N_L\,.
+\ee
+
+\end{enumerate}
+
+\subsection{Papers needed for state of the art}
+
+\begin{itemize}
+
+\item For a good general introduction to B-format and decoding, Gerzon again: \url{PROJECT-III/Gerzon_summary.pdf}
+
+\item For a mentioning of different decodings of B-format signals, Farina: \url{PROJECT-III/Farina.pdf}
+
+\item The theoretical explanation of the meaning of the
+parameter the measures how directional sound is, \url{PROJECT-III/Stanzial.pdf}.
+The important section is sec. VI. About a paper that has tried to use 
+this, in my opinion, incorrectly, \url{PROJECT-III/Pulkki.pdf}%{hola}
+
+\item For a paper introducing the problem of low and high-frequency decoding
+problems, \url{PROJECT-III/Gerzon_Surround_sound_psychoacoustics.pdf}.
+More mathematically, \url{PROJECT-III/Gerzon.pdf}
+
+\item For a great exposition of decoding methods, a PhD thesis
+in French (could never find a copy in English...) at 
+\url{PROJECT-III/Daniel_phd.pdf}
+
+\end{itemize}
+
+\section{Exercises}
+
+\input{Exercises}
+
+
+\end{document}

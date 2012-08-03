@@ -1,0 +1,24 @@
+
+* Quan fas el decoding regular 2D d'una ona plana et queda
+** una part que depen del decoding
+** una altra part comuna a tot decoding que depen de Tn(cos alpha) 
+*** cos alpha es la distancia de cosinus entre l'eix Y i la direccio de l'ona
+** La suma dels harmonics d'un ordre concret dona Tn(cos alpha)
+
+* En 3D la formula es molt mes complexa de desenvolupar genericament (no he pogut)
+** En punts concrets, amb azimuth o elevacio zero, dona (2l+1) Pn(cos alpha)
+** Numericament coincideix en altres punts
+
+* Conclusio
+** http://functions.wolfram.com/Polynomials/SphericalHarmonicY/23/01/01/
+** Sum n=-l,l Ynls(a1,e1)*Ynls(a2,e2) = 
+
+
+
+
+
+
+
+
+
+

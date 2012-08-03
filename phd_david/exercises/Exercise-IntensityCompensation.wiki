@@ -1,0 +1,115 @@
+﻿= Exercise: Intensity compensation =
+
+Some usefull identities for sum of trigonometric functions with equiangular increases.
+Given
+any natural `N>2`, 
+any non-zero integer `k`, 
+any non-zero integers `A_1` and `A_2` so that `A_1\neq A_2`,
+and any real angles `\alpha` and `\beta`:
+Equation:
+	\sum_{i=0}^N \cos (2\pi \frac {ki} N + \alpha) = 0 \\
+	\sum_{i=0}^N \cos^2 (2\pi \frac {ki} N + \alpha) = \frac N 2 \\
+	\sum_{i=0}^N \cos (2\pi \frac {ki} N + \alpha) \cos (2\pi \frac {ki} N + \beta) = \frac N 2 \cos (\alpha-\beta) \\
+	\sum_{i=0}^N \cos (2\pi \frac {ki} N + \alpha) \cos (2\pi \frac {ki} N + \beta) \cos (2\pi \frac {ki} N + \gamma) = 0 \\
+	\sum_{i=0}^N \cos (A_1 2\pi \frac {ki} N + \alpha) \cos (A_2 2\pi \frac {ki} N + \beta) = 0 \\
+	\sum_{i=0}^N \cos^4 (2\pi \frac {ki} N + \alpha) = N \frac 3 8 \\
+	\sum_{i=0}^N \cos^3 (2\pi \frac {ki} N + \alpha) \cos (2\pi \frac {ki} N + \beta) = N \frac 3 8 \cos(\alpha-\beta) \\
+
+The goal is doing the same we did for the presure at the center point but with the intensity.
+
+Intensity is defined as:
+Equation:
+	\vec I = \frac 1 T \int_0^T p \vec v dt
+
+For a plane wave:
+Equation:
+	\vec I = \frac { p ^ 2 } Z \hat r
+
+Where `\hat r` is the unitary vector perpendicular to the wave front.
+
+
+Let's consider now a spherical N-Surround system where every speaker
+generates plane waves towards the center point using the Venice algorithm.
+TODO: Proper name for Venice algorithm.
+Each ring of loudspeakers at elevation `\theta` has `N_\theta` equiseparated speakers.
+
+If `r_i_\theta` is the unitary vector from the center to the speaker, can be
+expressed in this way:
+Equation:
+	\hat r_i_\theta = (\cos\theta \cos\phi_i, \cos\theta\sin\phi_i, \sin\theta ) \\
+	\phi_i =  2 \pi  \frac i {N_\theta} + \alpha
+
+And we have those equalities:
+Equation:
+	\sum_{i=0}^{N_\theta -1} {r_{ix}} = \sum_{i=0}^{N_\theta -1} {r_{iy}} = 0 \\
+	\sum_{i=0}^{N_\theta -1} {r_{ix} r_{iy}} = 0 \\
+	\sum_{i=0}^{N_\theta -1} {r_{ix}^2} = \sum_{i=0}^{N_\theta -1} {r_{iy}^2} = \frac 1 2 N_\theta \cos^2\theta = \frac 1 2 N_\theta c^2_\theta \\
+	\sum_{i=0}^{N_\theta -1} {r_{ix}^3} = \sum_{i=0}^{N_\theta -1} {r_{ix}^2 r_{iy}} = \sum_{i=0}^{N_\theta -1} {r_{ix} r_{iy}^2} = \sum_{i=0}^{N_\theta -1} {r_{iy}^3} = 0 \\
+
+Also, `r_{iz}` is always independent of the `i`:
+Equation:
+	r_{iz} = \sin\theta = s_\theta \\
+	\sum_{i=0}^{N_\theta -1} {r_{iz}} = N_\theta \sin\theta = N_\theta s_\theta \\
+	\sum_{i=0}^{N_\theta -1} {r_{iz}^2} = N_\theta \sin^2\theta = N_\theta s^2_\theta \\
+
+Loudspeakers will generate the following intensity:
+Equation:
+	Z \vec I_\theta = \sum _{i=0}^{N_\theta-1}{p_i^2 \hat r_i_\theta} \\ =
+	\sum{ (p - \vec v \hat r_i_\theta)^2 \hat r_i_\theta } \\ =
+	\sum{ (p^2 -2 p \vec v \hat r_i_\theta +  (\vec v \hat r_i_\theta )^2 \hat r_i_\theta } \\ =
+	\sum{ p^2 \hat r_i_\theta }
+	 - \sum {2 p (\vec v \hat r_i_\theta) \hat r_i_\theta }
+	 + \sum { (\vec v \hat r_i_\theta) ^2 \hat r_i_\theta }
+
+Analyzing each term by separate, the first term is:
+Equation:
+	\sum{ p^2 \hat r_i_\theta } = p^2 \sum ( c_\theta c_{\phi_i}, c_\theta s_{\phi_i}, s_\theta ) = p^2 N_\theta (0, 0, s_\theta)
+
+For the second term:
+Equation:
+	-2p \sum (\vec v \hat r_i_\theta) \hat r_i_\theta \\ =
+	-2p \sum (v_x r_{ix} + v_y r_{iy} + v_z r_{iz} ) (r_{ix}, r_{iy}, r_{iz}) \\ =
+	-2p \sum (v_x r_{ix}^2, v_y r_{iy}^2, v_z r_{iz}^2) \\ =
+	-p \( v_x N_\theta c^2_\theta, v_y N_\theta c^2_\theta, 2 v_z N_\theta s^2_\theta \) \\ =
+	-p N_\theta \( v_x c^2_\theta, v_y c^2_\theta, 2 v_z s^2_\theta \) 
+
+And the third term:
+Equation:
+	\sum { (\vec v \hat r_i_\theta) ^2 \hat r_i_\theta }  \\ =
+	\sum (v_x r_{ix} + v_y r_{iy} + v_z r_{iz} )^2(r_{ix}, r_{iy}, r_{iz}) \\ =
+	\sum (v_x^2 r_{ix}^2 + v_y^2 r_{iy}^2 + v_z^2 r_{iz}^2)(r_{ix}, r_{iy}, r_{iz}) \\ +
+	\sum 2 ( v_x r_{ix} v_y r_{iy} + v_x r_{ix} v_z r_{iz} + v_y r_{iy} v_z r_{iz} )(r_{ix}, r_{iy}, r_{iz}) \\ =
+	\sum (v_x^2 r_{ix}^2 + v_y^2 r_{iy}^2 + v_z^2 r_{iz}^2)(r_{ix}, r_{iy}, r_{iz}) \\ +
+	\sum 2 ( v_x v_y r_{ix} r_{iy} + v_x v_z r_{ix} r_{iz} + v_y v_z r_{iy} r_{iz} )(r_{ix}, r_{iy}, r_{iz}) \\ =
+	\sum (0, 0, v_x^2 r_{iz} r_{ix}^2 + v_y^2 r_{iz} r_{iy}^2 + v_z^2 r_{iz}^3) \\ +
+	\sum 2 (v_x v_z r_{ix}^2 r_{iz} , v_y v_z r_{iy}^2 r_{iz} ,  0 ) \\ =
+	(0 ,0, v_x^2 s_\theta \frac 1 2 N_\theta c^2_\theta + v_y^2 s_\theta \frac 1 2 N_\theta c^2_\theta + v_z^2 N_\theta s^3_\theta ) \\ +
+	(v_x v_z N_\theta s_\theta c^2_\theta, v_y v_z N_\theta s_\theta c^2_\theta, 0 ) \\ =
+	N_\theta (0,0 , v_x^2 s_\theta \frac 1 2 c^2_\theta + v_y^2 s_\theta \frac 1 2 c^2_\theta + v_z^2 s^3_\theta ) \\ +
+	N_\theta(v_x v_z s_\theta c^2_\theta, v_y v_z s_\theta c^2_\theta, 0 ) 
+
+Summing up component by component:
+Equation:
+	\frac 1 N_\theta Z I_{\theta x} =v_x v_z s_\theta c^2_\theta - p v_x c^2_\theta  \\
+	\frac 1 N_\theta Z I_{\theta y} = v_y v_z s_\theta c^2_\theta - p v_y c^2_\theta  \\
+	\frac 1 N_\theta Z I_{\theta z} = p^2 s_\theta - p 2 v_z s^2_\theta + v_x^2 s_\theta \frac 1 2 c^2_\theta + v_y^2 s_\theta \frac 1 2 c^2_\theta + v_z^2 s^3_\theta = s_\theta (v_z s_\theta - p)^2  + \frac 1 2 s_\theta  c^2_\theta (v_x^2 + v_y^2)
+
+So, finally,
+Equation:
+	\frac 1 N_\theta Z I_{\theta x} = v_x c^2_\theta (v_z s_\theta - p) + \frac 1 2 s_\theta  c^2_\theta v_x^2 \\
+	\frac 1 N_\theta Z I_{\theta y} = v_y c^2_\theta (v_z s_\theta - p) + \frac 1 2 s_\theta  c^2_\theta v_y^2 \\
+	\frac 1 N_\theta Z I_{\theta z} = s_\theta (v_z s_\theta - p)^2  + \frac 1 2 s_\theta  c^2_\theta (v_x^2 + v_y^2)
+
+
+We want that the intensity contribution that would generate a set of missing speakers
+in the lower cap of the sphere
+could be compensated by linearly modifying the pressure and the velocity
+generated by the lower ring of speakers at elevation `\theta_0`.
+
+Equation:
+	\vec I_{\theta_0} (\vec v`, p`) = \sum_{\theta=\theta_0}^{\pi/2} \vec I_{\theta} (\vec v, p)
+
+
+TODO: Find what the relation is
+
+

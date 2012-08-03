@@ -1,0 +1,104 @@
+﻿Abstract:
+
+In Ambisonics decoding all loudspeakers participate in reproduction
+even for highly directional sound fields.
+The presence of the listener's head at the sweet-spot
+affects differently the signals arriving from each loudspeaker,
+thus distorting the acoustic field reconstruction at both ears. 
+While this does not necessarily affect localization cues,
+it does create an unwanted filter which is clearly noticeable,
+specially when reproducing frequency-rich content like music. 
+Such degradation is particularly present in binaural signals obtained from Ambisonics,
+a procedure which simulates a perfect setup in terms of loudspeakers and listener placement.
+This paper presents a novel formalism
+for studying and quantifying this effect and its dependence on
+the Ambisonics order,
+decoding scheme used, and
+listener's head radius.
+Exact analytic expressions are obtained under particular approximations
+that capture and quantify the main features of the filter.
+
+== Introduction ==
+
+Ambisonics is a technology for recording, encoding, manipulating and decoding three-dimensional acoustic fields, 
+based on the decomposition of the pressure field in spherical
+harmonics~@cite:cooper1972_discreteMatrixMultichannelStereo,gibson1972compatible,Gerzon_Patent,Gerzon_Periphony,Gerzon_Soundfield,montoya2004high,Gerzon_Broadcasting,Malham_BformatManipulation,Gerzon_VienaDecoder,Wiggins_Phd.
+First-order Ambisonics, or B-format, is the most used version of the technology; it is based
+on 4 audio channels, corresponding to the signals that would be recorded by four coincident 
+microphones: an omni-directional one, and three orthogonal figure of eight microphones. 
+Higher order spherical harmonics are needed to gain information in a 
+neighbourhood about the recording point, leading to the concept of Higher Order Ambisonics (HOA) @cite:Daniel_Phd,
+which is known to provide larger optimal listening areas,
+at the cost of requiring more channels
+@cite:poletti2000_UnifiedTheoryHorizontalHolographicSoundSystem,bertet20063d,solvang2008_SpectralImpairment2DHOA. 
+% : $(l_{max}+1)^2$ in 3D, or $2l_{max}+1$ in 2D. 
+Ambisonics can also be decoded to binaural format by first decoding to a given virtual loudspeaker layout, and
+then convolving the signal of each loudspeaker with the corresponding Head Related
+Transfer Function (HRTF) (e.g. @cite:Wiggins_Phd,Noisternig_binauralAmbisonics).
+
+One characteristic feature of all Ambisonics decoders is that all loudspeakers participate in the reproduction,
+even for highly directional sound fields.
+For example, for a plane wave incoming from a given angular direction,
+an in-phase homogeneous first order decoder would send the same signal
+to all loudspeakers, weighted by a factor corresponding to a cardioid pattern with maximum along the direction
+of arrival (see \autoref{fig:ambisonicsVsDirectSound}).
+Although, at first sight, this feature might be expected to destroy the main cues required for 
+localization~@cite:Martin_CannotWork it is well-known that this is not necessarily the case~@cite:Fons_DoesWork, as
+shown in plenty of Ambisonics implementations, and extensively discussed in the Ambisonics literature @cite:bertet2007HOAAcuracyTests.
+
+Figure: fig:ambisonicsVsDirectSound figures/ambisonicsVsDirectSound.pdf
+Within Ambisonics, all loudspeakers contribute to the decoding of even the most directional sound field.
+
+However, there is one effect caused by this characteristic feature that is clearly noticeable, 
+specially in low-order Ambisonics decoders.
+No matter how well a decoder is optimized, the ears
+of a listener located at the sweet-spot are inevitably 
+located about 10 cm away from it, and therefore,
+copies of the same signal are received, 
+with different delay, gain, and head-diffraction effects.
+When summed mathematically, 
+this leads to comb filter like effects which are more noticeable,
+and indeed annoying, when listening to binaural conversions of
+Ambisonics signals, specially for frequency-rich musical content. 
+This effect is due to the limited angular resolution that lower-order Ambisonics provides, and it progressively
+disappears at larger Ambisonics orders (see fig \ref{fig:flatWaveDecoding}).
+
+\begin{figure}[htbp]
+\begin{center}
+\includegraphics[width=1.9in]{figures/flatWaveDecodingBasic}
+\includegraphics[width=1.9in]{figures/flatWaveDecodingMaxRe}
+\includegraphics[width=1.9in]{figures/flatWaveDecodingInPhase}
+\end{center}
+\caption{Polar pattern of loudspeaker gain when reproducing a plane wave 
+using different 2D Ambisonics orders and decodings:
+max-$r_V$ (left), max-$r_E$ (center), and in-phase (right).
+}
+\label{fig:flatWaveDecoding}
+\end{figure}
+
+
+One goal of the work presented here is to quantify this effect and study its dependence on the
+Ambisonics order ($l_{max}$) used, the decoding criterion, and the head radius. 
+With this aim, the article first develops a mathematical formalism for dealing with existing algorithms to convert Ambisonics to binaural.
+The concept of {\it HRTF field} as a real map defined on the sphere
+@cite:abhayapala2007_horizontalPlaneHrtfFourierBessel,evans1998_hrtfSphericalHarmonics is introduced,
+and it is shown that the spherical harmonics of the HRTF field are the 
+quantities that appear naturally in the Ambisonics to binaural conversion. 
+
+By exploiting this formalism, exact analytic expressions are obtained
+that quantify the aforementioned harmonic components of the HRTF field
+under a limited set of approximations.
+These results are then exploited to study the excess filter effect
+in one specially illustrative case: the comparison between
+\begin{enumerate}
+\item  a single sound at a given angular position rendered using the corresponding HRTF pair of functions,
+\item  the same sound first encoded into Ambisonics, and then converted from Ambisonics to binaural.
+\end{enumerate}
+
+Section~\ref{sec:realistic_conditions} analyses the impact of the idealizations
+used to obtain exact results, by comparison with the corresponding filters 
+obtained from measured HRTFs.
+Conclusions and future applications of the results and formalism presented here
+can be found in section~\ref{sec:conclusions}.
+
+

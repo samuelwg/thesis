@@ -1,0 +1,370 @@
+﻿
+Some usefull identities for sum of trigonometric functions with equiangular increases.
+Given
+any natural `N>2`, 
+any non-zero integer `k`, 
+any non-zero integers `A_1` and `A_2` so that `A_1\neq A_2`,
+and any real angles `\alpha` and `\beta`:
+\bea
+\sum_{i=0}^N \cos (2\pi \frac {ki} N + \alpha) = 0 \\
+\sum_{i=0}^N \cos^2 (2\pi \frac {ki} N + \alpha) = \frac N 2 \\
+\sum_{i=0}^N \cos (2\pi \frac {ki} N + \alpha) \cos (2\pi \frac {ki} N + \beta) = \frac N 2 \cos (\alpha-\beta) \\
+\sum_{i=0}^N \cos (2\pi \frac {ki} N + \alpha) \cos (2\pi \frac {ki} N + \beta) \cos (2\pi \frac {ki} N + \gamma) = 0 \\
+\sum_{i=0}^N \cos (A_1 2\pi \frac {ki} N + \alpha) \cos (A_2 2\pi \frac {ki} N + \beta) = 0 \\
+\sum_{i=0}^N \cos^4 (2\pi \frac {ki} N + \alpha) = N \frac 3 8 \\
+\sum_{i=0}^N \cos^3 (2\pi \frac {ki} N + \alpha) \cos (2\pi \frac {ki} N + \beta) = N \frac 3 8 \cos(\alpha-\beta) \\
+\eea
+
+== Exercise 8 (simplified perhaps, by Toni)==
+
+The goal is to compensate the missing speakers at the bottom of the subject,
+by increasing the amplitude of the lower speakers.
+
+The goal is then to redefine the decoding law for the speakers at the bottom cap to:
+Equation:
+\sum_a \left( A p - B \hat r_a \cdot \vec v \right) = \sum_a \left(p - \hat r_a \cdot \vec v\right) 
++\sum_m \left(c_m  p -  \hat r_m \cdot \vec v \right)
+
+where the index `a` runs along the cap-speakers, `m` runs along the missing speakers,
+and the constants 'A,B' are to be determined by this equation. By symmetry, the contribution to the
+equation along all axes is zero, except for the vertical axis. Thus we trivially find:
+Equation:
+A = 1 + {n_{\rm missing} \over n_a}  \\
+B = 1 + {\sum_m r_m^z \over \sum_a r_a^z} = 1 + {\sum_m \sin\theta_m \over n_a \sin\theta_a}
+
+Note that for the KEMAR database, with a cap at `\theta_a=-40`, we find `A=3.1, B=3.8`, which correspond
+to about `5.0 dB` and `5.7 dB`, respectively (it is a lot!).
+
+
+
+== Exercise 8 ==
+
+The goal is to compensate the missing speakers at the bottom of the subject,
+by increasing the amplitude of the lower speakers.
+
+We can express a vector `\vec B`, pointing to the missing speaker,
+as a linear combination of two symmetric vectors `\vec A` and `\vec A'`
+at the last elevation angle `\alpha` which are coplanar to `\vec B`.
+Equation:
+	\vec B = p \vec A + q \vec A'
+
+Figure: fig:capcompensation capcompensation.png
+`\alpha` is the last elevation angle.
+`\beta` is the angle of the speaker we want to compensate.
+
+Because the number of speakers varies with the elevation,
+we should divide the contribution of missing speakers
+by the speakers on the last elevation
+applying a factor of `\frac{n_\beta}{n_\alpha}`.
+The module of vector `r^\phi_\alpha` at azimut `\phi` and elevation `\alpha`
+will change like this:
+Equation:
+\vec r'^\phi_\alpha = \vec r^\phi_\alpha \sum_{\beta=\alpha}^{\pi/2}
+{ (p+q) \frac {n_\beta}{n_{\alpha}} }  \\
+
+Note that we are adding the effect of the near speaker `p` and the far effect of the symmetric one `q`.
+
+Equation:
+	\sin (\beta) = p \sin( \alpha) + p \sin (\alpha) \\
+	\sin \beta = (p+q) \sin \alpha \\
+	(p+q) = \frac{ \sin \beta} {\sin \alpha } \\
+
+So, finally we have that we should change the module
+of the lower circle of speakers by applying a common factor like this:
+
+Equation:
+	\vec r'^\phi_\alpha = \vec r^\phi_\alpha \sum_{\beta=\alpha}^{\pi/2}
+		{ \frac{n_\beta\sin\beta}{n_\alpha\sin\alpha}}  \\
+
+The pressure component should also to be compensated but differently.
+Each border speaker should incorporate the module of all missing speakers within its portion of cap.
+
+Equation:
+	factor = \sum_{\beta=\alpha}^{\pi/2} { \frac {n_\beta}{n_\alpha} }
+
+
+== Exercise 7 ==
+
+Let's try to express both channels in terms of single ear HRTF's.
+Provided that the speaker array is symmetric on the axial plane,
+let's adopt the convention that the speaker ` -a` is the symmetric speaker of speaker `a`.
+
+We can express head symmetry in this way:
+Equation:
+    H_a^L = H_{-a}^R
+
+Previously, we got that:
+Equation:
+	L(t) = p(t)\ast A(t) - v(t)\ast\cdot\vec E^L(t)    \\
+	R(t) = p(t)\ast A(t) - v(t)\ast\cdot\vec E^R(t)    \\
+
+Given that:
+Equation:
+	A(t) = \sum_a(H^L_a(t)) = \sum_a(H^R_a(t)) \\
+	\vec E^L(t) = \(\sum_a^N ({r_a}_x H_a^L(t)), \sum_a^N ({r_a}_y H_a^L(t)), \sum_a^N ({r_a}_z H_a^L) \)
+
+
+Where `\ast` is the convolution and `\ast\cdot` is the addition of the component by component convolutions.
+Similar to a dot product but instead of multiplying scalar components
+we are convolving function components.
+So that the later term can be also expressed in this way:
+
+Equation:
+        v(t)\ast\cdot\vec E^L(t) = \sum_i( v_i(t) \ast E_i^L(t) ) \\
+        v(t)\ast\cdot\vec E^R(t) = \sum_i( v_i(t) \ast E_i^R(t) ) \\
+
+This was just a remainder of previous exercise results.
+Now let's simplify the expression.
+Considering symmetry condition in equation \ref{TODO}
+we can express both `E_i^R(t)` and `E_i^L(t)`
+in terms of `H^L_a`.
+Equation:
+        E_u^R(t) = \sum_a(u_a * H^L_{-a}(t))
+
+By doing a simple independent variable exchange a'=-a
+Equation:
+        E_u^R(t) = \sum_a(u_{-a} * H^L_a(t))
+
+By considering Y axis being normal to the axial plane:
+Equation:
+        r_a = (x_a, y_a, z_a)  \Rightarrow  r_{-a} = (x_a, -y_a, z_a)
+
+So we get those equivalences:
+Equation:
+        E_x^R(t) = \sum_i(x_a * H^L_a(t)) = E_x^L(t)    \\
+        E_y^R(t) = \sum_i(-y_a * H^L_a(t)) = -E_y^L(t)  \\
+        E_z^R(t) = \sum_i(z_a * H^L_a(t)) = E_z^L(t)    \\
+
+And rewriting the original formulas as:
+Equation:
+        L = p(t) * A(t)
+                - v_x(t) * E_x^L(t)
+                - v_y(t) * E_y^L(t)
+                - v_z(t) * E_z^L(t)
+\\
+        R = p(t) * A(t)
+                - v_x(t) * E_x^L(t)
+                + v_y(t) * E_y^L(t)
+                - v_z(t) * E_z^L(t)
+
+As we saw previously, given an HRTF database,
+`E^L(t)` components and `A(t)` can be precomputed
+as the linear combination of the different HRTF's
+according to their source position.
+Symmetry saves the costs of pre-computing `E^H(t)` components.
+But pre-computation cost is not as critical as run-time cost.
+Run-time computational cost depends just on
+the additions and convolutions of the previous formula.
+Symmetry analysis generated common terms can be factorized in this way:
+Equation:
+        CentralComponent = p(t) * A(t) - v_x(t) * E_x^L(t) - v_z(t) * E_z^L(t) \\
+        LeftToRight = v_y(t) * E_y^L(t) \\
+        L = CentralComponent - LeftToRight \\
+        R = CentralComponent + LeftToRight \\
+
+Which computationally implies:
+* 4 convolutions and 4 additions for the 3D case
+* 3 convolutions and 3 additions for the 2D case
+
+Besides, the computational consequences,
+this factorization implies that ear difference is linear dependent
+just to the projection of the velocity over the axial plane normal
+and independent of any other velocity components.
+
+== Exercise 6 ==
+
+We have a law to convert a B format signal to N equiangular speaker exhibition.
+Equation:
+    c_a(t) = p(t) - \vec v (t) \cdot \hat r_a \\
+
+Having an HRFT `H_a^L` for left ear contribution of each speaker `a` at direction `\hat r_a`,
+the contribution of such speaker to the left ear is:
+Equation:
+    L_a(t) = c_a(t) * H_a^L (t) \\
+
+So, the overall contribution of every speaker is:
+Equation:
+    L(t) = \sum_a^N {L_a (t)} \\
+    L(t) = \sum_a^N { c_a(t) \ast H_a^L(t) } \\
+    L(t) = \sum_a^N { ( p(t) - \vec v (t) \cdot \hat r_a ) \ast H_a^L(t) } \\
+
+So we have a way to compute the stereo headphone equivalent of having an N-Surround system.
+But, this formulation implies performing N convolutions,
+4N vector adds and 3N vector point to point products) for each channel.
+Let's try to reformulate it.
+
+Equation:
+    L = \sum_a^N { (p(t) - \vec v(t) \cdot \hat r_a ) \ast H_a^L(t) } \\ 
+    L = \sum_a^N {p(t) \ast H_a^L(t)} - \sum_a^N{ (\vec v(t) \cdot \hat r_a) \ast H_a^L(t) } \\
+
+By taking the second term:
+Equation:
+    \sum_a^N{ (\vec v(t) \cdot \hat r_a) \ast H_a^L(t) }  = \\
+    = \sum_a^N{ \( \sum_{i=1}^3 ( v_i(t) {r_a}_i ) \) \ast H_a^L(t) }  = \\
+    = \sum_a^N{ \sum_{i=1}^3 ( v_i(t) {r_a}_i \ast H_a^L(t) ) }  = \\
+    = \sum_{i=1}^3{ \sum_a^N ( v_i(t) {r_a}_i \ast H_a^L(t) ) }  = \\
+    = \sum_{i=1}^3{ \sum_a^N v_i(t) \ast ( {r_a}_i H_a^L(t) ) }  = \\
+    = \sum_{i=1}^3 v_i(t) \ast \sum_a^N{  ( {r_a}_i H_a^L(t) ) } \\
+
+Let's define the `\ast\cdot` operator between two vector functions as the sum of the convolutions of each component.
+Equation:
+    \vec A(t) \ast\cdot \vec B(t) \equiv  \sum_{i=1}^3 A_i(t) \ast B_i(t)
+
+
+Equation:
+    L(t) = p(t) \ast \sum_a^N {H_a^L(t)} - \vec v(t)  \ast\cdot \sum_a^N{\hat r_a H_a^L(t)) } \\
+
+So we have that:
+Equation:
+    L = p \ast A_L - \vec v \ast\cdot \vec E_L
+
+Where `A` and `E_L` are defined as:
+Equation:
+    A_L =  \sum_a^N {H_a^L} \\
+    \vec E_L = \(\sum_a^N ({r_a}_x H_a^L), \sum_a^N ({r_a}_y H_a^L), \sum_a^N ({r_a}_z H_a^L) \) \\
+
+Which can be pre-computed given a HRTF set.
+
+Analogously, for the right channel:
+Equation:
+    R = p \ast A_R - \vec v \ast\cdot \vec E_R
+
+Where `E_R` is defined as:
+Equation:
+    A_R =  \sum_a^N {H_a^R} \\
+    \vec E_R = \(\sum_a^N ({r_a}_x H_a^R), \sum_a^N ({r_a}_y H_a^R), \sum_a^N ({r_a}_z H_a^R) \) \\
+
+So, we can compute the conversion with:
+* 8 convolutions and 6 function sums in 3D
+* 6 convolutions and 4 function sums in 2D
+
+Which is independent of the density of simulated speaker array.
+
+Because head symmetries, let's consider the following equivalence:
+Equation:
+    A_R =  \sum_a^N {H_a^R} = \sum_a^N {H_a^L} = A_L = A
+
+So we can reformulate as:
+Equation:
+    L = p \ast A - \vec v \ast\cdot \vec E_L
+    R = p \ast A - \vec v \ast\cdot \vec E_R
+
+So the computation of the convolution with `p` can be shared for both channels.
+So, we can compute the conversion with:
+* 7 convolutions and 6 function sums in 3D
+* 5 convolutions and 4 function sums in 2D
+
+== Exercise 5 ==
+
+Given N speakers placed equidistant to a center point `c` and equiangular among them,
+if each one reproduces this:
+`c_i = p - \vec v \hat {r_i} `
+where `\hat r` is an unitary vector from the center pointing to the speaker.
+Prove that at the center `p_c = N p` and `\vec v = \frac N 2 \vec v`
+
+Equation:
+    p_c = \sum_i{c_i} \\
+    p_c = \sum_i{p - \vec v \cdot \hat {r_i}} \\
+    p_c = N p - \sum_i{ \vec v \cdot \hat {r_i}} \\
+    p_c = N p - |\vec v| \sum_i{ \cos {\theta_i}} \\
+    p_c = N p - |\vec v| \sum_i{ \cos (\theta_0 + 2\pi \frac i N) } \\
+    p_c = N p - |\vec v| \sum_i\left( \cos\theta_0 \cos( 2\pi \frac i N) - \sin\theta_0 \sin( \2\pi \frac i N) \right) \\
+    p_c = N p - |\vec v| \sum_i{ \cos\theta_0 \cos(2\pi \frac i N) } \\
+    p_c = N p - |\vec v| \cos\theta_0 \sum_i{ \cos(2\pi \frac i N) } \\
+    p_c = N p - |\vec v| \cos\theta_0 \sum_i{ Re \{ e ^{2\pi j\frac i N } \} }\\
+    p_c = N p - |\vec v| \cos\theta_0 Re \{ \sum_i{ e ^{2\pi j\frac i N }} \}\\
+    p_c = N p - |\vec v| \cos\theta_0 Re \{ 0 \}\\
+    p_c = N p
+
+TODO: Why the sum of equiangular cos is zero when N is odd. 
+:TONI: Posar cdots
+
+Equation:
+    \vec v_c = \sum_i{ - \frac {c_i} {\rho c } \hat r_i } \\
+    \vec v_c = \sum_i{ - \frac {p - \vec v \cdot \hat{r_i}} {\rho c } \hat r_i } \\
+    \vec v_c = \sum_i{ -\frac {p} {\rho c } \hat r_i } + \sum_i{ \frac {\vec v \cdot \hat{r_i}} {\rho c } \hat r_i } \\
+    \vec v_c = \sum_i{ \frac {\vec v \cdot \hat{r_i}} {\rho c } \hat r_i } \\
+    \vec v_c = \sum_i{ \frac {|\vec v| \cos (\theta_0 + 2 \pi \frac i N)} {\rho c } \hat r_i } \\
+    \vec v_c = \frac {|\vec v|} {\rho c }  \sum_i{ \cos (\theta_0+ 2 \pi \frac i N ) \hat r_i } \\
+
+On the other side:
+Equation:
+    \sum_i{ \cos (\theta_0+ 2\pi \frac i N) \hat r_i } = \\
+    = \sum_i { \hat r_i \cos \theta_0 \cos 2\pi \frac i N} - \sum_i{ \hat r_i \sin \theta_0 \sin 2\pi \frac i N} = \\
+    = \cos \theta_0 \sum_i { \hat r_i \cos 2\pi \frac i N} - \sin \theta_0 \sum_i{ \hat r_i \sin 2\pi \frac i N} = \\
+    = \cos \theta_0 \sum_i (\cos^2 2\pi \frac i N, \sin 2\pi \frac i N \cos 2\pi \frac i N) 
+    - \sin \theta_0 \sum_i (\sin 2\pi \frac i N \cos 2\pi \frac i N, \sin^2 2\pi \frac i N) = \\
+    = \cos \theta_0 \sum_i (\cos^2 2\pi \frac i N, \frac 1 2 \sin 2\pi \frac {2i} N ) 
+    - \sin \theta_0 \sum_i (\frac 1 2 \sin 2\pi \frac {2i} N, \sin^2 2\pi \frac i N ) = \\
+    = \cos \theta_0 \sum_i (\cos^2 2\pi \frac i N, 0) 
+    - \sin \theta_0 \sum_i (0, \sin^2 2\pi \frac i N ) = \\
+
+So the question is what does `\sum_i^N \cos 2\pi \frac i N`
+and `\sum_i^N \sin 2\pi \frac i N` stand for.
+
+Equation:
+	\sum_i \cos^2 2\pi \frac i N - \sum_i \sin^2 2\pi \frac i N = \\
+	= \sum_i \cos 2\pi \frac {2i} N = 0
+	\sum_i \cos^2 2\pi \frac i N = \sum_i \sin^2 2\pi \frac i N \\
+
+Equation:
+	\sum_i \cos^2 2\pi \frac i N + \sum_i \sin^2 2\pi \frac i N = \\
+	= \sum_i \( \cos^2 2\pi \frac i N + \sin^2 2\pi \frac i N \) = \\
+	= \sum_i 1 = N \\
+	\\
+	sum_i \cos^2 2\pi \frac i N = \sum_i \sin^2 2\pi \frac i N = N/2
+
+So, following the previous formula:
+Equation:
+    \sum_i{ \cos (\theta_0+ 2\pi \frac i N) \hat r_i } =  \frac N 2 (\cos \theta_0, -\sin \theta_0 )
+
+Equation:
+	\vec v_c = \frac {|\vec v|} {\rho c } \frac N 2 ( \cos \theta_0, - \sin \theta_0)
+	\vec v_c = \frac  {N \vec v} {2 \rho c } 
+
+
+== Excercise 4 == 
+
+Given that `|\vec{k}| = 2 \pi \lambda` and `w = 2 \pi \nu`
+provided that `\lambda` is the wave longitude and `\nu` the frequency,
+and `\vec{k}` is a vector in the direction of the wave front,
+demonstrate that the following function satisfies the wave equation:
+Math:
+    p(x,y,z,t) = P_o e^{j\vec{k}\vec{r} - \omega t}
+
+The wave equation says that:
+Equation:
+    \frac{1}{c^2} \frac{\partial ^2 }{\partial t^2} p - \vec{\Delta} p = 0
+
+Equation:
+    \frac{\partial }{\partial t} p 
+    = \frac{\partial}{\partial t} P_o e^{j\vec{k}\vec{r} - \omega t} 
+    = -\omega P_o e^{j\vec{k}\vec{r} - \omega t} 
+    = -\omega p
+
+So,
+Equation:
+    \frac{1}{c^2} \frac{\partial ^2 }{\partial t^2} p 
+    = \frac{1}{c^2} \frac{\partial}{\partial t} \frac{\partial}{\partial t} p 
+    = \frac{-\omega}{c^2} \frac{\partial}{\partial t} p
+    = \frac{\omega^2}{c^2} p \\
+    \frac{1}{c^2} \frac{\partial ^2 }{\partial t^2} p  = \frac {4 \pi^2 \nu^2}{c^2} p
+
+While,
+Equation:
+    \vec{\Delta} p =
+    \vec{\nabla} ^2 p = \\
+    = (\frac{\partial^2}{\partial x^2} + \frac{\partial^2}{\partial y^2} + \frac{\partial^2}{\partial z^2} ) p = \\
+    = \frac{\partial^2}{\partial x^2} p + \frac{\partial^2}{\partial y^2} p + \frac{\partial^2}{\partial z^2} p = \\
+    = (k_x i \frac{\partial}{\partial x} p + k_y i \frac{\partial}{\partial x} p + k_z i \frac{\partial}{\partial x} p) \\
+    = i^2 (k_x^2 + k_y^2 + k_z^2) p = \\
+    = - \vec{k} \cdot \vec{k} p = \\
+    = - |\vec{k}|^2 p  = - 4 \pi^2 \lambda^2 p
+
+TODO: The sign should not be there!
+
+Provided that `\lambda = \frac{\nu}{c}`, both expressions are equivalent.
+
+
+
+

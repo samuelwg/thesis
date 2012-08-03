@@ -1,0 +1,285 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE KigDocument>
+<KigDocument axes="0" grid="0" CompatibilityVersion="0.7.0" Version="1.0" >
+ <CoordinateSystem>Euclidean</CoordinateSystem>
+ <Hierarchy>
+  <Data type="double" id="1" >0.467964</Data>
+  <Data type="string" id="2" >%1</Data>
+  <Data type="double" id="3" >-0.0954442</Data>
+  <Data type="double" id="4" >0.21718</Data>
+  <Data type="int" id="5" >0</Data>
+  <Data type="string" id="6" >%1</Data>
+  <Data type="int" id="7" >0</Data>
+  <Data type="double" id="8" >-0.065272</Data>
+  <Data type="string" id="9" >α</Data>
+  <Data type="string" id="10" >%1</Data>
+  <Data type="int" id="11" >1</Data>
+  <Data type="double" id="12" >1.70834</Data>
+  <Data type="string" id="13" >Speaker</Data>
+  <Data type="double" id="14" >-0.00687565</Data>
+  <Data type="int" id="15" >0</Data>
+  <Data type="int" id="16" >0</Data>
+  <Data type="int" id="17" >-1</Data>
+  <Data type="double" id="18" >-1.25416</Data>
+  <Data type="string" id="19" >Far ear</Data>
+  <Data type="string" id="20" >%1</Data>
+  <Data type="string" id="21" >%1</Data>
+  <Data type="double" id="22" >0.25</Data>
+  <Data type="string" id="23" >%1</Data>
+  <Data type="double" id="24" >-2.11014</Data>
+  <Data type="double" id="25" >3.0033</Data>
+  <Data type="string" id="26" >R</Data>
+  <Data type="int" id="27" >0</Data>
+  <Data type="double" id="28" >1.19207</Data>
+  <Data type="double" id="29" >1.09444</Data>
+  <Data type="string" id="30" >r</Data>
+  <Data type="int" id="31" >0</Data>
+  <Data type="double" id="32" >0.150735</Data>
+  <Data type="double" id="33" >0.345878</Data>
+  <Data type="double" id="34" >0.0244729</Data>
+  <Object type="FixedPoint" id="35" >
+   <Parent id="34" />
+   <Parent id="14" />
+  </Object>
+  <Data type="string" id="36" >control</Data>
+  <Data type="double" id="37" >0.0244729</Data>
+  <Object type="FixedPoint" id="38" >
+   <Parent id="37" />
+   <Parent id="25" />
+  </Object>
+  <Object type="CircleBCP" id="39" >
+   <Parent id="35" />
+   <Parent id="38" />
+  </Object>
+  <Object type="LineAB" id="40" >
+   <Parent id="38" />
+   <Parent id="35" />
+  </Object>
+  <Object type="ConstrainedPoint" id="41" >
+   <Parent id="32" />
+   <Parent id="40" />
+  </Object>
+  <Object type="CircleBCP" id="42" >
+   <Parent id="35" />
+   <Parent id="41" />
+  </Object>
+  <Object type="ConstrainedPoint" id="43" >
+   <Parent id="33" />
+   <Parent id="42" />
+  </Object>
+  <Object type="TangentConic" id="44" >
+   <Parent id="39" />
+   <Parent id="43" />
+  </Object>
+  <Object type="TangentConic" id="45" >
+   <Parent id="39" />
+   <Parent id="43" />
+  </Object>
+  <Object type="TangentConic" id="46" >
+   <Parent id="39" />
+   <Parent id="43" />
+  </Object>
+  <Object type="TangentConic" id="47" >
+   <Parent id="39" />
+   <Parent id="43" />
+  </Object>
+  <Object type="TangentConic" id="48" >
+   <Parent id="39" />
+   <Parent id="43" />
+  </Object>
+  <Object type="TangentConic" id="49" >
+   <Parent id="39" />
+   <Parent id="43" />
+  </Object>
+  <Object type="TangentConic" id="50" >
+   <Parent id="39" />
+   <Parent id="43" />
+  </Object>
+  <Object type="TangentConic" id="51" >
+   <Parent id="39" />
+   <Parent id="43" />
+  </Object>
+  <Object type="SegmentAB" id="52" >
+   <Parent id="35" />
+   <Parent id="43" />
+  </Object>
+  <Object type="LinePerpend" id="53" >
+   <Parent id="40" />
+   <Parent id="35" />
+  </Object>
+  <Object type="ConicLineIntersection" id="54" >
+   <Parent id="39" />
+   <Parent id="53" />
+   <Parent id="17" />
+  </Object>
+  <Object type="RelativePoint" id="55" >
+   <Parent id="4" />
+   <Parent id="3" />
+   <Parent id="54" />
+  </Object>
+  <Object type="ConstrainedPoint" id="56" >
+   <Parent id="22" />
+   <Parent id="53" />
+  </Object>
+  <Object type="RelativePoint" id="57" >
+   <Parent id="24" />
+   <Parent id="8" />
+   <Parent id="56" />
+  </Object>
+  <Object type="Label" id="58" >
+   <Parent id="31" />
+   <Parent id="57" />
+   <Parent id="10" />
+   <Parent id="19" />
+  </Object>
+  <Data type="double" id="59" >0.887094</Data>
+  <Object type="ConstrainedPoint" id="60" >
+   <Parent id="59" />
+   <Parent id="53" />
+  </Object>
+  <Data type="double" id="61" >0.767507</Data>
+  <Data type="double" id="62" >0</Data>
+  <Data type="double" id="63" >0.302953</Data>
+  <Object type="ConstrainedPoint" id="64" >
+   <Parent id="63" />
+   <Parent id="52" />
+  </Object>
+  <Object type="LinePerpend" id="65" >
+   <Parent id="52" />
+   <Parent id="64" />
+  </Object>
+  <Object type="ConicLineIntersection" id="66" >
+   <Parent id="42" />
+   <Parent id="65" />
+   <Parent id="11" />
+  </Object>
+  <Object type="Angle" id="67" >
+   <Parent id="60" />
+   <Parent id="35" />
+   <Parent id="66" />
+  </Object>
+  <Object type="RelativePoint" id="68" >
+   <Parent id="12" />
+   <Parent id="29" />
+   <Parent id="67" />
+  </Object>
+  <Object type="Label" id="69" >
+   <Parent id="27" />
+   <Parent id="68" />
+   <Parent id="20" />
+   <Parent id="9" />
+  </Object>
+  <Object type="LineAB" id="70" >
+   <Parent id="35" />
+   <Parent id="66" />
+  </Object>
+  <Object type="SegmentAB" id="71" >
+   <Parent id="66" />
+   <Parent id="64" />
+  </Object>
+  <Object type="ConstrainedPoint" id="72" >
+   <Parent id="62" />
+   <Parent id="71" />
+  </Object>
+  <Object type="SegmentAB" id="73" >
+   <Parent id="72" />
+   <Parent id="54" />
+  </Object>
+  <Object type="SegmentAB" id="74" >
+   <Parent id="35" />
+   <Parent id="66" />
+  </Object>
+  <Object type="ConstrainedPoint" id="75" >
+   <Parent id="1" />
+   <Parent id="74" />
+  </Object>
+  <Object type="Label" id="76" >
+   <Parent id="7" />
+   <Parent id="75" />
+   <Parent id="2" />
+   <Parent id="30" />
+  </Object>
+  <Object type="RelativePoint" id="77" >
+   <Parent id="18" />
+   <Parent id="28" />
+   <Parent id="66" />
+  </Object>
+  <Object type="Label" id="78" >
+   <Parent id="15" />
+   <Parent id="77" />
+   <Parent id="21" />
+   <Parent id="13" />
+  </Object>
+  <Object type="SegmentAB" id="79" >
+   <Parent id="35" />
+   <Parent id="64" />
+  </Object>
+  <Object type="ConstrainedPoint" id="80" >
+   <Parent id="61" />
+   <Parent id="79" />
+  </Object>
+  <Object type="Label" id="81" >
+   <Parent id="16" />
+   <Parent id="80" />
+   <Parent id="23" />
+   <Parent id="26" />
+  </Object>
+  <Object type="Angle" id="82" >
+   <Parent id="64" />
+   <Parent id="35" />
+   <Parent id="56" />
+  </Object>
+  <Object type="ArcBCPA" id="83" >
+   <Parent id="35" />
+   <Parent id="64" />
+   <Parent id="82" />
+  </Object>
+  <Data type="string" id="84" >Near ear</Data>
+  <Object type="Label" id="85" >
+   <Parent id="5" />
+   <Parent id="55" />
+   <Parent id="6" />
+   <Parent id="84" />
+  </Object>
+ </Hierarchy>
+ <View>
+  <Draw width="-1" namecalcer="none" point-style="Round" shown="true" style="SolidLine" color="#0000ff" font="DejaVu Sans,11,-1,5,50,0,0,0,0,0" object="76" />
+  <Draw width="3" namecalcer="none" point-style="Round" shown="true" style="SolidLine" color="#000000" font="DejaVu Sans,11,-1,5,50,0,0,0,0,0" object="73" />
+  <Draw width="-1" namecalcer="none" point-style="Round" shown="true" style="SolidLine" color="#800000" font="DejaVu Sans,11,-1,5,50,0,0,0,0,0" object="58" />
+  <Draw width="-1" namecalcer="none" point-style="Round" shown="true" style="SolidLine" color="#a0a0a4" font="DejaVu Sans,11,-1,5,50,0,0,0,0,0" object="40" />
+  <Draw width="-1" namecalcer="none" point-style="Round" shown="true" style="SolidLine" color="#800000" font="DejaVu Sans,11,-1,5,50,0,0,0,0,0" object="78" />
+  <Draw width="-1" namecalcer="none" point-style="Round" shown="true" style="SolidLine" color="#000000" font="DejaVu Sans,11,-1,5,50,0,0,0,0,0" object="39" />
+  <Draw width="-1" namecalcer="none" point-style="Round" shown="true" style="SolidLine" color="#000000" font="DejaVu Sans,11,-1,5,50,0,0,0,0,0" object="47" />
+  <Draw width="-1" namecalcer="36" point-style="Round" shown="false" style="SolidLine" color="#ff0000" font="DejaVu Sans,11,-1,5,50,0,0,0,0,0" object="52" />
+  <Draw width="-1" namecalcer="none" point-style="Round" shown="false" style="SolidLine" color="#000000" font="DejaVu Sans,11,-1,5,50,0,0,0,0,0" object="82" />
+  <Draw width="-1" namecalcer="none" point-style="Round" shown="true" style="SolidLine" color="#000000" font="DejaVu Sans,11,-1,5,50,0,0,0,0,0" object="51" />
+  <Draw width="-1" namecalcer="26" point-style="Round" shown="true" style="SolidLine" color="#000000" font="DejaVu Sans,11,-1,5,50,0,0,0,0,0" object="79" />
+  <Draw width="-1" namecalcer="19" point-style="Round" shown="true" style="SolidLine" color="#000000" font="DejaVu Sans,11,-1,5,50,0,0,0,0,0" object="56" />
+  <Draw width="-1" namecalcer="none" point-style="Round" shown="true" style="SolidLine" color="#000000" font="DejaVu Sans,11,-1,5,50,0,0,0,0,0" object="50" />
+  <Draw width="-1" namecalcer="none" point-style="Round" shown="true" style="SolidLine" color="#800000" font="DejaVu Sans,11,-1,5,50,0,0,0,0,0" object="69" />
+  <Draw width="-1" namecalcer="13" point-style="Round" shown="true" style="SolidLine" color="#000000" font="DejaVu Sans,11,-1,5,50,0,0,0,0,0" object="66" />
+  <Draw width="-1" namecalcer="none" point-style="Round" shown="true" style="SolidLine" color="#800000" font="DejaVu Sans,11,-1,5,50,0,0,0,0,0" object="81" />
+  <Draw width="-1" namecalcer="none" point-style="Round" shown="true" style="SolidLine" color="#000000" font="DejaVu Sans,11,-1,5,50,0,0,0,0,0" object="48" />
+  <Draw width="-1" namecalcer="9" point-style="Round" shown="true" style="SolidLine" color="#000000" font="DejaVu Sans,11,-1,5,50,0,0,0,0,0" object="67" />
+  <Draw width="-1" namecalcer="30" point-style="Round" shown="true" style="SolidLine" color="#000000" font="DejaVu Sans,11,-1,5,50,0,0,0,0,0" object="74" />
+  <Draw width="-1" namecalcer="none" point-style="Round" shown="true" style="SolidLine" color="#a0a0a4" font="DejaVu Sans,11,-1,5,50,0,0,0,0,0" object="53" />
+  <Draw width="-1" namecalcer="none" point-style="Round" shown="false" style="SolidLine" color="#000000" font="DejaVu Sans,11,-1,5,50,0,0,0,0,0" object="41" />
+  <Draw width="-1" namecalcer="none" point-style="Round" shown="true" style="SolidLine" color="#000000" font="DejaVu Sans,11,-1,5,50,0,0,0,0,0" object="64" />
+  <Draw width="-1" namecalcer="none" point-style="Round" shown="false" style="SolidLine" color="#000000" font="DejaVu Sans,11,-1,5,50,0,0,0,0,0" object="38" />
+  <Draw width="-1" namecalcer="none" point-style="Round" shown="true" style="SolidLine" color="#000000" font="DejaVu Sans,11,-1,5,50,0,0,0,0,0" object="35" />
+  <Draw width="-1" namecalcer="none" point-style="Round" shown="true" style="SolidLine" color="#000000" font="DejaVu Sans,11,-1,5,50,0,0,0,0,0" object="44" />
+  <Draw width="3" namecalcer="none" point-style="Round" shown="true" style="SolidLine" color="#000000" font="DejaVu Sans,11,-1,5,50,0,0,0,0,0" object="71" />
+  <Draw width="-1" namecalcer="none" point-style="Round" shown="false" style="SolidLine" color="#000000" font="DejaVu Sans,11,-1,5,50,0,0,0,0,0" object="43" />
+  <Draw width="3" namecalcer="none" point-style="Round" shown="true" style="SolidLine" color="#000000" font="DejaVu Sans,11,-1,5,50,0,0,0,0,0" object="83" />
+  <Draw width="-1" namecalcer="none" point-style="Round" shown="false" style="SolidLine" color="#000000" font="DejaVu Sans,11,-1,5,50,0,0,0,0,0" object="60" />
+  <Draw width="-1" namecalcer="none" point-style="Round" shown="true" style="SolidLine" color="#000000" font="DejaVu Sans,11,-1,5,50,0,0,0,0,0" object="65" />
+  <Draw width="-1" namecalcer="none" point-style="Round" shown="false" style="SolidLine" color="#000000" font="DejaVu Sans,11,-1,5,50,0,0,0,0,0" object="70" />
+  <Draw width="-1" namecalcer="none" point-style="Round" shown="true" style="SolidLine" color="#000000" font="DejaVu Sans,11,-1,5,50,0,0,0,0,0" object="49" />
+  <Draw width="-1" namecalcer="none" point-style="Round" shown="true" style="SolidLine" color="#000000" font="DejaVu Sans,11,-1,5,50,0,0,0,0,0" object="46" />
+  <Draw width="-1" namecalcer="none" point-style="Round" shown="true" style="SolidLine" color="#000000" font="DejaVu Sans,11,-1,5,50,0,0,0,0,0" object="45" />
+  <Draw width="-1" namecalcer="none" point-style="Round" shown="true" style="DotLine" color="#000000" font="DejaVu Sans,11,-1,5,50,0,0,0,0,0" object="42" />
+  <Draw width="-1" namecalcer="none" point-style="Round" shown="true" style="SolidLine" color="#0000ff" font="DejaVu Sans,11,-1,5,50,0,0,0,0,0" object="72" />
+  <Draw width="-1" namecalcer="84" point-style="Round" shown="true" style="SolidLine" color="#000000" font="DejaVu Sans,11,-1,5,50,0,0,0,0,0" object="54" />
+  <Draw width="-1" namecalcer="none" point-style="Round" shown="true" style="SolidLine" color="#800000" font="DejaVu Sans,11,-1,5,50,0,0,0,0,0" object="85" />
+ </View>
+</KigDocument>

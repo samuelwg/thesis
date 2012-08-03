@@ -1,0 +1,108 @@
+﻿
+=== HRTF spherical harmonics in 3D layouts ===
+
+The computation of the filters for 3D arrays of loudspeakers proceeds parallel to the previous
+computation for 2D arrays. Using the projection equation \bref{projection} and
+modelling the HRTF field with the delay corresponding to a spherical head, the HRTF spherical
+components are derived from
+\bea
+\label{d3-generic}
+H_{l,m,\s}(t) = {1 \over 4\pi} \int_{S^2} d\Omega \, Y_{l,m,\s}(a,e) \delta(t-\tau_{arr}(\phi(a,e))) \,.
+%\int_0^{2\pi} \, da \espai \rightarrow \espai {1\over 4\pi} \int_{S^2} d\Omega \,.
+\eea
+Due to the complexity added by the more complicated dependency of the spherical harmonics in 3D, it
+is convenient to evaluate these integrals in a different coordinate system. 
+Rather than using the standard azimuth-elevation angles (depicted in figure \ref{fig:ambisonicsConvention}), let us define a new
+coordinate system obtained after a rotation of $-90$ degrees about the
+$x$-axis, as shown in fig.~\ref{fig:convenienceCoordinatesFor3dAnalytic}.
+In the new system, we shall define azimuth and elevation coordinates,
+labeled $(\ta,\te)$ respectively, in a standard way with respect to new axes $\{\tilde{X},\tilde{Y},\tilde{Z}\}$,
+{\em i.e.}:
+\bea
+\tilde{X} = \cos \te \cos \ta \sac
+\tilde{Y} = \cos \te \sin \ta \sac
+\tilde{Z} = \sin \te  \,.
+\eea
+
+Figure: fig:convenienceCoordinatesFor3dAnalytic figures/convenienceCoordinatesFor3dAnalytic
+Rotated coordinate system that defines new angles $(\ta,\te)$, in terms of which the calculations for 3D arrays simplify.
+
+
+The virtue of the new system is that in terms of these coordinates,  $\phi = \te + \pi/2$; in other words, 
+the angle between the left ear and a given loudspeaker at position $(\ta,\te)$ does not depend on its
+azimuth $\ta$. Thus, using the following factorization of the spherical harmonics,
+\bea
+Y_{l,m,\s}(\ta,\te) &=& \sqrt{2l+1} \tilde{P}_{l m}(\sin \te)\, y_{m,\s}(\ta) \sac
+\nn
+y_{m,\s}(\ta) &=& \cos(m \ta)  \sac \mbox{if } \s=+ \sac
+\nn
+y_{m,\s}(\ta) &=& \sin(m \ta) \sac \mbox{if } \s=- \mbox{ and } m \ge 1 \sac
+\eea
+where $\tilde{P}_{l m}$ is the Schmidt semi-normalized associated Legendre polynomial of degree $l$ and order $m$,
+the integral about the azimuth angle in \bref{d3-generic} factorizes:
+\bea
+\label{eq:component3dIntegral}
+H_{l,m,\s}(t) &=&
+{ \sqrt{2l+1} \over 4\pi}
+\int_0^{2\pi} \, d\ta \, y_{m,\s}(\ta) 
+\int_{-\pi/2}^{\pi/2} d\te \cos\te \, \tilde{P}_{l m}(\sin \te)
+\,  \delta(t-\tau_{arr}(\te + \pi/2))
+\nn
+&=& {\sqrt{2l+1} \over 2} \delta_{m,0} \, \delta_{\s,+}  \int_{-\pi/2}^{\pi/2}  d\te \cos\te \, \tilde{P}_{l m}(\sin \te)\,  \delta(t-\tau_{arr}(\te + \pi/2))
+\,.
+\eea
+All spherical harmonic components vanish except those with $m=0$ and
+the remaining integral can be computed analytically,
+\bea
+H_{l,0,+}(t) &=& 
+{ \sqrt{2l+1}  \over 2 t_0}
+\left[ P_l \left( {t \over t_0} \right) \u(t+t_0) \u(-t) +
+\cos  \left( {t \over t_0} \right)   P_l \left( \sin\left[{t \over t_0} \right] \right) \u(t) \u(\frac \pi 2 t_0 -t)
+\right] \,.
+\label{eq:spherical_3d}
+\nn
+\eea
+
+As in 2D, the frequency domain expressions can also be obtained analytically
+(see appendix \ref{ap:Components3DFrequency}).
+Figure \ref{fig:analyticalComponents3D} shows the amplitude
+of the first five non-zero HRTF components. 
+The spectral shape shares similarities with the 2D counterparts,
+including the predominant peak spaced $1/t_0$ from one order to the next.
+High frequency decay is 6dB per octave, as it can be derived from the analytic result,
+so it is more pronunciated than in 2D components.
+
+Figure: fig:analyticalComponents3D figures/analyticalComponents3D fullWidth
+Spherical harmonics components $\tilde{H}_{l,0,+}$ of the HRTF field in 3D, for a spherical head of radius 8.8 cm.
+
+There is another important result that can be derived from the exact formula~\bref{eq:spherical_3d}: the fact
+that each order is affected by only one filter.
+Alhough this is manifest in the modified coordinate system $(\ta,\te)$, which leads to 
+one single non-zero HRTF component for each order $l$,
+the same holds true in all Cartesian coordinate systems.
+The reason is that the spherical harmonic functions
+furnish irreducible representations of the rotation group $SO(3)$.
+This implies that, 
+when obtaining a new set of coordinates by rotating the Cartesian frame, 
+the HRTF spherical components combine among themselves in a very particular manner:
+for a given order $l$, the HRTF components in the new frame are linear combinations 
+of old HRTF components {\em with the same $l$}.
+The coefficients of the linear combinations depend on the angles $\alpha_i$ of the specific rotation.
+Therefore, it can be concluded that HRTF components in any frame can be written as
+\be
+H^{new}_{l,m,\sigma} (t) = k_{l,m,\sigma}(\alpha_i)  \,\, H_{l,0,+} (t) \,,
+\ee
+where $k_{l,m,\sigma}(\alpha_i)$ are constants, and $H_{l,0,+} (t)$ is given by eq.\bref{eq:spherical_3d}.
+This result simplifies significantly the expression for final binaural signals~\bref{equivalent-formula}:
+\bea
+c^{L/R} &=&  
+\sum_{l=0}^{l_{max}}  H_{l,0,+} (t) \, * \, 
+\left[
+g_l \sum_{m,\sigma} k_{l,m,\sigma}(\alpha_i) \, A_{l,m,\s}(t) 
+\right] \,,
+\label{eq:one_hrtf_to_rule_them_all}
+\eea
+which shows that all Ambisonics components in a given order $l$ are affected by one single filter when converting to binaural.
+This fact can be useful to design viable strategies to compensate for the excess of filtering, as discussed in the conclusions.
+
+

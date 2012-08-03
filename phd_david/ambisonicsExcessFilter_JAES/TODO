@@ -1,0 +1,27 @@
+References:
+	MinimumPhaseHilbert cuando invertir filtro
+	Daniel_WFSvsAmbisonics para formulas ambisonics, decodings, estimacion de error
+	Noisternig_binauralAmbisonics ambisonics to binaural
+	Brown_SphereHrtfs simulacion hrtf con esferas
+	solvang2008_SpectralImpairment2DHOA: frequency dependant decoding, error localizacion objetivo
+	
+
+- Appendix g_n coefficients for different decodings taken from Daniel 185
+- 3D
+	+ Revisar que los harmonicos esfericos 3D python sean correctos
+	+ Implementar los encodings 3D de Daniel
+	+ Hipotesis: 
+		el patron esferico de ganancias para el decoding 3D de una onda plana 
+		en orden N es una misma figura orientada en la direccion de la onda.
+	+ Grafica del patron
+	+ Simulacion 3D
+	+ Grafiques pels components esferics independents
+	- Decidir quines grafiques son interesants i separar-les en diferents scripts
++ Grafiques depenent de la orientacio 2D
++ Grafiques depenent de la orientacio 3D
+- La normalitzacio dels ordres en 3D no esta gens clara (sembla que depen del decoding pero com?)
+- La normalitzacio dels diagrama polar 3D, sembla que ha de ser diferent de la del filtre (normalitza per altes)
+- Orientacio en 3D: cal compensar per la circumferencia de cada anella pero com? Surt extrany si multipliquem per cos(a)
+
+
+

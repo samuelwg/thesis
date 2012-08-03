@@ -1,0 +1,15 @@
+import os
+
+env = Environment(ENV=os.environ)
+env.ParseConfig('PKG_CONFIG_PATH=/home/david.garcia/CajitasDeArena/local/lib/pkgconfig pkg-config --libs --cflags libfreenect opencv')
+env.AppendUnique(
+CPPPATH=[
+	'/home/david.garcia/CajitasDeArena/local/include/',
+	],
+LIBS=[
+	'pthread',
+	],
+)
+
+env.Program("opencv_freenect", Glob("*.cxx"))
+

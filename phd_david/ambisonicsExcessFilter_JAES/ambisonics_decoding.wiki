@@ -1,0 +1,164 @@
+﻿== Formalism of Ambisonics to binaural conversion ==
+\label{sec:ambisonics}
+
+This section briefly reviews the aspects of Ambisonics coding and decoding relevant to this paper,
+and then formalizes the existing decoding techniques to binaural, 
+by introducing the concept of HRTF field, 
+and its corresponding spherical harmonics expansion.
+
+=== Ambisonics decoding=== 
+
+For the sake of simplicity, only regular layouts are considered, {\it i.e.}
+a set of \nspeakers\ loudspeakers regularly inscribed on a sphere. 
+The symmetry of the array simplifies the decoding by reducing the number of independent coefficients.
+For example, for a first order decoder to a regular 3D layout, the most general linear decoding formula @cite:Daniel_Phd is
+\be
+\label{first_order_decoding}
+c_i = g_0 W + g_1 \left[  X \cos e_i \cos a_i + Y \cos e_i \sin a_i + Z \sin e_i \right]  \sac i=1,...,N_L \,,
+\ee
+where $c_i$ is the signal to be sent to channel $i$,
+$(a_i,e_i)$ are the azimuth and elevation of each loudspeaker, in the coordinate system shown in figure~\ref{fig:ambisonicsConvention};
+and $g_0, g_1$ are the gains for the zeroth and first order components $\{W,X,Y,Z\}$.
+
+Figure: fig:ambisonicsConvention figures/ambisonicsConvention
+Definition of the spherical coordinates used in this paper, related to the head reference frame.
+
+
+Similarly, the most general order $l_{max}$ Ambisionics linear decoding formula to 3D regular layouts is 
+\be
+\label{generic_decoding}
+c_i = \sum_{l=0}^{l_{max}} g_l \sum_{m=0}^l \sum_{\s=\pm} A_{l,m,\s} Y_{l,m,\s} (a_i,e_i)   \sac i=1,...,N_L \,,
+\ee
+where $A_{l,m,\s}$ is the Ambisonics $(l,m,\s)$-channel, and $Y_{l,m,\s} (a,e)$ the spherical harmonics.
+Note that regularity of the layout forces the gains $g_l$ ($l = 0,....,l_{max}$) to depend only
+on the order $l$, but not on $m$ nor $\s$. 
+
+The choice of the gains $g_l$  depends on the physical and psychoacoustic criterion chosen @cite:daniel1998ambisonics. 
+Some of the most popular choices are:
+{\it max-$r_V$}, which optimizes for low-frequencies;
+{\it max-$r_E$}, which optimizes for high-frequencies; and 
+{\it in-phase}, which attempts to avoid sending out-of-phase signals to the loudspeakers and maximizing the listening area.
+The coefficients derivable from these criteria can be found, for example, in \protect\cite{Daniel_Phd_decodingTable}.
+
+
+=== Ambisonics to binaural: the HRTF field ===
+
+This section briefly reviews the standard conversion of Ambisonics to binaural signals,
+also described in @cite:Wiggins_Phd,Noisternig_binauralAmbisonics,
+and introduces a formalism to organise the conversion that will be very convenient in the next sections.
+The organisation follows from the fact that
+HRTF's are impulse response functions typically evaluated over a sphere about the
+listener's head, for fixed listerner's head position. 
+Therefore, the time domain HRTFs can be thought as a field defined on
+\bea
+\calr \times \cals^2 & \rightarrow &  \calr \nn
+t  \times  a,e & \rightarrow &  H(t,a,e) \,,
+\eea
+where $t$ is the time coordinate, and $(a,e)$ are the azimuth and elevation coordinates that parameterise the sphere.
+As any function defined on $\cals^2$, the angular dependence of the HRTF field can be expanded
+in spherical harmonics @cite:Zhang2009_ModalExpansionHrtf,
+\bea
+H(t,a,e) &=& \sum_{l=0}^{\infty} \sum_{m=0}^l \sum_{\s = \pm}
+H_{l,m,\sigma} (t)  Y_{l,m,\sigma}(a,e) \,.
+\eea
+Here, $H_{l,m,\sigma} (t)$ are the time-dependent {\it spherical harmonic components of the HRTF field}, $H(t,a,e)$. 
+Conversely, the HRTF spherical components can be easily extracted out of the HRTF field via a standard
+projection formula:
+\bea
+H_{l,m,\sigma} (t) &=& {1\over 4\pi} \int d\Omega \, \, H(t,a,e) \,   Y_{l,m,\sigma}(a,e) \,,
+\label{projection}
+\eea
+where $d\Omega = \cos e \, {\rm d}a {\rm d}e$ is the differential solid angle on the unit sphere.
+
+Having a continuous density of source positions is an ideal case that
+will enable the attainment of analytical expressions
+without losing of the essential properties, as shown in section \ref{sec:realistic_conditions},
+For discrete layouts, consisting of regularly placed loudspeakers, 
+all integrals over the sphere should be replaced by discrete sums:
+\be
+\label{discretization}
+{1 \over 4\pi} \int d\Omega \, \, f(a,e)  \,\, \rightarrow \,\, {1\over N_L}\, \sum_{i=1}^{N_L} \, \,  f(a_i,e_i) \,.
+\ee
+
+
+We shall now prove that the binaural conversion of an Ambisonics signal
+containing a set of $(l,m,\s)$ components
+only requires knowledge of the corresponding $(l,m,\s)$ components of the HRTF field. 
+Ambisonics to binaural conversion@cite:Noisternig_binauralAmbisonics is
+typically done by first decoding to a given loudspeaker layout,
+and then by convolving each channel with the corresponding HRTF measured at the loudspeaker position
+(figure ~\ref{fig:ambisonics2BinauralDiagram}). 
+
+Figure: fig:ambisonics2BinauralDiagram figures/ambisonics2BinauralDiagram
+A standard two-steps Ambisonics to binaural decoder.
+
+The resulting left/right channels $c^{L/R}$ can be expressed as:  
+\bea
+c^{L/R}(t) &=& {1 \over 4\pi} \int d\Omega \,\,\,  c(t,a,e) * H^{L/R}(t,a, e) \,.
+\label{amb2bin}
+\eea
+Here, $c(t,a,e)$ is the decoded signal for the loudspeaker at azimuth $a$ and elevation $e$, and
+$H^{L/R}(t,a,e)$ are the left/right ear HRTF fields evaluated at the same position. 
+
+\ignore{\footnote{Under the assumption of a left-right symmetric head, 
+$H^R(t,a, e) = H^L(t,-a, e)$,
+equations can be further simplified considering just one of the ears.
+Because the symmetry properties of the spherical harmonics:
+$H_{l,m,\s}^R(t,a,e)=\s H_{l,m,\s}^L(t,a,e)$, so,
+spherical harmonics components with $\s=+1$ are the same 
+for left and right ears 
+while components with $\s=-1$ just invert the sign.}}
+
+Substituting \bref{generic_decoding} into \bref{amb2bin},
+and using linearity of the convolution operation, leads to:
+\bea
+c^{L/R}(t) &=& 
+{1 \over 4\pi} \int d\Omega \,
+\left[ \sum_{l=0}^{l_{max}} g_l \sum_{m=0}^l \sum_{\s=\pm} A_{l,m,\s} (t) Y_{l,m,\s} (a,e) \right] * H^{L/R}(t,a, e) \nn
+&=& 
+\sum_{l=0}^{l_{max}} g_l \sum_{m=0}^l \sum_{\s=\pm} A_{l,m,\s}(t) *
+\left[  {1 \over 4\pi} \int d\Omega \,
+Y_{l,m,\s} (a,e)  H^{L/R}(t,a, e) \right]  \nn
+&=& 
+\sum_{l=0}^{l_{max}} g_l \sum_{m=0}^l \sum_{\s=\pm} A_{l,m,\s}(t) *
+H_{l,m,\sigma}^{L/R} (t) \,,
+\label{equivalent-formula}
+\eea
+where the last equality follows from \bref{projection}.
+
+The final expression \bref{equivalent-formula} is the main result of this formalism,
+generalizes first order expression obtained in @cite:Wiggins_Phd
+and it provides a simple way of understanding the Ambisonics to binaural conversion: 
+simply convolve each of the Ambisonics channel with the corresponding spherical harmonic 
+component of the HRTF field, and add up all the resulting convolutions weighted with the 
+gains $g_l$ of the chosen psychoacoustic criterion.
+
+Besides, equation \bref{equivalent-formula} facilitates the study of the filtering
+due to the effect of the head, via Fourier Transform of the HRTF spherical harmonic components. 
+Section \ref{sec:analytic} derives exact analytic expressions
+for these components under certain approximations.
+
+
+
+
+\subsubsection*{Example: First order expressions.}
+
+Before moving on, it might be clarifying to first consider the application of the above discussion to 
+the binaural conversion of first-order Ambisonics. In such case, the four B-format channels are
+\be
+W = A_{0,0,+} \sac X = A_{1,1,+} \sac Y = A_{1,1,-} \sac Z = A_{1,0,+} \,.
+\ee 
+Similarly, the only relevant spherical harmonics components of the HRTF field are
+\bea
+H_W^{L/R} &=& H_{0,0,+}^{L/R}  \,=\, {1 \over 4\pi} \int d\Omega \, H^{L/R}(a, e) \,,\nn
+H_X^{L/R} &=& H_{1,1,+}^{L/R}  \,=\, {1 \over 4\pi} \int d\Omega \, H^{L/R}(a, e) \cos e \cos a  \,, \nn
+H_Y^{L/R} &=& H_{1,1,-}^{L/R}  \,=\, {1 \over 4\pi} \int d\Omega \, H^{L/R}(a, e) \cos e \sin a  \,, \nn
+H_Z^{L/R} &=& H_{1,0,+}^{L/R}  \,=\, {1 \over 4\pi} \int d\Omega \, H^{L/R}(a, e) \sin e  \,.
+\label{first-order}
+\eea
+Finally, the Ambisonics to binaural conversion equations are simply:
+\bea
+c^{L/R} &=& g_0 W*H_W^{L/R} + g_1 \left[ X * H_X^{L/R} +  Y * H_Y^{L/R} + Z * H_Z^{L/R} \right] \,.
+\eea
+
+

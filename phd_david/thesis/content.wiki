@@ -1,0 +1,67 @@
+
+\chapter{Introduction}
+
+\section{Context and purpose}
+\section{Contributions}
+
+ TODO: This is a bare compilation as i recall them
+* Analytic expressions for 2d and 3d HRTF S.H. components
+* Applied to the problem of binaural ambisonics decoding excess filtering
+* Demonstrated why it sound that bad
+* Compared analytical expresions with meassured ones
+* TODO: Besides the filtering, objective cues remain
+* TODO: Compensation strategy `H_0^{-1}`
+* TODO: Subjective tests: Compensation strategy removes cues?
+* TODO: Subjective tests: Quality among plain binaural, uncompensated, and compensated
+* TODO: Subjective tests: Does it sounds better vs. direct binaural
+
+
+\section{Structure of the thesis}
+
+
+\chapter{State of the art}
+
+\section{Head difraction and binaural sound}
+
+* Binaural localization cues
+* Simplistic models: sphere, snowball...
+* 
+
+\section{Ambisonics}
+
+* Spherical harmonics
+* Encoding and decoding
+* Different formalisms compared
+* Truncation error bounds
+* Effect of angular sampling
+
+
+\section{Other}
+
+* Continuous speaker synthesis
+* HTRF interpolation using SH
+
+
+\chapter{Excess filter in Ambisonic to binaural conversion}
+
+%\section{Analytical expresions for the hrtf SH}
+\input{head_delay}
+\input{components2d}
+\input{components3d}
+
+\section{Excess filter for Ambisonics}
+\section{Dropping idealizations}
+\section{Effect on objective localization cues}
+
+\chapter{Compensation strategies}
+
+
+\chapter{User tests}
+\section{Sound quality}
+\section{Localization error}
+
+\chapter{Conclusions}
+
+
+
+

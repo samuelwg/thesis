@@ -1,0 +1,211 @@
+
+H(@): Head filter
+H_ml = |d@ Y_ml(@)*H(@)
+
+Si hi ha simetria axial en y En l'eix de coordenades amb la z al y
+H'(@) = H(rotx90(@))
+rotx90=
+	1 0 0  1 0 0  1 0 0
+	0 0-1  0 0-1  0-1 0
+	0 1 0  0 1 0  0 0-1
+
+H'_ml = 0, per l!=0
+H'_m0 = |d@ Y_0l(@)*H'(@)
+H_ml = a_ml H'_m0
+
+A(@): Original acoustic field
+A_ml = |d@ Y_ml(@)*A(@)
+
+D(@): decoding for a loudspeaker at @=(a,e)
+D(@) = sum_m g_m  sum_l A_ml Y_ml(@)
+
+B: Perceived signal at ear
+B = |d@ H(@) * D(@)
+B = |d@ H(@) * sum_m g_m  sum_l A_ml Y_ml(@)
+B = sum_m g_m sum_l A_ml |d@ H(@) Y_ml(@)
+B = sum_m g_m sum_l A_ml H_ml
+B = sum_m g_m sum_l A_ml a_ml H'_m0
+B = sum_m g_m H'_m0 sum_l a_ml A_ml
+
+In the case of a plannar wave where:
+
+A(@) = s * e^(i@*k) = s 4¶ sum_l i^l j_l
+A_ml = s * Y_ml(k)
+
+
+C = |d@' H(@') * D(@')
+C = |d@' H(@') * sum_m g_m  sum_l A'_ml Y_ml(@')
+C = |d@' H(@') * sum_m g_m  sum_l s Y_ml(k') Y_ml(@')
+C = s |d@' H(@') * sum_m g_m  sum_l Y_ml(k') Y_ml(@')
+C = s sum_m g_m  sum_l Y_ml(k') |d@' H(@') * Y_ml(@')
+C = s sum_m g_m  sum_l Y_ml(k') H'_ml
+C = s sum_m g_m  Y_m0(k') H'_m0
+C = s sum_m g_m  H'_m0 F_m P_m(k·y)
+
+F_m: normalization factor
+
+
+
+http://homer.phys.uh.edu/~hunger/class/fall_2008/lectures/lecture_6.pdf
+
+
+
+
+About Struve:
+
+Hn + Hn-2 = 2(n-1)/x Hn-1 + 2 x^n / ( x 2^n sqrt(pi) gamma(n+1/2) )   [A]
+
+	[A] n=0
+H0 + H-2 = -2/x H-1 + 2/ (x sqrt(pi) gamma(1/2) )
+	gamma(1/2) = sqrt(pi)
+H0 + H-2 = 2/x ( -H-1 + 1/pi )
+H0 = 2/x ( -H-1 + 1/pi ) - H-2 [B0a]
+
+
+	[A] n=1
+H1 + H-1 = + 2 x / ( x 2 sqrt(pi) gamma(3/2) )
+H1 + H-1 = 1 / ( sqrt(pi) gamma(3/2) )
+	gamma(3/2) = sqrt(pi)/2
+H+1 + H-1 = 2 / pi
+pi/2 (H+1 + H-1) = 1              [B1]
+
+
+	[A] n=2
+H2 + H0 = 2/x H1 + 2 x^2 / ( x 2^2 sqrt(pi) gamma(2+1/2) )
+H2 + H0 = 2/x H1 + x / ( 2 sqrt(pi) gamma(2+1/2) )
+	gamma(5/2) =  sqrt(pi) 3/4
+H2 + H0 = 2/x H1 + 2x / 3pi
+H0 = 2/x H+1 + 2x / 3pi - H+2      [B0b]
+
+	[B0a] = [B0b]
+H0 = 2/x ( -H-1 + 1/pi ) - H-2 = 2/x H+1 + 2x / 3pi - H+2
+-2/x H-1 + 2/xpi - H-2 = 2/x H+1 + 2x / 3pi - H+2
+	[B1]
+2/xpi - H-2 = 4/xpi + 2x / 3pi - H+2
+H+2 - H-2 = 2/xpi + 2x/3pi
+pi/2 (H+2 - H-2) = 1/x + x/3       [B2]
+
+
+	[A] n=3
+H3 + H3-2 = 2(3-1)/x H3-1 + 2 x^3 / ( x 2^3 sqrt(pi) gamma(3+1/2) )
+H3 + H1 = 2(2)/x H2 + x^2 / ( 2^2 sqrt(pi) gamma(3+1/2) )
+H3 + H1 = 4/x H2 + x^2 / ( 4 sqrt(pi) gamma(3+1/2) )
+	gamma(n+1/2) = sqrt(pi) / ( 2^n * (2n+1)!! )
+H3 + H1 = 4/x H2 + 2 7 5 3 x^2 / pi)
+
+
+
+	[A] n=-1
+H-1 + H-1-2 = 2(-1-1)/x H-1-1 + 2 x^-1 / ( x 2^-1 sqrt(pi) gamma(-1+1/2) )
+H-1 + H-3 = 2(-2)/x H-2 + 2^2 / ( x^2 sqrt(pi) gamma(-1+1/2) )
+	gamma(-n+1/2) = (-1)^n 2^n * sqrt(pi) / ( (2n+1)!! )
+	gamma(-1+1/2) = -2 * sqrt(pi) / 3
+H-1 + H-3 = 2(-2)/x H-2 - 2^2 3 / ( 2 x^2 pi )
+H-1 + H-3 = -4/x H-2 - 6 /  x^2 pi 
+
+
+
+H3 + H1 = 4/x H2 + 2 7 5 3 x^2/pi)
+H-1 + H-3 = -4/x H-2 - 6 /x^2pi 
+
+H3+H-3 + H1+H-1 = 4/x (H2-H-2) -  2/pi ( 7!! x^2 - 6 / x^2pi )
+
+
+
+
+Hn + Hn-2 = 2(n-1)/x Hn-1 + 2 x^n / ( x 2^n sqrt(pi) gamma(n+1/2) )   [A]
+
+	m        0  1  2  3  4
+	n=+m+1  +1 +2 +3 +4 +5
+	n=-m+1  +1 +0 -1 -2 -3
+
+	[A] n=+m+1
+H+m+1 + H+m+1-2 = 2(+m+1-1)/x H+m+1-1 + 2 x^+m+1 / ( x 2^+m+1 sqrt(pi) gamma(+m+1+1/2) )
+H+m+1 + H+m-1 = 2m/x H+m + 2 x^+m+1 / ( x 2^+m+1 sqrt(pi) gamma(+m+1+1/2) )
+H+m+1 + H+m-1 = +2m/x H+m + x^m / ( 2^m sqrt(pi) gamma(+m+1+1/2) )
+	m=0
+H+1 + H-1 = 1 / ( 1 sqrt(pi) gamma(1+1/2) )
+	gamma(3/2) = sqrt(pi) / 2
+H+1 + H-1 = 2 / pi
+
+	gamma(n+1/2) = sqrt(pi) / ( 2^n * (2n+1)!! )
+H+m+1 + H+m-1 = +2m/x H+m + x^m 2^m+1 (2(m+1)+1)!!/ ( 2^m pi )
+H+m+1 + H+m-1 = +2m/x H+m + x^m 2 (2m+3)!! /  pi
+H+m+1 + H+m-1 = +2m/x H+m + 2 x^m (2m+3)!! /  pi              [A+] n>0 => m+1>0 => m>1
+
+
+
+	[A] n=-m+1
+H(-m+1) + H(-m+1)-2 = 2((-m+1)-1)/x H(-m+1)-1 + 2 x^(-m+1) / ( x 2^(-m+1) sqrt(pi) gamma((-m+1)+1/2) )
+H-m+1 + H-m-1 = -2m/x H-m + 2 x^(-m+1) / ( x 2^(-m+1) sqrt(pi) gamma(-m+1+1/2) )
+H-m+1 + H-m-1 = -2m/x H-m + 2^m / ( x^m sqrt(pi) gamma(-m+1 + 1/2) )
+	m=1
+H0 + H0 = 1 / ( sqrt(pi) gamma( 1/2) )
+	gamma(1/2) = sqrt(pi)
+H0 = 1/2pi
+
+
+
+
+
+
+H-m+1 + H-m-1 = 2(-m)/x H-m + 2 x^-m+1 / ( x 2^-m+1 sqrt(pi) gamma(-m+1+1/2) )
+H-m+1 + H-m-1 = 2(-m)/x H-m + x^-m / ( 2^-m sqrt(pi) gamma(-m+1+1/2) )
+H-m+1 + H-m-1 = -2m/x H-m + 2^m / ( x^m sqrt(pi) gamma(-m+1+1/2) )
+	gamma(-n+1/2) = (-1)^n 2^n * sqrt(pi) / ( (2n+1)!! )
+	gamma(-(m-1)+1/2) = (-1)^(m-1) 2^(m-1) * sqrt(pi) / ( (2(m-1)+1)!! )
+	gamma(-m+1+1/2) = (-1)^(m-1) 2^(m-1) * sqrt(pi) / ( (2m-2+1)!! )
+	gamma(-m+1+1/2) = (-1)^(m-1) 2^(m-1) * sqrt(pi) / ( (2m-1)!! )
+H-m+1 + H-m-1 = -2m/x H-m + (-1)^(m-1) 2^m (2m-1)!! / ( 2^(m-1) x^m pi )
+H-m+1 + H-m-1 = -2m/x H-m + (-1)^(m-1) 2 (2m-1)!! / ( x^m pi )
+H-m+1 + H-m-1 = -2m/x H-m + (-1)^(m-1) 2 x^-m (2m-1)!! / pi         [A-] n=m-1>0 => m>1
+
+
+
+
+
+
+H+m+1 + H+m-1 = +2m/x H+m + 2 x^m (2m+3)!! /  pi
+H-m+1 + H-m-1 = -2m/x H-m + (-1)^(m-1) 2 x^-m (2m-1)!! / pi
+
+	[A+ m=0]
+H+1 + H-1 = + 2 (3)!! /  pi
+H+1 + H-1 = + 2 / pi
+
+
+
+	adding both
+H+m+1 + H+m-1 + H-m+1 + H-m-1 = +2m/x H+m + 2 x^m (2m+3)!!/ pi  -2m/x H-m  + (-1)^(m-1) 2 x^-m (2m-1)!! / pi
+(H+m+1 + H-m-1) + (H+m-1 + H-m+1) = +2m/x (H+m - H-m)  + 2 x^m (2m+3)!!/ pi  + (-1)^(m-1) 2 x^-m (2m-1)!! / pi
+(H+m+1 + H-m-1) + (H+m-1 + H-m+1) = +2m/x (H+m - H-m)  + 2/pi (x^m (2m+3)!!  + (-1)^(m-1) x^-m (2m-1)!! )
+	substracting both
+H+m+1 + H+m-1 - H-m+1 - H-m-1 = +2m/x H+m + 2 x^m (2m+3)!! /  pi + 2m/x H-m  - (-1)^(m-1) 2 x^-m (2m-1)!! / pi
+(H+m+1 - H-m-1) + (H+m-1 - H-m+1) = +2m/x (H+m + H-m)  + 2/pi x^m (2m+3)!!  - (-1)^(m-1) 2/pi x^-m (2m-1)!!
+(H+m+1 - H-m-1) + (H+m-1 - H-m+1) = +2m/x (H+m + H-m)  + 2/pi (x^m (2m+3)!!  - (-1)^(m-1) x^-m (2m-1)!!)
+
+
+
+
+H+m+1 = +2m/x H+m - H+m-1 + 2 x^m (2m+3)!! /  pi
+H-m-1 = -2m/x H-m - H-m+1 + (-1)^(m-1) 2 x^-m (2m-1)!! / pi
+	adding both
+H+m+1 + H-m-1  = +2m/x H+m - H+m-1 + 2 x^m (2m+3)!! /  pi  -2m/x H-m - H-m+1 + (-1)^(m-1) 2 x^-m (2m-1)!! / pi
+H+m+1 + H-m-1  = +2m/x (H+m - H-m) - (H-m+1 + H+m-1) + 2/pi ( x^m (2m+3)!!  + (-1)^(m-1) x^-m (2m-1)!! )
+	substracting both
+H+m+1 - H-m-1  = +2m/x H+m - H+m-1 + 2 x^m (2m+3)!! /  pi  -2m/x H-m + H-m+1 - (-1)^(m-1) 2 x^-m (2m-1)!! / pi
+H+m+1 - H-m-1  = +2m/x H+m -2m/x H-m + H-m+1 - H+m-1 + 2 x^m (2m+3)!! /  pi  - (-1)^(m-1) 2 x^-m (2m-1)!! / pi
+H+m+1 - H-m-1  = +2m/x (H+m - H-m) + (H-m+1 - H+m-1) + 2/pi  ( x^m (2m+3)!!  - (-1)^(m-1) x^-m (2m-1)!! )
+
+
+H+m+1 + H-m-1  = +2m/x (H+m - H-m) - (H-m+1 + H+m-1) + 2/pi ( x^m (2m+3)!!  + (-1)^(m-1) x^-m (2m-1)!! )
+
+
+
+
+
+
+
+
+
+
+

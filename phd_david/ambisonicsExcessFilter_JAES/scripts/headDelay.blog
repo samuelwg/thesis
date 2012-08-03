@@ -1,0 +1,257 @@
+* a: angle from right towards front (theta+pi/2)
+* R: head radius
+* r: distance from the center to the sources >> R
+* d = t*c
+
+`a_0` is the angle when the sound starts to circunvent the head,
+the point when the sound path is tangent to the spheric head.
+
+Math:
+a_0 = acos(R/r) \\
+d_0 = \sqrt{r^2 - R^2}
+
+Math:
+d(a) = \{ {
+	0<a<a_0;   d_1(a) = sqrt( R^2 + r^2 - 2 R r \cos(a))  \\
+	a_0<a<pi;  d_2(a) = R (a-a_0) + d_0
+
+We can assert that there is continuity in `a_0`, because `d_1(a_0) = d_2(a_0) = d_0`
+
+Minimum and maximum delay:
+Math:
+	d_1(0)  = r-R  \\
+	d_2(pi) = R (pi-acos(R/r)) + sqrt(r^2 - R^2)  =  R acos(-R/r)) + sqrt(r^2 - R^2) \\
+
+Derivatives of `d-d(a)` are also continuous
+Math:
+\frac{\part (d-d_1(a))} {\part a} = \frac {-Rr\sin(a)} {\sqrt{ R^2 + r^2 -2 R r \cos(a) }} \\
+\frac{\part (d-d_2(a))} {\part a} = -R
+
+
+Zeros for d-d1:
+Math:
+	d^2 = R^2 + r^2 - 2 R r \cos a
+
+and so:
+Math:
+	\cos a = \frac {R^2 + r^2 - d^2} {2 r R} \\
+	\sin^2a = (1-cos^2a) \\
+	= \frac { (4*r^2R^2) - (R^2+r^2-d^2)^2 } {4r^2R^2}  \\
+	= \frac { (4*r^2R^2) - ( (R^2+r^2)^2 -2R^2d^2 -2r^2d^2 + d^4 ) } {4r^2R^2} \\
+	= \frac { 4*r^2R^2 - ( R^4 + 2r^2R^2 + r^4 -2R^2d^2 -2r^2d^2 + d^4 ) } {4r^2R^2} \\
+	= -\frac { -4*r^2R^2 +R^4 + 2r^2R^2 + r^4 -2R^2d^2 -2r^2d^2 + d^4 ) } {4r^2R^2} \\
+	= -\frac { R^4 - 2r^2R^2 + r^4 -2R^2d^2 -2r^2d^2 + d^4 ) } {4r^2R^2} \\
+	= -\frac { (r^2-R^2)^2 -2R^2d^2 -2r^2d^2 + d^4 ) } {4r^2R^2} \\
+	= -\frac { (r^2-R^2)^2 -2(R^2+d^2) d^2 + d^4 ) } {4r^2R^2} \\
+	\sin a = \frac {sqrt{ -d^4 + 2(R^2+r^2) d^2 - (r^2-R^2)^2 }} {2Rr} , or \\ 
+	= \frac { sqrt{ -d^4-R^4-r^4 +2R^2d^2 +2r^2d^2 +2R^2r^2 }} {2Rr} ), or \\
+	= \frac { sqrt{-(d-R-r)(d+R-r)(d+R+r)(d-R+r)} } {2Rr}
+
+Zeros for d-d2:
+Math:
+	d = R(a-a_0) + d_0  \\
+	a = (d - d_0)/R + a_0
+
+
+== W (Plane Layout)  ==
+
+Math:
+	p(d) = \int_0^\pi d a \delta(d-d(a)) = p_1(d) + p_2(d) \\
+	p_1(d) = \int_0^{a_0}d a \delta( d-d_1(a) ) \\
+	p_2(d) = \int_{a_0}^{\pi}d a \delta( d-d_2(a) )  \\
+
+Math:
+p_1(d) = \sum_{cos a = R/r} ( \frac {\part a} {\part (d-d1(a))}) \\
+p_1(d) = \frac sqrt(r^2+R^2-2 R r cos(a)) { R*r*sin(a)} | {cos a = R/r }
+
+Evaluating the terms of the division for a=acos(...):
+
+Numerator:
+Math:
+sqrt(R^2 + r^2 -2 R r \cos a ) = sqrt(R^2 + r^2 - (R^2 + r^2 - d^2)) = sqrt{d^2} = d
+
+
+Denominator:
+Math:
+R r \sin a = \frac {sqrt(-d^4 + 2(R^2+r^2) d^2  -(R^2-r^2)^2)} 2
+
+So:
+Math:
+p1(d) = \frac{2d} sqrt(-(d+r+R)(d+r-R)(d-r+R)(d-r-R)) \\
+p1(d) = \frac{2d} sqrt(-d^4-r^4-R^4 + 2R^2d^2 +2r^2d^2 +2R^2r^2) \\
+	for 0<a<acos(r/R)
+	and, consequently,   r-R < d < (r^2 - R^2)^1/2
+
+Evaluem al punt limit `d=(r^2 - R^2)^1/2` :
+Math:
+p1(d_0) = \frac{2d}{sqrt(-d^4-r^4-R^4 + 2R^2d^2 +2r^2d^2 +2R^2r^2)} \\
+p1(d_0) = 2sqrt(r^2-R^2)/sqrt(-d^4-r^4-R^4 + 2R^2d^2 +2r^2d^2 +2R^2r^2) \\
+p1(d_0) = 2sqrt(r^2-R^2)/sqrt(-sqrt(r^2-R^2)^4-r^4-R^4 + 2R^2sqrt(r^4-R^2)^2 +2r^2sqrt(r^4-R^2)^2 +2R^2r^2) \\
+p1(d_0) = 2sqrt(r^2-R^2)/sqrt(-(r^2-R^2)^2-r^4-R^4 + 2R^2(r^2-R^2) +2r^2(r^2-R^2) +2R^2r^2) \\
+p1(d_0) = 2sqrt(r^2-R^2)/sqrt(-(r^2-R^2)^2-r^4-R^4 + 2R^2r^2-2R^4 +2r^4-2r^2R^2 +2R^2r^2) \\
+p1(d_0) = 2sqrt(r^2-R^2)/sqrt(-r^4 -R^4 +2r^2R^2 -r^4 -R^4 + 2R^2r^2 -2R^4 +2r^4-2r^2R^2 +2R^2r^2) \\
+p1(d_0) = 2sqrt(r^2-R^2)/sqrt(-4R^4 +2r^2R^2 + 2R^2r^2 -2r^2R^2 +2R^2r^2) \\
+p1(d_0) = 2sqrt(r^2-R^2)/sqrt(-4R^4 +4r^2R^2) \\
+p1(d_0) = sqrt(r^2-R^2)/sqrt(-R^4 +r^2R^2) \\
+p1(d_0) = sqrt(r^2-R^2)/R/sqrt(-R^2 +r^2) \\
+p1(d_0) = 1/R \\
+
+
+Summarizing:
+Math:
+p(d) = \{
+	r-R < d < sqrt(r^2-R^2);
+		\frac{2d}{sqrt{-(d+r+R)(d+r-R)(d-r+R)(d-r-R)}}	\\
+	sqrt(r^2-R^2) < d < R acos(-R/r) + sqrt(r^2-R^2);
+		\frac 1 R
+
+
+== Sin: W (Spherical Layout) or X (Plane Layout) ==
+
+For an spherical one just have to multiply the inside of the integral by sin(a)
+
+Recall that in p1:
+Math:
+cos a = (1/2rR) (R^2 + r^2 - d^2)  \\
+sin a = (1/2rR) sqrt( -d^4 + 2(R^2+r^2) d^2 - (r^2-R^2)^2 )
+
+So:
+Math:
+p1(d) = sin(a) * 2d/sqrt(-(d+r+R)(d+r-R)(d-r+R)(d-r-R))
+p1(d) = 2d / 2rR = d/(rR)
+
+Recall that in p2:
+Math:
+a = (d - d_0)/R + a_0
+
+So:
+Math:
+p2(d) = \frac {sin a} R \\
+p2(d) = \frac{sin(\frac{d-d_0}{R}+a_0)} {R} \\
+
+TODO: Look for a simpler expresion
+
+Checking continuity:
+Math:
+d_0 = sqrt(r^2 - R^2) \\
+p1(d_0) = \frac{sqrt{r^2-R^2}}{Rr} \\
+p2(d_0) = \frac{sin(a_0)}{R} \\
+p2(d_0) = \frac{sqrt{1 - cos^2(a_0)}}{R} \\
+p2(d_0) = \frac{sqrt{\frac{r^2 - R^2}{r^2}}}{R} \\
+p2(d_0) = \frac{sqrt{r^2-R^2}}{Rr} \\
+
+
+
+
+
+
+== Cos: Y (Spherical Layout) ==
+
+Recall that for p1
+Math:
+cos a = \frac {R^2 + r^2 - d^2} {2rR} \\
+sin a = \frac {sqrt{ -d^4 + 2(R^2+r^2) d^2 - (r^2-R^2)^2 }} {2rR} \\
+tg a = sqrt( -d^4 + 2(R^2+r^2) d^2 - (r^2-R^2)^2 ) / (R^2 + r^2 - d^2) \\
+Derivative(d-d1(a) , a)
+	= - R*r*sin(a)/sqrt( R^2 + r^2 -2*R*r*cos(a) ) \\
+
+Math:
+p1(d) = cos(a) / Derivative(d-d1(a),a) | a=cos(...) \\
+p1(d) = - \frac {cos(a)  sqrt(r^2+R^2-2 R r cos(a))} { R r sin(a) } | a = acos(...) \\
+p1(d) = \frac { d (d^2-R^2-r^2)} {Rr sqrt{-R^4-r^4-d^4 + 2R^2r^2 + 2r^2d^2 + 2R^2d^2}} \\
+
+Recall that in p2:
+Math:
+a = (d - d_0)/R + a_0
+
+So:
+Math:
+p2(d) = sum( cos(a) / Derivative(d-d2(a),a) | a = acos(...) ) \\
+p2(d) = -cos ((d-d_0)/R+a_0) /R  \\
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+He provat amb sampling i dona similar tot i que no decau tan rapid com l'analitica de Toni
+He mirat si la diferencia es el limit a a_0, pero cau igual de poc
+He provat de reproduir la formula del Toni pero no te la mateixa forma que el plot del pdf
+* Per un costat, cal invertir el signe del parametre de theta del primer factor del segon terme
+* Per un altre, la pendent es inversa, fent-se infinit a la interseccio, si invertim la pendent, llavors tenim
+* El valor que li donis al sample zero varia molt la forma final
+* Per alguns valors s'apropa a la del pdf, per altres a la samplejada, per altres es mes plana
+
+20081231
+
+Avui he aconseguit tenir dos funcions 2D per a les dos zones limitades per el punt on la trajectoria del so es tangent.
+
+
+20090109
+
+The new formula converges to the one not considering the shadowed angles less than pi/2,
+and converges as the distance/head ratio increases.
+I had to multiply two formulas (D1 and D2) by c in order to converge with Toni's
+i don't know which ones are bad.
+
+
+20090120
+
+Reviewing the time of arrival computation methods on the HRTF's
+
+In order to compute the time of arrival of an IR i tried several methods.
+* Position of the first peak above the 85% of the max peak
+* Previous one but interpolating the peak
+* Maximum crosscorrelation of the minimum phase filter with the original
+* Previous one but interpolating the cross correlation peak
+
+The 85% ones did a lot of quantic like jumps from one peak to the other and gave
+an unrealistic delay graph.
+The jumps where minimized with 60% threshold instead of 85% but still had too noise.
+The ones based on the minimum phase did not.
+The interpolation enhanced some quantic jumps still remaining.
+Filtering out some frequencies > 20kHz removed some 
+Gardner suggested filtering > 2kHz but we got very oscillating responses which easily find a false cross-correlation maximum.
+
+To match the analytical delay with an sphere to the Kemar measured ones
+i had to adjust the following parameters:
+r=1.4  # as in documentation
+c=344 m/s  # as in documentation
+R=0.088 # obtained by matching the delay slope when a>a_0
+Kemar specification:
+	center to ear: 0.0715m
+	interaural axis to back: .0965m
+	interaural axis to front: 0.0945m
+
+Kemar documentation says that 1'17m delay where removed from the IR (150 samples = 200 removed - 50 recording delay)
+Analitic minimum delay is r-R=1.312m (computer errors leads to 1.30997696145 which is pretty much difference)
+Measured min delay is 0.2653m, which corresponds to 1.0597m difference
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

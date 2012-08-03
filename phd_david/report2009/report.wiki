@@ -1,0 +1,139 @@
+\section*{Scientific and technical report of activity carried out between June 2008 and September 2009}
+David García Garzón
+
+
+== Introduction ==
+
+This document reports the work of the PhD candidate during the first year.
+The work corresponds to the proposal titled ``Relating audio and 3D scenarios in audiovisual productions''
+which was presented and approved in June 2008.
+The focus of that research are technologies that automate
+the production of audiovisual productions containing 3D audio,
+including audio rendering, physical coding, 3D decoding and
+environmental acoustic inference.
+
+The work done during this year covers the areas of 
+3D decoding and room inference.
+
+
+== 3D decoding ==
+
+=== Gathering, standardization and compensation of existing HRTF databases ===
+
+Head Related Transfer Functions (HRTF)
+capture the impulse response of a sound at the ear entrance
+coming from a point at a given direction related to the head.
+HRTF's are used for binaural and transaural
+3D audio exhibition 
+as well as for simulating actual hearing of other exhibition systems.
+HRTF can be obtained by recording, by simulation or, 
+in very simplified cases, by analytical formulas.
+
+In any case, HRTF performance as to localization
+heavily depends on how much the original head they were obtained from
+matches the listener's one.
+Many HRTF databases are available for research 
+but they very heterogeneous regarding 
+storage format, quality, postprocessing,
+coordinate system conventions, angular sampling and others.
+
+A first work of this research was to gather such databases and 
+make them available under a common set of conventions and formats,
+so that subsequent experiments can easily switch from one database
+to another.
+
+Several databases were collected including the ones from @cite:MitHrtf,
+@cite:IrcamHrtf and @cite:KreuzerHrtf.
+They were recoded in the same way regarding format (wav), sampling rate,
+and indexes were generated so that the collect the mapping 
+between each audio file to its orientation.
+
+Also a procedure was defined so that given an HRTF database
+its decomposition in spherical harmonics can be obtained provided
+several strategies to compensates the irregularities that deviate them
+from a continuous infinitesimal array of speakers.
+The strategies included are:
+* Vbap generation of missing hrtfs for the lower cap, which is often missing
+* Ponderation by the solid angle which includes orientations which are nearer to each real speaker
+
+
+=== Ambisonics decoding on regular 3D speaker arrays ===
+
+Ambisonics is a technology based on the decomposition the acoustic field
+in spherical harmonics.
+
+
+
+=== Extension to Higher Order Ambisonics ===
+
+=== Ambisonics decoding user tests ===
+
+
+=== Ambisonics decoding qualitative analysis ===
+
+The ambisonics decoding implemented and tested before,
+showed a high loss of quality when reproducing 
+sound with a rich high frequency content like music,
+including, and specially, binaural reproduction which would be 
+free of any speaker missplacing errors.
+
+All the spherical harmonic components of all the databases
+presented a strong decay with frequency.
+An analytical model was developed in order to explain this.
+The analytical model simplified the real case in many ways
+it considered having an spherical head, that all the frequencies
+where delayed the same way while difracting on the head and that
+the arrays of speakers was infinitesimal.
+Still, the model managed to explain the decay
+for different decodings criteria, orders of ambisonics.
+
+=== Hybridisation of VBAP and Ambisonics ===
+
+
+
+
+
+
+
+* Implementation and test of binaural 
+
+* Implementation and test of regular 3D speaker array decoding
+
+
+* Ambisonics decoding
+** Ambisonics regular speaker array decoding
+** Ambisonics binaural decoding
+** HOA decoding
+** Quality reduction due to the head presence
+* VBAP
+** Alternatives to Pulkki triangulation
+* User test design
+
+
+== Room acoustic inference ==
+
+The room acoustic inference problem consists on obtaining a set of room 
+parameters regarding its geometry and materials so that its acoustics
+properties are undistinguishable from the ones captured in a 
+room impulse response or in a echoic recording.
+
+=== Onset detection in room IR's ===
+
+
+
+=== Characterization of the specular rebounds in a square cuboid ===
+
+
+=== Backtracking algorithm square cuboid ===
+
+
+* Onsets detection in room IR's
+* Analysis of the square cuboid case
+** Specular rebounds caracterization
+** Backtracking algorithm
+
+
+
+
+
+

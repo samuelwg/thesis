@@ -1,0 +1,39 @@
+﻿== Excess filter ==
+\label{sec:lateral}
+
+This section uses the previous results to quantify
+the situation described in the introduction and
+illustrated in figure \ref{fig:ambisonicsVsDirectSound}.
+We shall compare the filter resulting from decoding a plane wave with a given Ambisonics order and decoding
+criterion, against the filter resulting from using only one loudspeaker along the 
+plane wave direction.
+
+Figures: fig:delaySphericalOverOrders figures/delaySphericalBasicOverOrders figures/delaySphericalMaxReOverOrders figures/delaySphericalInPhaseOverOrders
+Excess filter for an ipsilateral plane wave
+using several orders and decodings: max-$r_V$ (top), max-$r_E$ (center) and in-phase (bottom)
+
+To this end, left ear signals $c^{L}$ resulting from the general
+equation \bref{equivalent-formula} are computed by
+using the analytical expressions in the time \bref{eq:spherical_3d} and 
+frequency domain \bref{ap:Components3DFrequency}. 
+Figure \ref{fig:delaySphericalOverOrders} shows the resulting filters
+for a plane wave at fixed incoming angle,
+and for various Ambisonics orders and decoding criteria,
+For ipsilateral plane waves, the filtering is stronger at low Ambisonics order,
+and milder at higher orders, where the decoding tends to give
+more and more importance to the loudspeaker along the incoming angle.
+
+Figure \ref{fig:singleOrderEncodingDifferentOrientations}
+shows the plots for first order, and different incoming angles.
+On these plots, can be seen that ipsilateral incoming orientations
+are the ones with less attenuation while the ones which are obstructed by the head
+exhibit a comb-like filtering behaviour.
+
+Figures: fig:singleOrderEncodingDifferentOrientations figures/singleOrderEncodingDifferentOrientations3D-maxrv_01.pdf figures/singleOrderEncodingDifferentOrientations3D-maxre_01.pdf figures/singleOrderEncodingDifferentOrientations3D-inphase_01.pdf
+Filter variation depending on the orientation of the plane wave relative to the head.
+-90 degrees means ipsilateral to the considered ear, 90 is contralateral and 0 degrees, front or back.
+max-$r_V$, max-$r_E$ and in-phase 1\textsuperscript{st} order decodings are shown
+
+
+
+

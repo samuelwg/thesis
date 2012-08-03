@@ -1,0 +1,39 @@
+﻿
+=== Ambisonics decoding of a plane wave ===
+
+Of special relevance will be the pattern that results
+from decoding a maximally directional sound field,
+\ie a plane wave incoming from a given direction, when decoded with Ambisonics.
+The encoding plus decoding of a plane wave results
+in an amplification, to be applied for each speaker $i$ to the carried signal $S$,
+which is a function $D$ of the angle $\a_i$ between the speaker orientation and the plane wave direction.
+Because the pattern just depends on that angle,
+the resulting directivity pattern has axial symmetry around the plane wave orientation.
+
+\bea
+D_n^{2D}(\a) = \cos n\a = T_n(\cos \a) \\
+D_n^{3D}(\a) = (2l+1) P_n( \cos \a )
+\eea
+
+* Formulas for a 2D and 3D decoding
+* Join same order components into a single expression dependant on the deviation angle
+* Extract decoding criterion dependant part as a named factor
+* Plot of the order dependant figure
+* The directivity pattern is a function of the cosine distance between the orientations of the plane wave and the 
+
+For low and high frequency decoders in 2D, the resulting patterns at order $l_{max}$ are:
+\bea
+\rm{max}-r_V: &&
+c_i =  g_0 W \left[ 1 + 2 \sum_{l=1}^{l_{max}}  \cos (l \a_i) \right] \sac i=1,...,N_L \nn
+\rm{max}-r_E: && c_i =  g_0 W \left[ 1 + 2 \sum_{l=1}^{l_{max}} \cos\left( {l \pi \over 2 l_{max} +2 } \right)  \cos (l \a_i)  \right] \sac i=1,...,N_L \,\nn
+\rm{in-phase}: &&
+c_i =  g_0 W \left[ 1 + 2 \sum_{l=1}^{l_{max}}  { (l_{max} !)^2 \over (l_{max}+l)! (l_{max}-l)! }  \cos (l \a_i) \right] \sac i=1,...,N_L \nn
+\label{eq:planeWaveDecodings}
+\eea
+where $\a_i$ is the angle between the $i$-th loudspeaker and the direction of the plane wave.
+Figure \ref{fig:flatWaveDecoding} shows a polar plot of these patterns for various $l_{max}$.
+Further details and equivalent formulas for regular 3D configurations can be found in @cite:Daniel_Phd and appendix \ref{apendix:decodings}.
+
+
+
+

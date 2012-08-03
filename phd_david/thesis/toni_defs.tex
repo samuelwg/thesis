@@ -1,0 +1,304 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%% Macros %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%% Structure definitions %%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newcommand{\bref}[1]{(\ref{#1})}
+
+\newcommand{\eqn}[1]{(\ref{#1})}
+\newcommand{\be}{\begin{equation}}
+\newcommand{\ee}{\end{equation}}
+\newcommand{\ben}{\begin{displaymath}}
+\newcommand{\een}{\end{displaymath}}
+\newcommand{\bea}{\begin{eqnarray}}
+\newcommand{\eea}{\end{eqnarray}}
+\newcommand{\bean}{\begin{eqnarray*}}
+\newcommand{\eean}{\end{eqnarray*}}
+\newcommand{\nn}{\nonumber \\}
+\newcommand{\ba}{\begin{array}}
+\newcommand{\ea}{\end{array}}
+\newcommand{\bi}{\begin{itemize}}
+\newcommand{\ei}{\end{itemize}}
+
+%some of Rob's additions
+\newcommand{\labell}[1]{\label{#1}\qquad_{#1}} %{\label{#1}}
+\newcommand{\reef}[1]{(\ref{#1})}
+\newcommand{\non}{\nonumber}
+\newcommand{\pf}{\partial}
+\newcommand{\bZ}{\bar{Z}}
+\newcommand{\dZ}{\dot{Z}}
+\newcommand{\dr}{\dot{r}}
+\newcommand{\dbZ}{\dot{\bZ}}
+\newcommand{\bz}{\bar{z}}
+\newcommand{\dz}{\dot{z}}
+\newcommand{\dbz}{\dot{\bz}}
+\newcommand{\dU}{U^\dagger}
+\def\cc{\mathbb{C}}
+\newcommand{\df}{\textrm{d}}
+%\newcommand{\str}{{\rm STr}}
+%\newcommand{\tr}{{\rm Tr}}
+\newcommand{\tr}{\mbox{Tr}}
+\newcommand{\str}{\mbox{str}}
+
+\newcommand{\mt}[1]{\textrm{\tiny #1}}
+\def\lt {\lambda}
+\def\rt {r}
+\def\rhot {\rho}
+\def \rvac{r_\mt{vac}}
+\def\nc {N_\mt{c}}
+\def\nf {N_\mt{f}}
+\def\ua {U(1)_\mt{A}}
+\def\tsix {T_\mt{D6}}
+\def\ut {U_\mt{KK}}
+\def\uh {U_\mt{T}}
+\def\gym {g_\mt{YM}}
+\newcommand{\nonsol}{D4-soliton}
+\newcommand{\te}{t_\mt{E}}
+\newcommand{\ct}{T_\mt{deconf}}
+\newcommand{\tcc}{T_\mt{fund}}
+\newcommand{\tb}{\bar{M}}
+\newcommand{\msusy}{M_\mt{susy}}
+\newcommand{\lm}{\l_\mt{match}}
+
+\def\l{\lambda}
+\def\a{\alpha}
+\def\ap{\alpha'}
+\def\b{\beta}
+\def\g{\gamma}
+\def\bg{\bar{\gamma}}
+\def\G{\Gamma}
+\def\d{\delta}
+\def\s{\sigma}
+\def\e{\epsilon}
+\def\vt{\vartheta}
+\def\vp{\varphi}
+\def\T{\Theta}
+\def\u{u}
+%Introduced by Toni:
+
+\def\otaula{\begin{tabular}}
+\def\ctaula{\end{tabular}}
+
+
+\renewcommand{\O}{\Omega}
+\renewcommand{\L}{\Lambda}
+\renewcommand{\t}{\theta}
+%\renewcommand{\om}{\omega}
+
+
+
+% Shortcuts added by Toni:
+
+\def\bnum{\begin{enumerate}}
+\def\enum{\end{enumerate}}
+\newcommand{\num}[1]{\enub {#1} \enue}
+
+\def\CR{\mathbb{R}}
+\def\CM{\mathcal{M}}
+\def\CC{\mathcal{C}}
+\def\CE{\mathcal{E}}
+\def\CQ{\mathcal{Q}}
+\def\avall{\vskip 0.3cm}
+\def\espai{\;\;\;\;\;\;\;}
+\def\zespai{\;\;\;\;}
+\def\s{\sigma}
+\def\8M{$\CM_8$}
+\def\k{\kappa}
+\def\be{\begin{equation}}
+\def\ee{\end{equation}}
+\def\G{\Gamma}
+\def\g{\gamma}
+\def\ei{e^{\underline{i}}}
+\def\ej{e^{\underline{j}}}
+\def\e1{e^{\underline{1}}}
+\def\1u{\underline{1}}
+\def\2u{\underline{2}}
+\def\iu{\underline{i}}
+\def\0u{\underline{0}}
+\def\e{\epsilon}
+\def\target{$\CR^{1,1}\times \mathcal{M}_8$ }
+\def\target2{$\CR^{1,1}\times \mathcal{M}_8$,}
+\def\9G{\G_{\underline{9}}}
+%\def\otaula{\begin{tabular}}
+%\def\ctaula{\end{tabular}}
+\def\yvec{\vec{y}}
+\def\kvec{\vec{k}}
+\def\rvec{\vec{r}}
+\def\xvec{\vec{x}}
+
+\def\a{\alpha}
+\def\b{\beta}
+\def\undos{{1\over 2}}
+\def\p{\partial}
+\def\we{\wedge}
+
+\def\xespai{\,, \zespai}
+
+\def\tl{\tilde{L}}
+\def\ads{$AdS_5 \times S^5$ }
+\def\kap{$\kappa$-symmetry }
+\def\tg{\tilde{\gamma}}
+
+%%%%%%%%%%%%%%%%%% Calligraphic Letters %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newcommand{\cala}{\mbox{${\mathcal A}$}}
+\newcommand{\calb}{\mbox{${\mathcal B}$}}
+\newcommand{\calc}{\mbox{${\mathcal C}$}}
+\newcommand{\cald}{\mbox{${\mathcal D}$}}
+\newcommand{\cale}{\mbox{${\mathcal E}$}}
+\newcommand{\calf}{\mbox{${\mathcal F}$}}
+\newcommand{\calg}{\mbox{${\mathcal G}$}}
+\newcommand{\calh}{\mbox{${\mathcal H}$}}
+\newcommand{\cali}{\mbox{${\mathcal I}$}}
+\newcommand{\calj}{\mbox{${\mathcal J}$}}
+\newcommand{\calk}{\mbox{${\mathcal K}$}}
+\newcommand{\call}{\mbox{${\mathcal L}$}}
+\newcommand{\calm}{\mbox{${\mathcal M}$}}
+\newcommand{\caln}{\mbox{${\mathcal N}$}}
+\newcommand{\calo}{\mbox{${\mathcal O}$}}
+\newcommand{\calp}{\mbox{${\mathcal P}$}}
+\newcommand{\calq}{\mbox{${\mathcal Q}$}}
+\newcommand{\calr}{\mbox{${\mathcal R}$}}
+\newcommand{\cals}{\mbox{${\mathcal S}$}}
+\newcommand{\calt}{\mbox{${\mathcal T}$}}
+\newcommand{\calu}{\mbox{${\mathcal U}$}}
+\newcommand{\calv}{\mbox{${\mathcal V}$}}
+\newcommand{\calw}{\mbox{${\mathcal W}$}}
+\newcommand{\calx}{\mbox{${\mathcal X}$}}
+\newcommand{\caly}{\mbox{${\mathcal Y}$}}
+\newcommand{\calz}{\mbox{${\mathcal Z}$}}
+
+\newcommand{\bfcalc}{\mbox{\boldmath ${\cal C}$}}
+
+
+%%%%%%%%%%%%%%%%% Boldmath Letters %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newcommand{\bfe}{\mbox{\boldmath $E$}}
+\newcommand{\bfb}{\mbox{\boldmath $B$}}
+\newcommand{\bfpi}{\mbox{\boldmath $\Pi$}}
+\newcommand{\bfp}{\mbox{\boldmath $P$}}
+\newcommand{\bfna}{\mbox{\boldmath $\nabla$}}
+\newcommand{\bfd}{\mbox{\boldmath $D$}}
+\newcommand{\bfeh}{\mbox{\boldmath $\hat{E}$}}
+\newcommand{\bfbh}{\mbox{\boldmath $\hat{B}$}}
+\newcommand{\bfah}{\mbox{\boldmath $\hat{A}$}}
+\newcommand{\bx}{\mbox{\boldmath $x$}}
+\newcommand{\by}{\mbox{\boldmath $y$}}
+\newcommand{\bX}{\mbox{\boldmath $X$}}
+\newcommand{\bY}{\mbox{\boldmath $Y$}}
+\newcommand{\bV}{\mbox{\boldmath $V$}}
+\newcommand{\bU}{\mbox{\boldmath $U$}}
+
+\newcommand{\bfK}{\mbox{\boldmath $K$}}
+\newcommand{\bfz}{\mbox{\boldmath $\theta$}}
+\newcommand{\bfZ}{\mbox{\boldmath $Z$}}
+\newcommand{\bfr}{\mbox{\boldmath $\rho$}}
+\newcommand{\bfxi}{\mbox{\boldmath $\xi$}}
+\newcommand{\bfs}{\mbox{\boldmath $\sigma$}}
+\newcommand{\bft}{\mbox{\boldmath $t$}}
+\newcommand{\bfT}{\mbox{\boldmath $T$}}
+\newcommand{\bfss}{\mbox{\boldmath $s$}}
+\newcommand{\bfS}{\mbox{\boldmath $S$}}
+\newcommand{\bfG}{\mbox{\boldmath $\Gamma$}}
+\newcommand{\bfo}{\mbox{\boldmath $0$}}
+
+\newcommand{\bbe}[1]{\mbox{${\mathbb E}^{#1}$}}
+\newcommand{\bbr}[1]{\mbox{${\mathbb R}^{#1}$}}
+%\newcommand{\bbz}[1]{\mbox{${\mathbb Z}^{#1}$}}
+\newcommand{\bbz}[1]{\mbox{${\mathbb Z}_{#1}$}}
+\newcommand{\bbi}[1]{\mbox{${\mathbb I}_{#1}$}}
+\newcommand{\bbo}[1]{\mbox{${\mathbb O}_{#1}$}}
+
+%%%%%%%%%%%%%%%%%%%%%% Miscellaneous  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newcommand{\nef}{{$\caln =4$} }
+
+\newcommand{\dd}[3]{\mbox{$( #1 | \mbox{D} #2 \perp \mbox{D} #3)$}}
+\newcommand{\ds}[3]{\mbox{$( #1 | D #2 \perp \calt #3)$}}
+\newcommand{\para}{\parallel}
+\newcommand{\inter}{\, \cap \,}
+\newcommand{\su}[1]{$\calt #1\,$}
+
+\newcommand{\adss}[2]{\mbox{$AdS_{#1}\times {S}^{#2}$}}
+\newcommand{\rn}{Reissner-Nordstr\"{o}m }
+
+\newcommand{\bra}[1]{\mbox{$\langle #1 |$}}
+\newcommand{\ket}[1]{\mbox{$| #1 \rangle$}}
+\newcommand{\braket}[2]{\mbox{$\langle #1  | #2 \rangle$}}
+\newcommand{\proj}[1]{\ket{#1}\!\bra{#1}}
+
+\newcommand{\Gu}[1]{\Gamma_{\underline{#1}}}
+\newcommand{\Gn}{\Gamma_\natural}
+
+\newcommand{\un}{\underline}
+\newcommand{\pa}{\partial}
+\newcommand{\fc}{\frac}
+\newcommand{\trace}{\mbox{Tr}}
+\newcommand{\sac}{\, , \qquad}
+%\newcommand{\eg}{{\it e.g. }}
+%\newcommand{\ie}{{\it i.e. }}
+\newcommand{\sgn}[1]{\mbox{sgn}(#1)}
+\newcommand{\com}[1]{[[[{\bf #1}]]]}
+\newcommand{\ad}{\dot{a}}
+\newcommand{\bd}{\dot{b}}
+\newcommand{\ik}{{\it k}}
+\newcommand{\ione}{{\it 1}}
+\newcommand{\itwo}{{\it 2}}
+\newcommand{\ifive}{{\it 5}}
+
+\newcommand{\ph}{\hat{P}}
+\newcommand{\xh}{\hat{X}}
+\newcommand{\ve}{\varepsilon}
+
+
+\newcommand{\ra}{\rightarrow}
+
+\newcommand{\ignore}[1]{}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%% For This %%%%%%%%%%%%%%%%%%%%%%%
+\def\pamu{\partial_{\mu}}
+\def\spamu{\partial^{\mu}}
+\def\spanu{\partial^{\nu}}
+\def\panu{\partial_{\nu}}
+\def\pasi{\partial_{\sigma}}
+\def\parho{\partial_{\rho}}
+\def\Udag{U^{\dagger}}
+\def\vpi{\vec{\pi}}
+\def\vsi{\vec{\sigma}}
+\def\fpi{f_{\pi}}
+\def\xvec{\vec{x}}
+\def\hphi{\hat{\phi}}
+%\newcommand{\ide}{\mbox{${\mathbb I}$}}
+\newcommand{\ide}{\mbox{${\mathbb 1}$}}
+\def\hr{\hat{r}}
+\def\hphi{\hat{\phi}}
+\def\hB{\hat{B}}
+\def\w{\omega}
+\def\hg{\hat{\gamma}}
+\def\dt{\dot{\t}}
+\def\xv{\vec{X}}
+\def\yv{\vec{y}}
+\def\vv{\vec{v}}
+\def\uv{\vec{u}}
+\def\wv{\vec{w}}
+\def\pv{\vec{p}}
+\def\bx{{\bar \xi}}
+\def\bw{{\bar \w}}
+\def\bvv{\vec{\bar v}}
+\def\dx{\dot{x}}
+
+\newcommand{\sla}[1]{\slash \!\!\!\! #1}
+\def\hi{\hat{i}}
+\def\hj{\hat{j}}
+\def\bt{\bar{\theta}}
+
+\def\ex{i \tau_2}
+
+
+\def\nspeakers{$N_L$}
+\def\order{$n_o$}
+\def\ta{\tilde{a}}
+\def\te{\tilde{e}}
+%\newcommand{\comment}[1]{{\bf [[[#1]]]}}
+

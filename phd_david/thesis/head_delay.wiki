@@ -1,0 +1,85 @@
+﻿
+== Analytic expressions for the HRTF spherical harmonics ==
+\label{sec:analytic}
+
+\ignore{As explained in the introduction, Ambisonics decoding is normally optimized for a
+listener at one point in the interior of the array 
+(for regular equidistant layouts, this point is normally the center of the sphere).
+However, when an actual listener experiences the playback, the situation changes substantially: 
+even if the head could be maintained exactly at the center, the ears would be displaced about $10 cm$ from it.
+
+Given the fact that in Ambisonics decoding similar signals are sent to many loudspeakers, the different time of 
+arrival of the waves to the ears tends to produce a strong colouring, rather close to comb-filtering. This is mostly
+noticeable when listening to binaural signals obtained from Ambsionics recordings or synthesis.}
+
+This section applies the concepts introduced in section~\ref{sec:ambisonics}
+to obtain analytic expressions for  the HRTF spherical components.
+The following approximations will be adopted:
+\begin{enumerate}
+\item the head is approximated by a perfect sphere,
+\item the loudspeakers are approximated by a continuous constant-density array,
+\item the frequency-dependent diffraction caused by the head is approximated by a simple time-delay due to 
+the travelling of the wave around the surface before reaching each ear.
+\end{enumerate}
+\ignore{The three approximations together make it possible to obtain exact analytic expressions for the 
+HRTF spherical harmonics.}
+Section \ref{sec:realistic_conditions} shows that the main features of the filtering
+are captured by the results obtained under these approximations,
+and are still present in more realistic situations.
+
+The third assumption allows the writing of the HRTF field in a simple closed-form:
+\be
+H^{L/R}(t,a,e) = { \delta( t- t^{L/R}_{arr}(a,e) ) \over c t_{arr}(a,e) } \,,
+\ee
+where $\delta(t)$ is the Dirac-delta function, 
+$t^{L/R}_{arr}(a,e)$ is the time of arrival of an impulse from the loudspeaker
+at $(a,e)$ azimuth and elevation to the L/R ear, 
+and $c$ is the speed of sound.
+A further assumption is to consider
+loudspeaker distances $r$ much larger than
+than the radius $R$ of the head, and neglect terms subleading in $R/r$:
+\be
+H^{L/R}(t,a,e) = { \delta( t- t^{L/R}_{arr}(a,e) ) \over r }  
++ \calo (R / r) \approx { \delta( t- t^{L/R}_{arr}(a,e) ) \over r }\,,
+\ee
+which amounts to neglecting the pressure decay due to distance travelled between both ears.
+Under this approximation, equation \bref{projection} for the HRTF spherical harmonic components becomes
+\bea
+\label{eq:amplitudeDelayTimeIntegral}
+H^{L/R}_{l,m,\sigma}(t)
+&=& {1 \over 4\pi r} \int d\Omega \,\, Y_{l,m,\sigma}(e,a) \delta(t-t^{L/R}_{arr}(e,a)) .
+\eea
+In what follows, the discussion will be focused on the left ear functions;
+the right ear can be deduced from the former by symmetry.
+
+Figure: fig:SphericalHead-ShadowedDelay figures/SphericalHead-ShadowedDelay.pdf
+Geometry used to deduce Woodworth/Schlosberg formula.
+% The near case is considered when the angle from the ear to the source is under $\phi_0$.
+% Our simplifications consider that $r\gg R$, so $\phi_0 \rightarrow \frac \pi 2$
+
+The Woodworth/Schlosberg formula @cite:Woodworth_ExperimentalPsycology 
+can be used to obtain $t^L_{arr}$ in the spherical head approximation (fig. \ref{fig:SphericalHead-ShadowedDelay}):
+\bea
+c \, t^L_{arr}(\phi) & = &\sqrt{r^2+R^2 - 2 R r \cos\phi}  \sac \phi \in [0, \phi_0) \nn
+c \, t^L_{arr}(\phi) & = & \sqrt{r^2-R^2} +R ( \phi -\phi_0)  \sac \phi \in [\phi_0,\pi) \,,
+\eea
+where $\phi$ is the
+angle between two lines through the origin, one pointing to the left ear, and one pointing to the loudspeaker;
+and $\phi_0 = \arccos R/r$. Note that, according to this definition, $\phi$ is a function
+$\phi=\phi(a,e)$ of the azimuth/elevation coordinates  on the sphere.
+In the present approximation ($r \gg R$), these formulae yield:
+\bea
+c \, t^L_{arr}(\phi) & = & r - R \cos \phi  + \calo(R/r) \sac \phi \in [0,\pi/2) \,,\nn
+c \, t^L_{arr}(\phi) & = & r + R (\phi-\pi/2) + \calo(R/r) \sac \phi \in [\pi/2,\pi) \,.
+\eea
+It will be convenient to redefine the time coordinate as $\tau = t + r/c$, and define
+$t_0 = R/c$. This simplifies the equation to:
+\bea
+\tau^L_{arr}(\phi) & = & - t_0 \cos \phi  \sac \phi \in [0,\pi/2) \,, \nn
+\tau^L_{arr}(\phi) & = &  t_0 (\phi-\pi/2) \sac \phi \in [\pi/2,\pi) \,.
+\label{eq:sphericalHeadDelay}
+\eea
+Equation \bref{eq:sphericalHeadDelay} will be used in the next sections to compute
+the spherical harmonic components of the HRTF field for 2D and 3D layouts.
+
+

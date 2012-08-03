@@ -1,0 +1,31 @@
+=== 2D components in frequency domain ===
+\label{ap:Components2DFrequency}
+
+The Fourier Transform of the HRTF spherical components \bref{eq:spherical_2d} reads, after some
+algebra, 
+\bea
+\tilde H_{l,\s}(\w) &=&
+{1\over 2\pi}
+\int_{-\infty}^{\infty} \, dt \,  e^{i \w t}   H_{l,\sigma}(t) 
+\nn
+&=&
+%F_l \left[ {i \over \pi r} { 1- e^{i {\pi \over 2} (\w t_0 -n) } \over \w t_0 -n} \right]
+i\,{ c_l \over 4 \pi r}   \left[  I_l (\w)+ (-1)^l I_{-l}(\w)  \right]
++ { c_l \over 2r} \left[ J_l(\w t_0) -  i (-1)^l \calh_{-l}(\w t_0) \right]
+\nn
+&+&
+{c_l\over \pi r} \sum_{m=1}^{[l/2]} \frac{(2l-2m-1)!!}{(2m-1)!!} (\w t_o)^{2m-l-1} \,,
+\eea
+where $J_n(z)$ is the Bessel function of the first kind, \calh$_n(z)$ is the Struve function@cite:Abramowitz_Functions,
+
+\bea
+I_n (\w) &:=&  { 1- e^{i {\pi \over 2} (\w t_0 -n) } \over \w t_0 -n}  \,,
+\eea
+$[a]$ stands for the smaller nearest integer to $a$, $n!!$ is the double factorial of $n$, and 
+\bea
+\mbox{for even $n$:} & & c_n = 1 \sac  \s = + \,,\nn
+\mbox{for odd $n$:} & & c_n = -i \sac  \s = - \,.
+\eea
+
+
+

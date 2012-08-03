@@ -1,0 +1,103 @@
+=== 2D components in frequency domain ===
+\label{ap:Components2DFrequency}
+
+In the following, we obtain the analytic expressions for the spherical components
+of the HRTFs for 2D arrays located at the listener's horizontal plane.
+In a periphonic setup, let us set to zero the elevation angle $e=0$.
+The angle $\phi$ between the the left ear and the loudspeaker can be
+simply related to the azimuth as this:
+\be
+\phi(\alpha, e) = \phi(\alpha, e=0) = \alpha + \pi / 2
+\ee
+So we can express the time of arrival in \bref{eq:sphericalHeadDelay} properly as
+a function of the azimuth:
+\bea
+\label{eq:direct2DSphericalHeadDelay}
+\tau_{direct}(\alpha) &=& - t_0 \sin \alpha            \sac \alpha \in [0,\pi) \\
+\label{eq:shadow2DSphericalHeadDelay}
+\tau_{shadow}(\alpha) &=& - t_0 \arcsin (\sin \alpha ) \sac \alpha \in [-\pi,0]
+\eea
+
+Adapting \bref{eq:amplitudeDelayFrequency} to the 2D case:
+TODO: $d$ is $\tau_arr$ in previous chapter
+\bea
+\tilde H_{n_o,\sigma}(\alpha,w)
+&=&
+{1\over 2\pi}
+\int_{-\pi}^\pi d\alpha Y_{n_o,\sigma}(\alpha) e^{-iw \tau(\alpha)} 
+\eea
+Where the set of spherical harmonics are defined as:
+\be
+Y_{n_o,+} = \cos (n_o a) \sac Y_{n_o,-} = \sin (n_o a) \sac n_o \ge 0 \,.
+\ee
+
+The delay is symmetric around the Y axis, therefore,
+components related to spherical harmonics which
+are antisymmetric around such axis are zero.
+That is components with odd $n$ and $\sigma=+$ and components with even $n$ and $\sigma=-$
+(see table \ref{tab:cylindricalSymmetries}).
+Such zero components, are useful to obtain a 
+general integral expression for the rest of the components:
+For even orders:
+\bea
+\tilde H_{n,+}(w)
+&=& \frac 1 {2\pi} \int_{-\pi}^\pi \cos(n\alpha) e^{-iw\tau(\alpha)} d\alpha \nn
+&=& \frac 1 {2\pi} \int_{-\pi}^\pi \cos(n\alpha) e^{-iw\tau(\alpha)} d\alpha - i\frac 1 {2\pi} \int_{-\pi}^\pi \sin(n\alpha) e^{-i w\tau(\alpha)} d\alpha  \nn
+&=& \frac 1 {2\pi} \int_{-\pi}^\pi e^{-i ( w\tau(\alpha) + n\alpha) } d\alpha = \tilde I_n(w)
+\eea
+while, for odd orders, we get the same integral $I_n$ but multiplied by $i$:
+\bea
+\tilde H_{n,-}(w)
+&=& \frac 1 {2\pi} \int_{-\pi}^\pi \sin(n\alpha) e^{-iw\tau(\alpha)} d\alpha \nn
+&=& \frac 1 {2\pi} \int_{-\pi}^\pi \sin(n\alpha) e^{-iw\tau(\alpha)} d\alpha + i\frac 1 {2\pi} \int_{-\pi}^\pi \cos(n\alpha) e^{-iw\tau(\alpha)} d\alpha  \nn
+&=& i \frac 1 {2\pi} \int_{-\pi}^\pi e^{-i (w\tau(\alpha) + n\alpha)} d\alpha = i \tilde I_n(w)
+\eea
+
+Let's split the integral $\tilde I_n(w)$ into two regions, 
+$\tilde I^{direct}_n(w)$, the direct sound region $(0,\pi)$ 
+and, $\tilde I^{shadow}_n(w)$, the head shadowed region $(-\pi,0)$.
+
+\bea
+\label{eq:directFilterEven}
+\tilde I^{direct}_n(w) 
+&=& \frac 1 {2\pi} \int_0^\pi e^{i(wt_0\sin(\alpha)-n\alpha)} \nn
+&=& \frac 1 {2\pi} \int_0^\pi \cos(wt_0\sin(\alpha)-n\alpha) d\alpha
++ i \frac 1 {2\pi} \int_0^\pi \sin(wt_0\sin(\alpha)-n\alpha) d\alpha \nn
+&=& { J_n(wt_0) + i R_n(wt_0) \over 2}
+\eea
+
+Where $J_n(x)$ is the order $n$ Bessel function of the first kind and $R_n(x)$ is a real function defined as:
+TODO: A plot of $R_n(x)$
+TODO: $R_n(x)$ for orders 0 and 1 are Struve
+
+\bea
+R_n(x) 
+&=& \frac 1 \pi \int_0^\pi \sin(x\sin(\alpha)-n\alpha) d\alpha \nn
+&=& (-1)^{n} H_{-n}(x) + \frac 2 {\pi} \sum_{m=1}^{[n/2]} \frac{(2n-2m-1)!!}{(2m-1)!!} x^{2m-n-1}
+\eea
+
+TODO: latex para floor en el sumatorio?
+
+So in general, the 2D decomposition in spherical harmonics of the direct part of
+a spherical head HRTF would be:
+\be
+\tilde H^{direct}_{n,\s}(w) = i^{1-(-)^n \over 2} \left( \frac { J_n({w t_0}) + (-1)^{n_o} i H_{-n_0}({w t_0})}{2} + \frac i \pi  \sum_{m=1}^{[n_o/2]} \frac{(2n_0-2m-1)!!}{(2m-1)!!} (w t_o) ^{2m-n_o-1} \right)
+\ee
+
+For the shadowed part:
+TODO: Simplify the development of the shadow formula
+
+\bea
+\tilde I^{shadow}_n(w)
+&=& \frac 1 {2\pi} \int_{-\pi}^0 e^{i ( wt_0\arcsin(\sin(\alpha)) - n\alpha)} d\alpha \nn
+&=& \frac 1 {2\pi} \int_{0}^\pi e^{i ( -wt_0\arcsin(\sin(\alpha)) + n\alpha)} d\alpha \nn
+&=& \frac 1 {2\pi} \int_{0}^{\pi/2} e^{i ( -wt_0\alpha + n\alpha)} d\alpha 
++   \frac 1 {2\pi} \int_{0}^{\pi/2} e^{i (n\pi-n\alpha-wt_0\alpha)} d\alpha  \nn
+&=& \frac 1 {2\pi} \int_{0}^{\pi/2} \left[ 
+e^{i(n-wt_0)\alpha } + e^{in\pi} e^{-i(n+wt_0)\alpha} \right] d\alpha  \nn
+&=& \frac { -(n+wt_0) + (n-wt_0)e^{in\pi} + 2wt_0 e^{i(n-wt_0)\pi/2}  } { i(n-wt_0)(n+wt_0) }
+\eea
+
+
+
+

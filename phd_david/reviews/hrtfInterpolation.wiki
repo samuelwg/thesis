@@ -1,0 +1,22 @@
+﻿== Efficient HRTF interpolation in 3D moving sound ==
+
+* Authors: Fabio P. Freeland , Luiz Wagner P. Biscainho and Paulo Sergio R. Diniz
+* File: confi101.pdf
+
+
+
+== Interpositional Transfer Function for 3D-Sound Generation ==
+
+* Authors:   Freeland, Fábio P.; Biscainho, Luiz W. P.; Diniz, Paulo S. R.
+* Affiliation:   Universidade Federal do Rio de Janeiro, Rio de Janeiro, RJ, Brazil
+* JAES Volume 52 Issue 9 pp. 915-930; September 2004
+
+Demanava password per baixar-lo.
+
+http://www.aes.org/e-lib/browse.cfm?elib=13019
+
+The interpolation of head-related transfer functions (HRTFs) for 3D-sound generation through headphones is addressed. HRTFs, which represent the paths between sound sources and the ears, are usually measured for a finite set of source locations around the listener. Any other virtual position requires interpolation procedures on these measurements. In this work a definition of the interpositional transfer function (IPTF) and an IPTF-based method for HRTF interpolation, recently proposed by the authors, are reviewed in detail. The formulation of the interpolation weights is generalized to cope with azimuth measurement steps which change with elevation. It is shown how to obtain a set of reduced-order IPTFs using tools such as balanced model reduction and spectral smoothing. Detailed comparisons between the accuracy and the efficiency of the IPTF-based and the bilinear interpolation methods (the latter using the HRTFs directly) are provided. A practical set of IPTFs is built and applied to a computationally efficient interpolation scheme, yielding results perceptually similar to those attainable by the bilinear method. Therefore the proposed method is promising for real-time generation of spatial sound.
+
+
+
+

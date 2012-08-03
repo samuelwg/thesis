@@ -1,0 +1,32 @@
+
+20101217
+
+Found those lectures on 3D analysis:
+http://www.cs.princeton.edu/courses/archive/fall03/cs597D/lectures/
+
+Some notes follows:
+
+Problems addressed:
+Feature Detection: robustly finding geometric features in a 3D model
+Segmentation: decomposing a 3D model in its parts
+Labeling: identifying each part in a model??
+Registration: aligning features of 3d models for comparison
+Matching: computing a measuring for similarity
+Retrieval: finding models that best match a query model
+Recognition: finding a given model from a database
+Classification: determining the class of a model (kind of object)
+Clustering: learning classes of models without supervision
+
+
+Medial axis, shock graph or skeleton: Locus of the centers of the circles which are tangent to the surface.
+
+Edit distance between two models: Num of ops to lead a model to another, being the ops:
+- Splice: deletes a branch and join the remaining ones at the branch point
+- Contract: delete the branch between two 3-degree nodes
+- Merge: combines two branches at a 2-degree node
+- Deform: changes the attributes of a branch
+
+
+
+
+

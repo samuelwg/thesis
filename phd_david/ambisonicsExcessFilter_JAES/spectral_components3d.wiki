@@ -1,0 +1,69 @@
+=== 3D components in frequency domain ===
+\label{ap:Components3DFrequency}
+
+The Fourier Transform of the HRTF spherical components \bref{eq:spherical_3d} reads:
+\bea
+\tilde H_{l,0,+}(\w) &=&
+{1\over 2\pi}
+\int_{-\infty}^{\infty} \, dt \,  e^{i \w t}   H_{l,0,+}(t) 
+\nn
+&=&
+\frac{\sqrt{2l+1}}{2\pi}
+(-1)^l
+\left[
+\sum_{n=1}^{l+1}
+n A_{l,n}
+\frac {
+-n (-1)^n e ^{-i w t_0 \frac{\pi}{2}}
++n \cos( n \frac{\pi}{2})
++ w t_0 \sin ( n \frac{\pi}{2} )
+}
+{
+n^2 + (-i w t_0)^2
+}
+\right.
+\nn
+&+&
+\left.
+\frac{1}{2} \sum_{m=0}^{l} 
+\frac{
+B_{l,m} - e^{i w t_0} 
+\sum_{j=0}^{m}
+\frac{ B_{l,j} } { (m-j)! }
+}
+{ (-i w t_0)^{l+1-m}}
+\right]
+\,,
+\eea
+
+where
+
+\bea
+A_{l,n} &=&
+\sum_{r=0}^{l+1-n}
+\frac{
+\cos^2((l+1+n) \frac{\pi}{2})
+B_{l,r}
+}{
+(l+1+n+r)!!
+(l+1-n-r)!!
+}
+\,,
+\eea 
+
+and
+
+\bea
+B_{l,n} = 
+\cos(n \frac{\pi}{2})
+\frac{
+(2l-1-n)!!
+}{
+n!!
+}
+\,.
+\eea 
+
+
+
+

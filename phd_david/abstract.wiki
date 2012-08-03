@@ -1,0 +1,39 @@
+﻿= Relating audio and 3D scenarios in audiovisual productions =
+
+== Abstract ==
+
+Audiovisual productions, such as films or video games,
+combine two main elements: audio and video.
+In the last years, technologies for rendering video from synthetically
+designed 3D scenes have achieved a great degree of realism,
+both doing real-time and off-line rendering.
+Regarding audio, current productions have achieved
+a high degree of realism and are capable of making the audience feel
+totally immersed in the intended scenario.
+However, in contrast to video rendering, 
+the audio production process is still a hand crafted job,
+lacking any automatism that uses such scene definition.
+Therefore, achieving a minimal level of realism presently demands
+a high amount of skills and effort to audio engineers.
+
+The general goal of the research project presented here is
+that of binding 3D scene data and audio.
+That is, binding audio material of audiovisual productions and the scenario
+they are intended to be sounding in,
+so that most of the 3D audio rendering process
+can be done automatically and, when required, in real-time.
+
+Our research will concentrate on both directions of the 3D data-audio relationship.
+On one hand, we will enhance existing geometrical room acoustics algorithms
+by incorporating diffraction by means of both
+effective approximations and hybridization with finite-differences methods.
+On the other hand, we will explore the novel possibility of,
+given audio recorded in some space,
+inferring the 3D geometry and materials of that space.
+We will first formalize the problem mathematically, 
+by defining a suitable cost function that relies on our room acoustics simulation,
+and then analyze the properties of the search space;
+the latter will determine the feasibility of the inference problem.
+
+
+

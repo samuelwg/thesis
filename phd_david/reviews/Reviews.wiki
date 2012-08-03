@@ -1,0 +1,112 @@
+﻿= AES reviews =
+
+== 006 ==
+
+Evaluation of localization of sources
+
+== 077 ==
+
+@cite:AES124_077
+
+* Analyzes the quantization error propagation on Higher Order Ambisonics
+* Reducing the bit depth up to 4 samples per sample, seems ok
+
+== 183 ==
+
+@cite:AES124_183
+
+* DirAC: Directional audio coding
+* Recording b-format with an array of consumer microphones
+
+== 150 ==
+
+* DyrAC: Directional audio coding
+* Technique Evaluation 
+* Explains the basics
+
+== 095 ==
+
+* hyper ambisonics
+
+== 065 ==
+
+* psichoacustical study on how bandwidth limitation affects localization
+
+
+== ==
+  A 3D REAL TIME RENDERING ENGINE FOR BINAURAL
+                     SOUND REPRODUCTION
+Markus Noisternig, Thomas Musil, Alois Sontacchi, Robert Höldrich
+           Institute of Electronic Music and Acoustics
+          University of Music and Dramatic Arts Graz
+                         Inffeldgasse 10/3
+                     A-8010 Graz, AUSTRIA
+                     noisternig@iem.at
+
+http://www.icad.org/websiteV2.0/Conferences/ICAD2003/paper/26 Noisternig.pdf
+
+
+
+= Project I =
+
+@cite:MinnaarHeadMovement
+
+
+= Project II =
+
+
+= Project III =
+
+
+
+= Other =
+
+
+
+[[http://www.waset.org/pwaset/v27/v27-27.pdf]]
+
+[[http://human-factors.arc.nasa.gov/publibrary/Begault_2000_3d_Sound_Multimedia.pdf]]
+
+[[http://ieeexplore.ieee.org/xpl/freeabs_all.jsp?arnumber=743801 ]]
+An efficient 3D sound using head and pinna models
+Cheng-Ta Chang   Chen, O.T.-C.   
+Dept. of Electr. Eng., Nat. Chung Cheng Univ., Chia-Yi;
+
+* This paper appears in: Circuits and Systems, 1998. IEEE APCCAS 1998. The 1998 IEEE Asia-Pacific Conference on
+* Publication Date: 24-27 Nov 1998
+* On page(s): 427-430
+* Meeting Date: 11/24/1998 - 11/27/1998
+* Location: Chiangmai, Thailand
+* ISBN: 0-7803-5146-0
+* References Cited: 5
+* INSPEC Accession Number: 6276061
+* Digital Object Identifier: 10.1109/APCCAS.1998.743801
+* Posted online: 2002-08-06 21:49:20.0
+
+An efficient 3D sound system has been developed by using head and pinna models. The head model is to realize a head shadow effect which is analyzed by the interaural time difference and interaural intensity difference. In order to effectively model an ear's shape, the pinna mesh structure is constructed to physically explore sound reflection. The seven possible polygon surfaces of this pinna mesh structure, which can provide the first reflective sound waves into the eardrums, are analyzed for the delays and intensities of reflective sounds. Additionally, the parameters of our models can be adjusted to fit the characteristics of an individual listener
+
+
+== Design of Optimal Minimum Phase Digital FIR Filters Using Discrete Hilbert Transforms ==
+
+@cite:MinimumPhaseHilbert 
+
+== Nearﬁeld binaural synthesis and ambisonics ==
+
+@cite:Menzies06-nearfieldBinauralSynthesis
+
+Primeros usos de ambisonics Gerzon, first order, speaker arrays.
+Higher orders enables higher angular resolution, extending listening region and recreate nearfield sources
+Para estas dos cosas referencia la tesis en francés del Daniel.
+
+
+
+
+
+
+
+
+
+
+
+
+

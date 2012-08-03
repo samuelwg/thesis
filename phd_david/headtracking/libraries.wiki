@@ -1,0 +1,95 @@
+== Available software ==
+
+
+=== libfreenect ===
+
+* Web: [http://openkinect.org/wiki/Main_Page]
+* Git: [https://github.com/OpenKinect/libfreenect]
+* My fork: [https://github.com/vokimon/libfreenect]
+
+* User space drivers that provides access to Kinect's depth and rgb data, tilting motor and led status.
+* It includes wrappers for opencv, python, c++...
+* Fist stages, still evolving
+* Posted some patches to C++, python and opencv wrappers as we tested it
+* Quite invasive asynchronous API, added a more convenient synchronous timestamped api lately
+
+To build cmake local install
+{{{
+$ mkdir build
+$ cd build
+$ cmake .. -DCMAKE_INSTALL_PREFIX=~/local/ -DBUILD_PYTHON=ON -DBUILD_CV=ON -DPYTHON_SITE_PACKAGES=~/local/lib/python
+$ make install
+}}}
+
+=== OpenNI ===
+
+* Web: [http://www.openni.org/]
+
+* Official drivers provided by the Kinect manufacturer.
+* Apache license (open and closable)
+* Besides access to the buffers, it provides hooks for detection modules
+* Detection modules are provided just as binaries :-(
+* Git full of windows bin blobs.
+* Need more research. I should monitor its evolution for openness
+
+* Three components: 
+** Framework (OpenNi)
+** Hardware middleware (PrimeSense Sensor)
+** Detector middleware (PrimeSense NITE)
+
+* Install OpenNi
+
+{{{
+git clone https://github.com/OpenNI/OpenNI.git
+cd OpenNi
+git checkout -b unstable
+git rebase origin unstable
+cd OpenNI/Platform/Linux-x86/CreateRedist
+./RedistMaker
+cd ../Redist/
+sudo ./install
+}}}
+
+Interesting remotes:
+{{{
+git remote add 
+}}}
+
+* Install Sensor
+
+{{{
+git clone https://github.com/OpenNI/Sensor.git SensorKinect
+cd SensorKinect
+git branch unstable
+cd SensorKinect/Platform/Linux-x86/CreateRedist
+./RedistMaker
+cd ../Redist/
+sudo ./install
+}}}
+
+Interesting remotes:
+{{{
+git remote add ros https://github.com/ros-pkg-git/Sensor.git
+git remote add avin https://github.com/avin2/SensorKinect.git
+}}}
+
+
+* Install NITE, license: 0KOIk2JeIBYClPWVnMoRKn5cdY4=
+** http://www.openni.org/downloadfiles/openni-compliant-middleware-binaries/33-latest-unstablehttp://www.openni.org/downloadfiles/openni-compliant-middleware-binaries/latest-unstable/43-primesense-nite-unstable-build-for-for-ubuntu-10-10-x86-32-bit-v1-3-0/download
+** It holds the interesting bits not in 
+
+
+
+
+
+=== OpenCV ===
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,88 @@
+﻿
+=== HRTF field spherical harmonics in 2D layouts ===
+\label{components2d}
+
+Let us obtain the analytic expressions for the spherical components
+of the HRTFs for 2D arrays located at the listener's horizontal plane.
+Setting the elevation angle to zero $e=0$, 
+the angle $\phi$ between the the left ear and a given loudspeaker can be
+simply related to the azimuth as follows:
+\be
+\label{eq:delay_2d}
+\phi(a, e=0) = -a + \pi / 2 \,.
+\ee
+The 2D version of \bref{eq:amplitudeDelayTimeIntegral} involves only one angular integral
+and two labels $(l,\s)$ for the spherical components: 
+\bea
+\label{eq:amplitudeDelayTimeIntegral2D}
+H_{l,\sigma}(t)
+&=& \frac 1 {2\pi r} \int_{-\pi}^{\pi} Y_{l,\sigma}(a) \delta(t-\tau_{arr}(a)) da  \,.
+\eea
+The following 2D spherical harmonics definitions will be used: 
+\be
+Y_{l,+} = \cos (l a) \sac Y_{l,-} = \sin (l a) \sac l \ge 0 \,.
+\ee
+
+Half of the integrals \bref{eq:amplitudeDelayTimeIntegral2D} are zero due to symmetry reasons.
+Note that the delay \bref{eq:delay_2d} is symmetric with respect to the $y$-axis. Thus all integrals
+involving harmonics that are antisymmetrical with respect to the $y$-axis will vanish. 
+Therefore,
+\bea
+H_{{l_{even}},-}(t) = 0
+\sac
+H_{{l_{odd}},+}(t) = 0 \,.
+\eea
+The remaining components can be solved in terms of standard functions:
+
+\bea
+\, H_{l_{even},+}(t)
+&=& 
+{\cos ( { l \arcsin \frac t {t_0} } ) \over \pi r \sqrt{t_0^2-t^2}}
+\, \, \u(t+t_0) \u(-t)  
++
+{ \cos ( { l \frac t {t_0} } ) \over \pi r t_0 }\,\ 
+\, \, \u(t) \u( \pi t_0/2 -t)  \,,
+\nn
+\,  \, H_{l_{odd},-}(t)
+&=& 
+-{\sin ( { l \arcsin \frac t {t_0} } ) \over \pi r \sqrt{t_0^2-t^2}}
+\, \, \u(t+t_0) \u(-t)  
+-
+{ \sin ( { l \frac t {t_0} } ) \over \pi r t_0 }\,\ 
+\, \, \u(t) \u( \pi t_0/2 -t)  \,, \nn
+\label{eq:spherical_2d}
+\eea
+where $u(t)$ is the unit step function.
+
+The corresponding analysis in the frequency domain can also be
+based on exact analytical expressions which follow from the
+Fourier transforms of~\bref{eq:spherical_2d}, and which are included
+in appendix~\ref{ap:Components2DFrequency}.
+
+Figure \ref{fig:analyticalComponents} shows plots of the first five non-null components.
+The following remarks can be derived both from the analytical expressions
+and from the plots:
+\begin{itemize}
+\item Except for $l=0$, all components vanish at low frequencies and
+attain their peak value at $\w t_0 = l + \undos$.
+At higher frequencies, all components show resemblance with a comb-filter.
+\item For a given $l$, peaks and notches are approximately separated by multiples
+of the natural frequency of the problem $t_0^{-1} = R/c$.
+\item After the first few peaks, the asymptotic expansions of the exact analytical
+expressions lead to the following behaviour:
+\be
+\w t_0 \gg 1 \sac 
+\tilde{H}_{l,\sigma}(\w) \rightarrow
+{1 \over \sqrt{\w t_0} }  \times \sin(\w t_0 + \mbox{const.}) \,,
+\ee
+which implies an amplitude decay of 3~dB per octave at high frequencies, common to all orders.
+
+\end{itemize}
+
+Figure: fig:analyticalComponents figures/analyticalComponents fullWidth
+Spherical harmonic components $\tilde{H}_{l,\sigma}$ of the HRTF field in 2D, for a spherical head of radius $8.8$~cm.
+
+
+
+
+

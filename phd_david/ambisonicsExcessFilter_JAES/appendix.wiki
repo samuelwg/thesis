@@ -1,0 +1,11 @@
+
+\section{Appendix}
+todos:
+\begin{enumerate}
+\item Biblio, from Wiggings first, and then from some more recent paper of phd
+\item Put explicit formulae for spherical harmonics
+\item formulas for decoding coefficients for max-rv, -re, and in-phase
+\item asymptotic expansions of functions involved
+\item formula for delta function of implicit variable
+
+\end{enumerate}
