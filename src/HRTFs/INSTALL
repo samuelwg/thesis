@@ -1,0 +1,7 @@
+sudo apt-get install python-gnuplot python-scipy python-matplotlib
+
+./prepareAll.sh
+
+For MAC OSX platform:
+
+sudo port install sox
