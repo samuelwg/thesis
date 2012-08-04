@@ -1,0 +1,3 @@
+
+sudo apt-get install python-stats python-gnuplot python-matplotlib python-scipy python-sympy
+
