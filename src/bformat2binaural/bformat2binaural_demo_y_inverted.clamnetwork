@@ -153,7 +153,7 @@ p, li { white-space: pre-wrap; }
     <NSources>1</NSources>
   </processing>
 
-  <processing id="amp_mono0" position="180,41" size="138,58" type="amp_mono"/>
+  <processing id="amp_mono0" position="180,41" size="138,58" type="ladspa_amp_mono_1067"/>
 
   <port_connection>
     <out>Convolution P.Output</out>
