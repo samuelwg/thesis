@@ -2,7 +2,7 @@
 
 import glob, os, re, math, numpy, sys
 sys.path.append(os.path.join(os.path.dirname(__file__),"../src/libs/python"))
-from bmaudio import *
+import bmaudio
 
 compensating = '--compensate' in sys.argv
 verbose = '--verbose' in sys.argv or '-v' in sys.argv
@@ -16,7 +16,7 @@ relativeNormalization = 0
 if '--relative-normalization' in sys.argv :
 	relativeNormalization = float(sys.argv[sys.argv.index('--relative-normalization')+1])
 
-databaseFile = selectHrtfDatabase(sys.argv)
+databaseFile = bmaudio.selectHrtfDatabase(sys.argv)
 
 print "Using", databaseFile, "database."
 
@@ -35,7 +35,7 @@ sphericalHarmonics = [ #  order, name, (m,n,rho), function, weight
 
 
 print "Gathering files..."
-hrtfDatabase = HrtfDatabase(databaseFile)
+hrtfDatabase = bmaudio.HrtfDatabase(databaseFile)
 nImpulseResponses = len(hrtfDatabase._data)
 
 lowerElevation = hrtfDatabase.lowerElevation()
@@ -56,7 +56,7 @@ for elevationDegrees, azimuthDegrees, response in hrtfDatabase._data :
 		print "c",
 		compensation = (pCompensation, vCompensation,1.)
 	# print "elevation:", elevation, 'azimuth:', azimuth, "x:", x, "y:", y, "z:", z, "len:", len(data)
-	samplingRate, data = loadWave(response)
+	samplingRate, data = bmaudio.loadWave(response)
 	for order, name, coefs, sphericalFunction, normFactor in sphericalHarmonics :
 		if order > higherOrder : continue
 		try :
@@ -86,10 +86,10 @@ for name, data in E.iteritems() :
 	
 
 for name, data in E.iteritems() :
-	saveWave("E%s.wav"%name, data, samplingRate, verbose=True)
+	bmaudio.saveWave("E%s.wav"%name, data, samplingRate, verbose=True)
 
 for name in "xyz" :
-	saveWave("%sM.wav"%name, E['w']+E[name], samplingRate, verbose=False)
-	saveWave("%sm.wav"%name, E['w']-E[name], samplingRate, verbose=False)
+	bmaudio.saveWave("%sM.wav"%name, E['w']+E[name], samplingRate, verbose=False)
+	bmaudio.saveWave("%sm.wav"%name, E['w']-E[name], samplingRate, verbose=False)
 
 
