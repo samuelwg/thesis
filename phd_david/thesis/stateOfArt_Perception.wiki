@@ -1,0 +1,185 @@
+\section{Perception of the acoustic field}
+
+\ignore{
+* Sound perception is spatial
+** We do not listen just an audio signal
+** We also perceive where it comes from and how that signal interacts with the environment
+** For the same signal perception will be different regarding those factors
+** In summary, we do not listen just sound signals
+** Human ability is to understand the surrounding acoustic field
+}
+
+Sound perception is spatial.
+That means that we are not just perceiving an audio signal emitted by a source,
+we are also perceiving where the sound comes from.
+Furthermore, besides source localization,
+we are able to perceive other information regarding the surrounding environment,
+for instance, whether a source is occluded
+or whether surrounding walls are generating reverberations.
+In summary,
+audition is not just about the ability to listen and interpret sounds signals
+but also about interpreting spatially the surrounding acoustic field.
+In order to artificially reproduce realistic acoustical environments,
+we need to know
+which are the means for the brain to obtain such spatial information.
+
+\ignore{
+* Human brain uses different cues to co-infer the source location
+** @cite:Blauert reviews them
+** Limited effectiveness as isolated
+** Sensible to orientation, source, environment
+** Multi-modal inference.
+* 
+
+}
+
+
+Human brain uses different cues to infer sound source location
+and other spatial information.
+@cite:Blauert reviews many of them.
+Most cues are quite limited to infer the source position in isolation.
+Their validity and precision highly varies depending on factors such as
+the actual position of the sound source relative to the head,
+the audio content emitted, and even
+the acoustics of the environment.
+So, the brain uses a multi-modal approach
+by combining those many cues
+to build the source localization perception
+and overcoming their limitations as isolated cues.
+
+
+
+{
+* The ''minimum audible angle'', @cite:minimumAudibleAngle
+** minimum angle between two sources to be perceived as different locations.
+** Which is the minimum
+** Rough tendencies
+*** Finer at front
+*** Frequency dependency?
+** Testing Methodologies?
+}
+
+
+=== Localization cues ===
+
+* Cues
+** ITD
+** ILD
+** Body reflections
+** Environment reflections
+** Pinna filtering
+** Head movement
+** Source movement
+** Inter-Sensory feedback
+* Modifying the signal differently depending on the incoming orientation
+** References
+*** Other ear
+*** Progressive movement (head or source)
+*** Familiar sounds
+* Dependant on each individual
+** Head and body sizes
+** Pinna individual
+* Learning individual cues
+** Biometric parameters evolve with time
+** Inter-sensory reinforcement
+** Learning binaural cues @cite:LearningBinauralCues 
+** Learning new pinna @cite:LearningNewPinna
+
+
+
+\ignore{
+* How we do that?
+** Dominant cues binaural disparities @cite:LordRayleigh1907
+*** ILD high frequencies, shadowed, low can diffract and add constructively
+*** ITD low frequencies, phase determines delay
+*** Confusion cone
+** By acoustic parallax, due to head or source movements
+** By multi-sensory reinforcement
+** Effect of the body
+** Filtering effects of the pinna
+** Dependent on each individual
+** Learnable @cite:LearningBinauralCues and @cite:LearningNewPinna
+* Perception limitations
+** Cone of confusion (same ILD and ITD)
+** Minimum audible angle
+*** Function of frequency and direction of the source
+*** Different precisions at different orientations
+** Axial plane
+}
+
+In a similar way that binocular discrepancies are used in
+visual perception to infer depth from bidimensional optical projections,
+binaural discrepancies are used to infer sound source position
+in audio perception.
+
+Dominant cues for source localization are based on binaural disparities.
+It is a nice analogy to the use of binocular disparities
+to infer depth in visual perception.
+Main disparities are
+''inter-aural level differences'' (ILD) and
+''inter-aural time differences'' (ITD),
+and were early identified by @cite:LordRayleigh1907.
+
+TODO: What about intermediate frequencies
+TODO: Review ITD and ILD freq ranges
+Inter-aural level differences appear for high frequencies, 1.7kHz and above,
+whenever one of the ears has no direct path to the source.
+For lower frequencies, those with larger wavelengths than the head size,
+the wave can diffract and reach the shadowed ear still with a similar level.
+But higher frequencies can not be diffracted,
+so, the sound intensity at the shadowed ear is lower
+(see \autoref{fig:ILD}).
+
+Time difference cue is significant for low frequencies, below 700 Hz.
+For such frequencies,
+delay difference can be inferred from phase difference,
+while, for high frequencies, such it is ambiguous
+(see \autoref{fig:ITD}).
+
+Figure: fig:ILD figures/todo.pdf
+Inter-aural Level Difference in high and low frequencies
+
+Figure: fig:ITD figures/todo.pdf
+Inter-aural Time Difference in high and low frequencies
+
+
+According to Blauert, for some orientations ILD and ITD by themselves
+can provide resolutions on the perceived localization of one degree.
+But ILD and ITD by themselves do not fully localize the sound.
+In fact, a locus of source positions,
+known as ''confusion cone'',
+have the same angle to the ear-to-ear axis
+(see figure \ref{fig:confusionCone})
+and thus, have the same ITD and ILD.
+Another cue we use to localize sounds is
+orientation dependant filtering created by the pinna
+(outter ear) and body reflections.
+
+Figure: fig:confusionCone figures/todo.pdf
+Sounds on the confusion cone have the same ITD and ILD
+
+Perception of the cues are mostly relative,
+either to the perception among each ear or
+to the memory we have of a familiar sound.
+Source motions and listener head motions provide more references to compare with.
+In the case of head motion,
+the brain already knows which changes in relative position to expect
+so it is a unconscious movement we make to better localize sound sources.
+Continuous motion of a source or
+
+All those cues, altogether, result in an orientation dependant filtering which
+changes the coloration and phase of the original sound.
+When the binaural disparities are not enough to know
+which are the cues affecting the sound,
+movements of either the source or the head
+introducing a kind of audition motion parallax which can be used
+by the brain to get more precise estimations.
+This effect justifies 
+
+
+
+
+
+
+
+

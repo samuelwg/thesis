@@ -6,9 +6,9 @@
 
  TODO: This is a bare compilation as i recall them
 * Analytic expressions for 2d and 3d HRTF S.H. components
-* Applied to the problem of binaural ambisonics decoding excess filtering
+* Applied to the problem of binaural Ambisonics decoding excess filtering
 * Demonstrated why it sound that bad
-* Compared analytical expresions with meassured ones
+* Compared analytical expressions with measured ones
 * TODO: Besides the filtering, objective cues remain
 * TODO: Compensation strategy `H_0^{-1}`
 * TODO: Subjective tests: Compensation strategy removes cues?
@@ -21,7 +21,54 @@
 
 \chapter{State of the art}
 
-\section{Head difraction and binaural sound}
+\input{stateOfArt_Perception}
+
+\section{Binaural reproduction}
+
+
+* Our acoustic field perception is based on two signals, one at each ear so
+** One approach to reproduce the same sound field experience:
+*** record or synthesize such signals and then, reproduce it with headphones
+** Binaural recording using (ear inserted microphones) on subjects or mannequin
+*** :-( How to do synthetic?
+*** :-( Not able to manipulate
+*** :-( Personal
+
+* Is a linear system so:
+** record IR from a position on the space to the ear (HRTF)
+** and convolve whatever sound with it
+** will match the same result as recording the source from that position
+
+* Record HRTF databases for a discrete set of sample positions, usually at a single distance
+* Recording methods:
+** Whole dome
+** Turnable speaker
+** Turnable subject
+
+
+
+* Binaural recording vs HRTF
+** HRTF allows synthetic sound fields
+* HRTF is discrete
+** interpolation
+*** liniar
+*** delay extracton + liniar
+*** based on spherical harmonics
+** cross fade
+
+* HRTF is personal
+** stereotypes
+** biometric closest match 
+** matching biometric parameters with hrtf features
+* head movement
+* single source
+
+* HRTF can be learnt, visual cues reinforce them
+* Crosstalk systems
+* Virtual speakeer systems
+
+
+\section{Head diffraction and binaural sound}
 
 * Binaural localization cues
 * Simplistic models: sphere, snowball...
