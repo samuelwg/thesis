@@ -70,7 +70,7 @@ components = numpy.zeros((maxOrder+1, spectrumBins), dtype=numpy.complex)
 for l in xrange(maxOrder+1) :
 	for a,sh,d in zip(azimuths, sphericalHarmonics[l,:], delaysSimplified) :
 		components[l,:] += numpy.cos(numpy.radians(a))*sh*numpy.exp(-1j*w*d)
-
+"""
 h0minphase = bmaudio.minimumPhaseSpectrum(numpy.abs(components[0,:]))
 
 #bmaudio.displaySpectrum(components[0,:], samplingRate, "lala", inDb=True, showPhase=True)
@@ -79,6 +79,7 @@ h0minphase = bmaudio.minimumPhaseSpectrum(numpy.abs(components[0,:]))
 
 for l in xrange(maxOrder+1) :
 		components[l,:] /= h0minphase
+"""
 
 # TODO: review normalizations
 components/=len(azimuths) # Normalize the discrete sum of len(azimuths) deltas
@@ -132,16 +133,19 @@ plotbasename = 'figures/'+os.path.basename(os.path.splitext(__file__)[0])+"-"
 
 
 if 1 :
+	"""
 	plotField(
 		plotbasename+decodingName+"FD_%02d"%maxOrder,
 		filteringFDdb,
 		spectralBinPositions, azimuths)
-
+	"""
+	print spectralBinPositions
 	plotField(
 		plotbasename+decodingName+"_%02d"%maxOrder,
 		filteringdb,
-		spectralBinPositions, azimuths)
-
+		spectralBinPositions, azimuths,
+#		logFreq = True,
+		)
 
 else :
 #	plotField(plotbasename+decodingName, filteringTD[:,:50], [x for x in xrange(50)], azimuths)
