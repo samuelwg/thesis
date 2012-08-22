@@ -139,7 +139,7 @@ if 1 :
 		filteringFDdb,
 		spectralBinPositions, azimuths)
 	"""
-	print spectralBinPositions
+
 	plotField(
 		plotbasename+decodingName+"_%02d"%maxOrder,
 		filteringdb,
