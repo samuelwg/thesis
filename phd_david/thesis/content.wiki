@@ -68,11 +68,6 @@
 * Virtual speakeer systems
 
 
-\section{Head diffraction and binaural sound}
-
-* Binaural localization cues
-* Simplistic models: sphere, snowball...
-* 
 
 \section{Ambisonics}
 

@@ -14,40 +14,140 @@ That means that we are not just perceiving an audio signal emitted by a source,
 we are also perceiving where the sound comes from.
 Furthermore, besides source localization,
 we are able to perceive other information regarding the surrounding environment,
-for instance, whether a source is occluded
+for instance, whether a source is occluded, enclosed
 or whether surrounding walls are generating reverberations.
 In summary,
 audition is not just about the ability to listen and interpret sounds signals
-but also about interpreting spatially the surrounding acoustic field.
+but also about spatially interpreting the surrounding acoustic field.
 In order to artificially reproduce realistic acoustical environments,
 we need to know
 which are the means for the brain to obtain such spatial information.
+
+=== Multi-modal sound localization ===
 
 \ignore{
 * Human brain uses different cues to co-infer the source location
 ** @cite:Blauert reviews them
 ** Limited effectiveness as isolated
-** Sensible to orientation, source, environment
+** Sensible to source position, content, environment
 ** Multi-modal inference.
-* 
-
 }
-
 
 Human brain uses different cues to infer sound source location
 and other spatial information.
-@cite:Blauert reviews many of them.
-Most cues are quite limited to infer the source position in isolation.
-Their validity and precision highly varies depending on factors such as
+Most cues, in isolation one from the other,
+are quite limited to infer the source position.
+Their validity, determinacy, and precision
+highly vary depending on factors such as
 the actual position of the sound source relative to the head,
-the audio content emitted, and even
-the acoustics of the environment.
+the nature of the emitted audio (spectral content, duration, listener familiarity...),
+and even the acoustics of the environment.
 So, the brain uses a multi-modal approach
 by combining those many cues
 to build the source localization perception
-and overcoming their limitations as isolated cues.
+and overcoming their limitations as isolated cues
+[@cite:Blauert].
+
+\ignore{
+* Spectral transformations of the sound depend on the relative source position.
+** Environment acoustics
+** Listener body: head, shoulders, pinna
+* In absence of the original sound as reference, we use contrast among differently transformed signals
+** Memory, we are better localizing familiar sounds
+** Inter-aural, pretty invariant of the source position
+** Time varying relative position
+** Reverberation, self-correlation
+}
+
+While a sound travels from the source to the ear channel,
+it experiments spectral transformations which are dependant
+of the relative sound source position.
+Such transformations are introduced
+by the acoustics of the environment
+and by interactions with the listener body,
+mostly with head, shoulders and pinna (outer ear).
+Detecting a transformation requires a relative measure but,
+because there is no access to the unmodified sound,
+localization cues rely on contrast among signals
+that have been modified differently.
 
 
+That's the case for inter-aural cues.
+Inter-aural cues exploit how the sound reaches each ear in a different way.
+
+Another source of differently modified signals
+is relative movement of the source around the listener head,
+either because the source is actually moving
+or because the head is moving.
+Experiments widely documented in the literature,
+@cite:Wallach1940Role,minimumAduditoryMovementAngle,PerrettNoble1997,Wightman1999,KatoMasaharu_200309 ,
+demonstrate that
+head movement have an important impact on the quality of the localization.
+
+Another factor that could be though as
+a reference that enhances localization
+is memory, that is being familiar with the sound.
+As experimented by @cite:localizationOfFamiliarSounds,
+on the lack of head movement,
+knowing the sound reduces the confusions on the median plane,
+where inter-aural cues are useless.
+
+Also, it has been reported, @cite:begault2001direct,
+that some kind of environment reflexions, 
+mostly ceiling and floor reflections,
+help localization, although some others
+just introduce
+
+
+
+* @cite:shinn_cunningham_2000_toriconfusion not just cone of confusion, hand reachable sound
+* @cite:feddersen57 Frequency dependency of ITD and ILD effectiveness to locate sounds
+* @cite:minimumAduditoryMovementAngle Moving source effect on localization, and perceiving movement
+* @cite:KatoMasaharu_200309 localization test: azimuth, elevation, cloaked pinna or not, head still, free, up-down and left-right movements
+* Weber law: just noticeable difference: proportional to the intensity of stimuli
+* @cite:PerrettNoble1997
+* @cite:Wightman1999 front-back disambiguation by means of head and source movements
+
+
+\ignore{
+Copied from the military report about the precedent effect.
+
+One additional binaural mechanism that plays an important role in sound source localization is
+the “precedence effect” (Wallach, Newman, & Rosenzweig, 1949). The precedence effect, also
+known as “the law of the first wavefront” (Gardner, 1968; Blauert, 1999) or “Haas effect” (Haas,
+1972), is an inhibitory effect that allows one to localize sounds, based on the signal that reaches
+the ear first (the direct signal) and inhibits the effects of reflections and reverberation. It applies
+to inter-stimulus delays larger than those predicted from the finite dimensions of the human head
+but shorter than ~50 ms. If the interval between two sounds is very small (less than 0.8 ms), the
+precedence effect does not operate and the sound image is heard in a spatial position defined by
+the ITD. However, if the time difference between two brief sounds exceeds 0.8 ms and is shorter
+than 5 ms for single clicks and 30 to 50 ms for complex sounds, both sounds are still heard as a
+single sound. The location of this fused sound image is determined largely by the location of the
+first sound. This is true even if the lagging sound is as much as 10 dB higher than the first sound
+(Wallach, et al., 1949). However, at higher intensities of reflections, the shift in an apparent
+position of the sound source attributable to the presence of an interaural time delay can be
+compensated by the interaural intensity difference inducing the shift in the opposite direction. If
+the time delay exceeds 30 to 50 ms, both sounds are not fused and are heard separately as a direct
+sound and an echo (see section 4). The precedence effect operates primarily in the horizontal
+plane, but it can also be observed in the median plane (Rakerd & Hartmann, 1992, 1994).
+
+The effect of the delayed sound on the spatial position of the fused event depends on the interval
+between the lead and lag. The lagging sound tends to “pull” the perceived sound location away
+from that of the lead. It is noteworthy that if the primary sound and the secondary sound differ
+greatly in their spectral (timbral) characteristics, the precedence effect may not occur. This
+means that the sound reflection from the wall, which is highly dissimilar from the original sound,
+may be heard separately from the original sound even if the time delay is less than 30 to 50 ms
+(Divenyi & Blauert, 1987). The precedence effect does not completely eliminate the effect of
+the delayed sound even if its level is relatively low. It makes the delayed sounds part of a single
+fused event and it reduces the effect of directional information carried by the delayed sounds.
+However, the changes in the pattern of reflections can still be detected and they can affect the
+perceived size of the sound source, its loudness, and its timbre (Blauert, 1999).
+}
+
+
+
+
+=== Evaluating localization ===
 
 {
 * The ''minimum audible angle'', @cite:minimumAudibleAngle
@@ -62,6 +162,7 @@ and overcoming their limitations as isolated cues.
 
 === Localization cues ===
 
+\ignore{
 * Cues
 ** ITD
 ** ILD
@@ -84,28 +185,11 @@ and overcoming their limitations as isolated cues.
 ** Inter-sensory reinforcement
 ** Learning binaural cues @cite:LearningBinauralCues 
 ** Learning new pinna @cite:LearningNewPinna
-
-
-
-\ignore{
-* How we do that?
-** Dominant cues binaural disparities @cite:LordRayleigh1907
-*** ILD high frequencies, shadowed, low can diffract and add constructively
-*** ITD low frequencies, phase determines delay
-*** Confusion cone
-** By acoustic parallax, due to head or source movements
-** By multi-sensory reinforcement
-** Effect of the body
-** Filtering effects of the pinna
-** Dependent on each individual
-** Learnable @cite:LearningBinauralCues and @cite:LearningNewPinna
-* Perception limitations
-** Cone of confusion (same ILD and ITD)
-** Minimum audible angle
-*** Function of frequency and direction of the source
-*** Different precisions at different orientations
-** Axial plane
+* Measuring localization accuracy
+** Minimum Audible Angle
+** Minimum Audible Movement Angle
 }
+
 
 In a similar way that binocular discrepancies are used in
 visual perception to infer depth from bidimensional optical projections,
@@ -118,7 +202,8 @@ to infer depth in visual perception.
 Main disparities are
 ''inter-aural level differences'' (ILD) and
 ''inter-aural time differences'' (ITD),
-and were early identified by @cite:LordRayleigh1907.
+and were early identified by @cite:LordRayleigh1907
+and later tested by 
 
 TODO: What about intermediate frequencies
 TODO: Review ITD and ILD freq ranges
@@ -153,7 +238,7 @@ have the same angle to the ear-to-ear axis
 and thus, have the same ITD and ILD.
 Another cue we use to localize sounds is
 orientation dependant filtering created by the pinna
-(outter ear) and body reflections.
+(outer ear) and body reflections.
 
 Figure: fig:confusionCone figures/todo.pdf
 Sounds on the confusion cone have the same ITD and ILD
@@ -174,7 +259,6 @@ which are the cues affecting the sound,
 movements of either the source or the head
 introducing a kind of audition motion parallax which can be used
 by the brain to get more precise estimations.
-This effect justifies 
 
 
 
