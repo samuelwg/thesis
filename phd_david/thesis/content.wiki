@@ -91,7 +91,8 @@
 \input{components2d}
 \input{components3d}
 
-\section{Excess filter for Ambisonics}
+%\section{Excess filter for Ambisonics}
+\input{excess_filter}
 \section{Dropping idealizations}
 \section{Effect on objective localization cues}
 
