@@ -11,6 +11,7 @@ import pylab
 def plotField(basename, field, xaxis, yaxis,
 		levels=numpy.arange(-60,6,3),
 		minxdb=-60,
+		logFreq = False,
 		) :
 	field[numpy.isinf(field)]=-6
 	field-=field.max()
@@ -25,8 +26,20 @@ def plotField(basename, field, xaxis, yaxis,
 		).set_label("Magnitude (dB)")
 	c=pylab.contour(xaxis, yaxis, field, levels, cmap=pylab.cm.Greys)
 	pylab.ylim(-90,90)
-	pylab.semilogx()
 	pylab.yticks([-90,-45,0,+45,+90])
+	if logFreq :
+		pylab.semilogx()
+		pylab.xticks(
+			[1,2,5,10,20,50,100,200,500,1000,2000,5000,10000,20000],
+			[1,2,5,10,20,50,100,200,500,'1k','2k','5k','10k','20k'],
+			)
+		pylab.xlim(10) # start with 10^1
+	else :
+		pylab.xticks(
+			[i*1000 for i in xrange (0,23,2)],
+			["%ik"%i  if i else "0" for i in xrange (0,23,2)],
+			)
+		
 	pylab.xlabel("Frequency (Hz)")
 	pylab.ylabel("Source azimuth (degrees)")
 	pylab.clabel(c, fmt="%i")
@@ -118,6 +131,11 @@ class SpectrumDisplay :
 			pylab.subplot(2,1,1)
 		if self._logFreq :
 			pylab.semilogx()
+			pylab.xticks(
+				[1,2,5,10,20,50,100,200,500,1000,2000,5000,10000,20000],
+				[1,2,5,10,20,50,100,200,500,'1k','2k','5k','10k','20k'],
+				)
+			pylab.xlim(10) # start with 10^1
 		if self._inDb :
 			pylab.ylabel("Magnitude (dB)")
 		else:
