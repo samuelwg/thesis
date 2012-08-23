@@ -61,19 +61,19 @@ this leads to comb filter like effects which are more noticeable,
 and indeed annoying, when listening to binaural conversions of
 Ambisonics signals, specially for frequency-rich musical content. 
 This effect is due to the limited angular resolution that lower-order Ambisonics provides, and it progressively
-disappears at larger Ambisonics orders (see fig \ref{fig:flatWaveDecoding}).
+disappears at larger Ambisonics orders (see fig \ref{fig:flatWaveDecoding2d}).
 
 \begin{figure}[htbp]
 \begin{center}
-\includegraphics[width=1.9in]{figures/flatWaveDecodingBasic}
-\includegraphics[width=1.9in]{figures/flatWaveDecodingMaxRe}
-\includegraphics[width=1.9in]{figures/flatWaveDecodingInPhase}
+\includegraphics[width=1.9in]{figures/flatWaveDecoding2d-maxrv}
+\includegraphics[width=1.9in]{figures/flatWaveDecoding2d-maxre}
+\includegraphics[width=1.9in]{figures/flatWaveDecoding2d-inphase}
 \end{center}
 \caption{Polar pattern of loudspeaker gain when reproducing a plane wave 
 using different 2D Ambisonics orders and decodings:
 max-$r_V$ (left), max-$r_E$ (center), and in-phase (right).
 }
-\label{fig:flatWaveDecoding}
+\label{fig:flatWaveDecoding2d}
 \end{figure}
 
 

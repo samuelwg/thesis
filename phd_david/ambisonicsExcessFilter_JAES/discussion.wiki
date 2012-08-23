@@ -40,14 +40,14 @@ measured at the left ear (aligned at 90 degrees, 0 degrees is front).
 
 
 The impact on the main features of the filter is small,
-as shown in figure \ref{fig:fullHrtfOverOrders}. 
+as shown in figure \ref{fig:fullHrtfFilters}. 
 Discrepancy with the continuous spherical head approximation
 is below 2~dB at first and higher Ambisonics orders.
 
 \item {\bf Realistic head diffraction}.
 To finally drop all  idealized assumptions, the excess filters were recomputed using the full HRTF filters
 of the MIR Kemar database. 
-Figure \ref{fig:fullHrtfOverOrders} includes as well the excess filter in a 2D setup 
+Figure \ref{fig:fullHrtfFilters} includes as well the excess filter in a 2D setup 
 for an ipsilateral plane wave using the full measured HRTFs.
 The newly computed curves preserve the main features of the idealized filters, like
 prominent peaks and amplitude decay with frequency. 
@@ -55,11 +55,11 @@ The main differences are a general smoothing of the curves, including a
 softening of the ripples, and the appearance of several narrow irregularities
 at approximately 4KHz, 9KHz and 16KHz, precisely where the ipsilateral HRTF exhibits the deepest notches.
 
-Figures: fig:fullHrtfOverOrders figures/fullHrtfBasicOverOrders.pdf figures/fullHrtfMaxReOverOrders.pdf figures/fullHrtfInPhaseOverOrders.pdf
+Figures: fig:fullHrtfFilters figures/fullHrtfFilters-maxrv.pdf figures/fullHrtfFilters-maxre.pdf figures/fullHrtfFilters-inphase.pdf
 Excess filters for an ipsilateral plane wave in a 2D layout considering:
 a) measured HRTF's (''measured''),
 b) the delay deduced from such HRTF's (''delay''), and
-c) analytical results as already shown in figure \ref{fig:delaySphericalOverOrders} (''analytical'').
+c) analytical results as already shown in figure \ref{fig:sphereDelayFilters} (''analytical'').
 Decodings: max-$r_V$ (top), max-$r_E$ (center) and in-phase (bottom).
 
  
