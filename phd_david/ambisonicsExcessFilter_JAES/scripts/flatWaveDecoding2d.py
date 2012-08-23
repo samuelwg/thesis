@@ -25,8 +25,8 @@ if len(sys.argv)<2 or sys.argv[1] not in decodings.keys() :
 decodingName=sys.argv[1]
 polarPattern = decoding=decodings[decodingName]
 title = dict(
-	maxre = "Max $R_E$",
-	maxrv = "Max $R_V$",
+	maxre = "Max $r_E$",
+	maxrv = "Max $r_V$",
 	inphase = "In-phase",
 	)[decodingName]
 
