@@ -5,7 +5,8 @@ Plotting routines to encapsulate frequent plot configuration
 """
 import numpy
 import pylab
-
+import bmaudio
+import math
 
 
 def plotField(basename, field, xaxis, yaxis,
@@ -103,7 +104,7 @@ class SpectrumDisplay :
 	def addSpectrumData(self, spectrum, spectralRange, name, style=None) :
 		nBins = len(spectrum)
 		if self._inDb :
-			magnitude = 20*numpy.log10(removeZeros(abs(spectrum)))
+			magnitude = 20*numpy.log10(bmaudio.removeZeros(abs(spectrum)))
 		else :
 			magnitude = abs(spectrum)
 		frequencies =  numpy.array(xrange(nBins))*spectralRange/nBins
@@ -136,6 +137,11 @@ class SpectrumDisplay :
 				[1,2,5,10,20,50,100,200,500,'1k','2k','5k','10k','20k'],
 				)
 			pylab.xlim(10) # start with 10^1
+		else :
+			pylab.xticks(
+				[i*1000 for i in xrange (0,23,2)],
+				["%ik"%i  if i else "0" for i in xrange (0,23,2)],
+				)
 		if self._inDb :
 			pylab.ylabel("Magnitude (dB)")
 		else:
@@ -175,6 +181,18 @@ class SpectrumDisplay :
 			pylab.ylabel("Phase (Radians)")
 			pylab.xlabel("Frequency")
 			pylab.ylim(-math.pi, math.pi)
+			if self._logFreq :
+				pylab.semilogx()
+				pylab.xticks(
+					[1,2,5,10,20,50,100,200,500,1000,2000,5000,10000,20000],
+					[1,2,5,10,20,50,100,200,500,'1k','2k','5k','10k','20k'],
+					)
+				if not self.fmin : self.fmin = 10 # start with 10^1 if it was 0
+			else :
+				pylab.xticks(
+					[i*1000 for i in xrange (0,23,2)],
+					["%ik"%i  if i else "0" for i in xrange (0,23,2)],
+					)
 			pylab.xlim(self.fmin, self.fmax)
 		if colorLegend : pylab.gca().add_artist(colorLegend)
 		if lineLegend : pylab.gca().add_artist(lineLegend)
