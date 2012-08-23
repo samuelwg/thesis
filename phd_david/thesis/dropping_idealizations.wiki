@@ -1,0 +1,68 @@
+== Effect of idealized assumptions ==
+\label{sec:realistic_conditions}
+
+This section analyzes the effect of the idealized assumptions that led to the analytical results. 
+To this end, we shall focus on 2D layouts, as most of the existing measured 
+HRTF databases lack a full 3D angle coverage, specially along the bottom part of the sphere.
+When using real data, MIT Kemar HRTF database @cite:MitHrtf will be used,
+which includes 72 loudspeakers at the listener's plane.
+
+
+\begin{itemize}
+\item {\bf Finite number of loudspeakers}.
+To study the effect of the continuous loudspeaker array assumption,
+excess filters, discussed in section~\ref{sec:lateral},
+have been recomputed numerically using different numbers
+of equi-distributed loudspeakers, and using the discretized 
+version~\bref{discretization} of the formalism.
+
+Figure \ref{fig:discreteArrayDivergence} shows a plot of the discrepancy between the discretized and continuous
+results. As expected, the results hardly vary at low frequencies, and become more relevant at higher frequencies.
+Below 5KHz, the discrepancy remains below 2-3 dB. 
+As the number of loudspeakers $N_L$ is increased, the discrepancy remains bounded up to higher and
+higher frequencies. For a 72 loudspeakers array, significant divergence occurs close to 22~KHz.
+
+Figure: fig:discreteArrayDivergence figures/angularSamplingMaxReOrder1.pdf fullWidth
+Excess filter divergence between continuous and discrete arrays of speakers, in the situation 
+depicted in \ref{fig:ambisonicsVsDirectSound}, for 2D layouts, first Ambisonics order and max-$r_E$ criterion. 
+
+\item {\bf Non-spherical head}. 
+The effect of dropping the spherical head approximation in the computation of the delays for
+every angle is rather small.
+Figure \ref{fig:headDelayCompared} compares, along the horizontal plane, 
+the delays obtained from the Woodworth/Schlosberg formula
+against the delays extracted from the MIT Kemar HRTF database.
+The error is less than 0.1ms at all angles 
+and, for most of them, below 0.04ms.
+Figure: fig:headDelayCompared figures/polarDelayCompared.pdf
+Delay for an spherical head of radius 8.8cm and measured Kemar delays
+measured at the left ear (aligned at 90 degrees, 0 degrees is front).
+
+
+The impact on the main features of the filter is small,
+as shown in figure \ref{fig:fullHrtfOverOrders}. 
+Discrepancy with the continuous spherical head approximation
+is below 2~dB at first and higher Ambisonics orders.
+
+\item {\bf Realistic head diffraction}.
+To finally drop all  idealized assumptions, the excess filters were recomputed using the full HRTF filters
+of the MIR Kemar database. 
+Figure \ref{fig:fullHrtfOverOrders} includes as well the excess filter in a 2D setup 
+for an ipsilateral plane wave using the full measured HRTFs.
+The newly computed curves preserve the main features of the idealized filters, like
+prominent peaks and amplitude decay with frequency. 
+The main differences are a general smoothing of the curves, including a
+softening of the ripples, and the appearance of several narrow irregularities
+at approximately 4KHz, 9KHz and 16KHz, precisely where the ipsilateral HRTF exhibits the deepest notches.
+
+Figures: fig:fullHrtfOverOrders figures/fullHrtfBasicOverOrders.pdf figures/fullHrtfMaxReOverOrders.pdf figures/fullHrtfInPhaseOverOrders.pdf
+Excess filters for an ipsilateral plane wave in a 2D layout considering:
+a) measured HRTF's (''measured''),
+b) the delay deduced from such HRTF's (''delay''), and
+c) analytical results as already shown in figure \ref{fig:delaySphericalOverOrders} (''analytical'').
+Decodings: max-$r_V$ (top), max-$r_E$ (center) and in-phase (bottom).
+
+ 
+\end{itemize}
+
+
