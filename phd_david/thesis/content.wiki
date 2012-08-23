@@ -86,14 +86,18 @@
 
 \chapter{Excess filter in Ambisonic to binaural conversion}
 
-%\section{Analytical expresions for the hrtf SH}
+\input{ambisonics_to_binaural_intro}
+\input{ambisonics_decoding}
 \input{head_delay}
 \input{components2d}
 \input{components3d}
 
 %\section{Excess filter for Ambisonics}
 \input{excess_filter}
-\section{Dropping idealizations}
+
+%\section{Dropping idealizations}
+\input{dropping_idealizations}
+
 \section{Effect on objective localization cues}
 
 \chapter{Compensation strategies}

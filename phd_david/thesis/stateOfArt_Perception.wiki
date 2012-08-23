@@ -1,4 +1,4 @@
-\section{Perception of the acoustic field}
+== Perception of the acoustic field ==
 
 \ignore{
 * Sound perception is spatial
@@ -10,12 +10,13 @@
 }
 
 Sound perception is spatial.
-That means that we are not just perceiving an audio signal emitted by a source,
-we are also perceiving where the sound comes from.
+That means that when a source emits a sound,
+we are not just perceiving the emitted sound,
+but also the position where the sound is emitted from.
 Furthermore, besides source localization,
 we are able to perceive other information regarding the surrounding environment,
 for instance, whether a source is occluded, enclosed
-or whether surrounding walls are generating reverberations.
+or the size and materials of the surfaces surrounding the source or the emitter.
 In summary,
 audition is not just about the ability to listen and interpret sounds signals
 but also about spatially interpreting the surrounding acoustic field.
@@ -23,7 +24,24 @@ In order to artificially reproduce realistic acoustical environments,
 we need to know
 which are the means for the brain to obtain such spatial information.
 
-=== Multi-modal sound localization ===
+
+\ignore{
+TODO: Find a place where to explain that
+* Which spatial perceptions do we have?
+** Position relative to the head
+*** Convenient spherical coordinates
+*** Azimuth, elevation and distance
+** Source width and heigth
+** Velocity?
+** Environmental
+*** What kind of environment surround the source and the listener
+*** Spaciousness, surfaces,
+*** Not entering in those aspects
+}
+
+
+
+=== Multi-modalilty, contrast and learning ===
 
 \ignore{
 * Human brain uses different cues to co-infer the source location
@@ -51,7 +69,7 @@ and overcoming their limitations as isolated cues
 \ignore{
 * Spectral transformations of the sound depend on the relative source position.
 ** Environment acoustics
-** Listener body: head, shoulders, pinna
+** Listener body: head, torso, pinna
 * In absence of the original sound as reference, we use contrast among differently transformed signals
 ** Memory, we are better localizing familiar sounds
 ** Inter-aural, pretty invariant of the source position
@@ -64,8 +82,8 @@ it experiments spectral transformations which are dependant
 of the relative sound source position.
 Such transformations are introduced
 by the acoustics of the environment
-and by interactions with the listener body,
-mostly with head, shoulders and pinna (outer ear).
+and by interactions with listener body,
+mostly with head, torso and pinna (outer ear).
 Detecting a transformation requires a relative measure but,
 because there is no access to the unmodified sound,
 localization cues rely on contrast among signals
@@ -93,10 +111,11 @@ knowing the sound reduces the confusions on the median plane,
 where inter-aural cues are useless.
 
 Also, it has been reported, @cite:begault2001direct,
-that some kind of environment reflexions, 
+that some kinds of environment reflexions, 
 mostly ceiling and floor reflections,
-help localization, although some others
-just introduce
+help localization,
+although some others environment reflections
+just do the opposite effect by adding confusion and errors.
 
 
 
@@ -191,19 +210,16 @@ perceived size of the sound source, its loudness, and its timbre (Blauert, 1999)
 }
 
 
-In a similar way that binocular discrepancies are used in
-visual perception to infer depth from bidimensional optical projections,
+Human visual perception use binocular discrepancies
+to infer depth from bidimensional optical projections.
+In a similar way,
 binaural discrepancies are used to infer sound source position
 in audio perception.
-
-Dominant cues for source localization are based on binaural disparities.
-It is a nice analogy to the use of binocular disparities
-to infer depth in visual perception.
 Main disparities are
 ''inter-aural level differences'' (ILD) and
-''inter-aural time differences'' (ITD),
-and were early identified by @cite:LordRayleigh1907
-and later tested by 
+''inter-aural time differences'' (ITD).
+They were early identified by @cite:LordRayleigh1907
+and later tested experimentally by @cite:
 
 TODO: What about intermediate frequencies
 TODO: Review ITD and ILD freq ranges

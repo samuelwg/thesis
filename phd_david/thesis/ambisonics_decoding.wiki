@@ -8,7 +8,7 @@ and its corresponding spherical harmonics expansion.
 
 === Ambisonics decoding=== 
 
-For the sake of simplicity, only regular layouts are considered, {\it i.e.}
+For the sake of simplicity, only regular layouts are considered, ''i.e.''
 a set of \nspeakers\ loudspeakers regularly inscribed on a sphere. 
 The symmetry of the array simplifies the decoding by reducing the number of independent coefficients.
 For example, for a first order decoder to a regular 3D layout, the most general linear decoding formula @cite:Daniel_Phd is
@@ -35,9 +35,9 @@ on the order $l$, but not on $m$ nor $\s$.
 
 The choice of the gains $g_l$  depends on the physical and psychoacoustic criterion chosen @cite:daniel1998ambisonics. 
 Some of the most popular choices are:
-{\it max-$r_V$}, which optimizes for low-frequencies;
-{\it max-$r_E$}, which optimizes for high-frequencies; and 
-{\it in-phase}, which attempts to avoid sending out-of-phase signals to the loudspeakers and maximizing the listening area.
+''max-$r_V$', which optimizes for low-frequencies;
+''max-$r_E$', which optimizes for high-frequencies; and 
+''in-phase', which attempts to avoid sending out-of-phase signals to the loudspeakers and maximizing the listening area.
 The coefficients derivable from these criteria can be found, for example, in \protect\cite{Daniel_Phd_decodingTable}.
 
 
@@ -61,14 +61,14 @@ in spherical harmonics @cite:Zhang2009_ModalExpansionHrtf,
 H(t,a,e) &=& \sum_{l=0}^{\infty} \sum_{m=0}^l \sum_{\s = \pm}
 H_{l,m,\sigma} (t)  Y_{l,m,\sigma}(a,e) \,.
 \eea
-Here, $H_{l,m,\sigma} (t)$ are the time-dependent {\it spherical harmonic components of the HRTF field}, $H(t,a,e)$. 
+Here, $H_{l,m,\sigma} (t)$ are the time-dependent ''spherical harmonic components of the HRTF field'', $H(t,a,e)$. 
 Conversely, the HRTF spherical components can be easily extracted out of the HRTF field via a standard
 projection formula:
 \bea
 H_{l,m,\sigma} (t) &=& {1\over 4\pi} \int d\Omega \, \, H(t,a,e) \,   Y_{l,m,\sigma}(a,e) \,,
 \label{projection}
 \eea
-where $d\Omega = \cos e \, {\rm d}a {\rm d}e$ is the differential solid angle on the unit sphere.
+where $d\Omega = \cos e \, \textrm{d}a \textrm{d}e$ is the differential solid angle on the unit sphere.
 
 Having a continuous density of source positions is an ideal case that
 will enable the attainment of analytical expressions

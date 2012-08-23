@@ -1,4 +1,5 @@
 ﻿== Excess filter ==
+
 \label{sec:lateral}
 
 This section uses the previous results to quantify
@@ -8,7 +9,7 @@ We shall compare the filter resulting from decoding a plane wave with a given Am
 criterion, against the filter resulting from using only one loudspeaker along the 
 plane wave direction.
 
-Figures: fig:delaySphericalOverOrders figures/delaySphericalBasicOverOrders figures/delaySphericalMaxReOverOrders figures/delaySphericalInPhaseOverOrders
+Figures: fig:sphereDelayFilters figures/sphereDelayFilters-maxrv figures/sphereDelayFilters-maxre figures/sphereDelayFilters-inphase
 Excess filter for an ipsilateral plane wave
 using several orders and decodings: max-$r_V$ (top), max-$r_E$ (center) and in-phase (bottom)
 
@@ -16,7 +17,7 @@ To this end, left ear signals $c^{L}$ resulting from the general
 equation \bref{equivalent-formula} are computed by
 using the analytical expressions in the time \bref{eq:spherical_3d} and 
 frequency domain \bref{ap:Components3DFrequency}. 
-Figure \ref{fig:delaySphericalOverOrders} shows the resulting filters
+Figure \ref{fig:sphereDelayFilters} shows the resulting filters
 for a plane wave at fixed incoming angle,
 and for various Ambisonics orders and decoding criteria,
 For ipsilateral plane waves, the filtering is stronger at low Ambisonics order,
