@@ -20,9 +20,6 @@ where $c_i$ is the signal to be sent to channel $i$,
 $(a_i,e_i)$ are the azimuth and elevation of each loudspeaker, in the coordinate system shown in figure~\ref{fig:ambisonicsConvention};
 and $g_0, g_1$ are the gains for the zeroth and first order components $\{W,X,Y,Z\}$.
 
-Figure: fig:ambisonicsConvention figures/ambisonicsConvention
-Definition of the spherical coordinates used in this paper, related to the head reference frame.
-
 
 Similarly, the most general order $l_{max}$ Ambisionics linear decoding formula to 3D regular layouts is 
 \be

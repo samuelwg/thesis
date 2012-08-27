@@ -4,7 +4,6 @@
 \section{Context and purpose}
 \section{Contributions}
 
- TODO: This is a bare compilation as i recall them
 * Analytic expressions for 2d and 3d HRTF S.H. components
 * Applied to the problem of binaural Ambisonics decoding excess filtering
 * Demonstrated why it sound that bad
@@ -14,6 +13,7 @@
 * TODO: Subjective tests: Compensation strategy removes cues?
 * TODO: Subjective tests: Quality among plain binaural, uncompensated, and compensated
 * TODO: Subjective tests: Does it sounds better vs. direct binaural
+* Unified a way of accessing heterogeneous hrtf databases
 
 
 \section{Structure of the thesis}

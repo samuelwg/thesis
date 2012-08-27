@@ -10,20 +10,25 @@
 }
 
 Sound perception is spatial.
-That means that when a source emits a sound,
+That means that, when a source emits a sound,
 we are not just perceiving the emitted sound,
-but also the position where the sound is emitted from.
+but also the position where the sound was emitted from.
 Furthermore, besides source localization,
-we are able to perceive other information regarding the surrounding environment,
-for instance, whether a source is occluded, enclosed
-or the size and materials of the surfaces surrounding the source or the emitter.
+we are able to perceive information regarding the surrounding environment,
+for instance, how indirect is the path to the source,
+or the size and materials of the surrounding space.
 In summary,
 audition is not just about the ability to listen and interpret sounds signals
 but also about spatially interpreting the surrounding acoustic field.
+
 In order to artificially reproduce realistic acoustical environments,
 we need to know
+which are those perceptions and
 which are the means for the brain to obtain such spatial information.
+* TODO: So, in the following sections...
 
+
+=== Spatial percepts ===
 
 \ignore{
 TODO: Find a place where to explain that
@@ -31,7 +36,7 @@ TODO: Find a place where to explain that
 ** Position relative to the head
 *** Convenient spherical coordinates
 *** Azimuth, elevation and distance
-** Source width and heigth
+** Source width and height
 ** Velocity?
 ** Environmental
 *** What kind of environment surround the source and the listener
@@ -39,6 +44,83 @@ TODO: Find a place where to explain that
 *** Not entering in those aspects
 }
 
+Main spatial perception is ''sound source location''.
+It is usually expressed
+relative to the listener head in spherical coordinates.
+Spherical coordinates splits the position into three quantities:
+''azimuth'', ''elevation'' and ''distance''.
+Azimuth and elevation sets, together, the ''orientation'' towards the source.
+Azimuth is the rotation on the horizontal plane and around the vertical axis
+while elevation is the angle that
+forms the relative source orientation with the horizontal plane.
+Expressing orientations this way fits natural to humans
+because they are the same neck rotations we use
+to orientate the head towards a source.
+
+Figure: fig:ambisonicsConvention figures/ambisonicsConvention
+Definition of the spherical coordinates used in this work,
+related to the head reference frame.
+Frontal direction is azimuth and elevation zero.
+Positive azimuth go left and positive elevation go up.
+
+Several conventions are used in literature regarding azimuth and elevation.
+In this work, unless stated otherwise,
+we adhere to a common convention in Ambisonics literature.
+Such convention, illustrated in \autoref{fig:ambisonicsConvention},
+is the following:
+Zero elevation and azimuth is in frontal direction,
+positive azimuths are to the left and negative to the right,
+while positive elevation goes up and negative goes down, being 90º and -90º at the poles.
+When mapping spherical coordinates to Cartesian coordinates,
+a right handed system will be used, so that
+positive X goes front,
+positive Y goes left, and,
+positive Z goes up.
+
+
+\ignore{
+* ''spatial extent'': perceived width, size or massiveness of the sound source @cite:potard2006_thesis
+* Extent is perceived, but shape is harder to perceive @cite:potard2003_studyApparentShapeAndWideness
+* Extent simulation decorrelation @cite:potard2004_decorrelationSourceWidth
+* ''Tonal volume'' concept related to source size @cite:rich1916_tonalVolume
+* Tries to understand cognitive phenomenon and mechanisms @cite:boring1926 @cite:Stevens1934 @cite:PerrotBuell1982
+** Diotic stimuli, pure tones
+** equal loudnes, increased freq implies bigger perceived size
+** larger duration, larger perceived size
+* Auditory density: apparent compactness, concentration, or hardness of a sound
+** In pure tones, density increases with frequency
+* @cite:PerrotBuell1982 does tonal volume tests
+** with noise besides pure tones
+** dicothial besides dicothomial
+}
+
+Besides position, other traits
+from the spatial aspects of a given source can be perceived.
+Experiments by @cite:potard2003_studyApparentShapeAndWideness
+discarded the shape of the source as actual percept,
+but other traits like size or extent are clearly perceived @cite:potard2006_thesis.
+Even in pure tones fed as diotic stimuli provide the feeling of wideness,
+as experimented by @cite:rich1916_tonalVolume, @cite:boring1926, and @cite:Stevens1934.
+@cite:PerrotBuell1982 also experimented with the perception of auditory density
+defined as ''apparent compactness, concentration, or hardness of a sound''.
+
+''Source orientation'' can be a percept
+in cases when the sound source is directional.
+Experiments by @cite:Neuhoff2001_sourceOrientation,
+demonstrate that we can perceive such a trait,
+and it can be more clear
+in cases when the source is frontal, close or its orientation is dynamic.
+
+
+
+* Orientation when it has a unbalanced directivity pattern @cite:Neuhoff2001_sourceOrientation
+** Better perceived when frontal, close and dynamic
+* Occlusions @cite:FaragBlauerAlim2003_sourceOcclusion
+** Diffraction or Attenuation of the direct sound depending on obstacle size and frequency
+** Difraction moves apparent position to the borders of the obstacle.
+* TODO: velocity
+* TODO: Perception of the environment: spaciousness, materials, enclosed sources
+* TODO: von Bekese relates those traits to the information required to survive on the wild
 
 
 === Multi-modalilty, contrast and learning ===
@@ -53,13 +135,10 @@ TODO: Find a place where to explain that
 
 Human brain uses different cues to infer sound source location
 and other spatial information.
-Most cues, in isolation one from the other,
-are quite limited to infer the source position.
-Their validity, determinacy, and precision
-highly vary depending on factors such as
-the actual position of the sound source relative to the head,
-the nature of the emitted audio (spectral content, duration, listener familiarity...),
-and even the acoustics of the environment.
+Most cues, in isolation,
+are quite limited to infer the source position by themselves.
+Cues are less precise or ambiguous or provide no information,
+depending on factors such as source orientation, frequency ranges, duration...
 So, the brain uses a multi-modal approach
 by combining those many cues
 to build the source localization perception
@@ -77,38 +156,39 @@ and overcoming their limitations as isolated cues
 ** Reverberation, self-correlation
 }
 
+Most spatial cues rely on orientation dependant spectral transformations.
 While a sound travels from the source to the ear channel,
 it experiments spectral transformations which are dependant
 of the relative sound source position.
 Such transformations are introduced
 by the acoustics of the environment
-and by interactions with listener body,
+and by interactions with listener's body,
 mostly with head, torso and pinna (outer ear).
 Detecting a transformation requires a relative measure but,
 because there is no access to the unmodified sound,
-localization cues rely on contrast among signals
-that have been modified differently.
+the distal stimulus,
+localization cues rely on contrast among
+proximal stimuli that have been modified differently.
 
 
-That's the case for inter-aural cues.
-Inter-aural cues exploit how the sound reaches each ear in a different way.
+That's the case for inter-aural cues
+that exploit how the sound reaches each ear in a different way.
+It is also the case of dynamic cues which
+rely on detecting filter variations along the time due
+to changes on the source position relative to the head,
+either because the source moves itself or because
+the listener head is moving.
+The dramatic impact of head movements in localization accuracy
+has been widely demonstrated experimentaly, for example in
+@cite:Wallach1940Role,minimumAduditoryMovementAngle,PerrettNoble1997,Wightman1999,KatoMasaharu_200309.
 
-Another source of differently modified signals
-is relative movement of the source around the listener head,
-either because the source is actually moving
-or because the head is moving.
-Experiments widely documented in the literature,
-@cite:Wallach1940Role,minimumAduditoryMovementAngle,PerrettNoble1997,Wightman1999,KatoMasaharu_200309 ,
-demonstrate that
-head movement have an important impact on the quality of the localization.
-
-Another factor that could be though as
-a reference that enhances localization
-is memory, that is being familiar with the sound.
+Memory can be considered another reference for contrast.
 As experimented by @cite:localizationOfFamiliarSounds,
 on the lack of head movement,
 knowing the sound reduces the confusions on the median plane,
 where inter-aural cues are useless.
+Recognizing a sound and recalling how it is
+provides insight about the spectral transformations in effect.
 
 Also, it has been reported, @cite:begault2001direct,
 that some kinds of environment reflexions, 
@@ -116,67 +196,20 @@ mostly ceiling and floor reflections,
 help localization,
 although some others environment reflections
 just do the opposite effect by adding confusion and errors.
+This aspect is still wide open to experimentation.
 
 
-
-* @cite:shinn_cunningham_2000_toriconfusion not just cone of confusion, hand reachable sound
-* @cite:feddersen57 Frequency dependency of ITD and ILD effectiveness to locate sounds
-* @cite:minimumAduditoryMovementAngle Moving source effect on localization, and perceiving movement
-* @cite:KatoMasaharu_200309 localization test: azimuth, elevation, cloaked pinna or not, head still, free, up-down and left-right movements
-* Weber law: just noticeable difference: proportional to the intensity of stimuli
-* @cite:PerrettNoble1997
-* @cite:Wightman1999 front-back disambiguation by means of head and source movements
-
-
-\ignore{
-Copied from the military report about the precedent effect.
-
-One additional binaural mechanism that plays an important role in sound source localization is
-the “precedence effect” (Wallach, Newman, & Rosenzweig, 1949). The precedence effect, also
-known as “the law of the first wavefront” (Gardner, 1968; Blauert, 1999) or “Haas effect” (Haas,
-1972), is an inhibitory effect that allows one to localize sounds, based on the signal that reaches
-the ear first (the direct signal) and inhibits the effects of reflections and reverberation. It applies
-to inter-stimulus delays larger than those predicted from the finite dimensions of the human head
-but shorter than ~50 ms. If the interval between two sounds is very small (less than 0.8 ms), the
-precedence effect does not operate and the sound image is heard in a spatial position defined by
-the ITD. However, if the time difference between two brief sounds exceeds 0.8 ms and is shorter
-than 5 ms for single clicks and 30 to 50 ms for complex sounds, both sounds are still heard as a
-single sound. The location of this fused sound image is determined largely by the location of the
-first sound. This is true even if the lagging sound is as much as 10 dB higher than the first sound
-(Wallach, et al., 1949). However, at higher intensities of reflections, the shift in an apparent
-position of the sound source attributable to the presence of an interaural time delay can be
-compensated by the interaural intensity difference inducing the shift in the opposite direction. If
-the time delay exceeds 30 to 50 ms, both sounds are not fused and are heard separately as a direct
-sound and an echo (see section 4). The precedence effect operates primarily in the horizontal
-plane, but it can also be observed in the median plane (Rakerd & Hartmann, 1992, 1994).
-
-The effect of the delayed sound on the spatial position of the fused event depends on the interval
-between the lead and lag. The lagging sound tends to “pull” the perceived sound location away
-from that of the lead. It is noteworthy that if the primary sound and the secondary sound differ
-greatly in their spectral (timbral) characteristics, the precedence effect may not occur. This
-means that the sound reflection from the wall, which is highly dissimilar from the original sound,
-may be heard separately from the original sound even if the time delay is less than 30 to 50 ms
-(Divenyi & Blauert, 1987). The precedence effect does not completely eliminate the effect of
-the delayed sound even if its level is relatively low. It makes the delayed sounds part of a single
-fused event and it reduces the effect of directional information carried by the delayed sounds.
-However, the changes in the pattern of reflections can still be detected and they can affect the
-perceived size of the sound source, its loudness, and its timbre (Blauert, 1999).
-}
+* Cues are individualized but can be learned
+** Cues depend on biometrics, so they are individualized TODO: reference
+** Biometrics change along life because of growth or aging and we adapt, requires plasticity
+** Biometrics change because accidents and we adapt after transitions TODO: reference
+** Biometrics change because we are using someone else's HRTF in an experiment
+*** @cite:LearningBinauralCues Experiment of changing ILD and ITD. TODO: Properly review
+*** @cite:LearningNewPinna Experiment of learning new pinna
 
 
 
 
-=== Evaluating localization ===
-
-{
-* The ''minimum audible angle'', @cite:minimumAudibleAngle
-** minimum angle between two sources to be perceived as different locations.
-** Which is the minimum
-** Rough tendencies
-*** Finer at front
-*** Frequency dependency?
-** Testing Methodologies?
-}
 
 
 === Localization cues ===
@@ -277,9 +310,104 @@ introducing a kind of audition motion parallax which can be used
 by the brain to get more precise estimations.
 
 
+* @cite:Algazi2001_lowFrequencyElevationCues Torso and head diffraction as cues for elevation in low frequencies, pinna has no effect, simplified parametric model
+* @cite:shinn_cunningham_2000_toriconfusion not just cone of confusion, hand reachable sound
+* @cite:feddersen57 Frequency dependency of ITD and ILD effectiveness to locate sounds
+* @cite:minimumAduditoryMovementAngle Moving source effect on localization, and perceiving movement
+* @cite:KatoMasaharu_200309 localization test: azimuth, elevation, cloaked pinna or not, head still, free, up-down and left-right movements
+* Weber law: just noticeable difference: proportional to the intensity of stimuli
+* @cite:PerrettNoble1997
+* @cite:Wightman1999 front-back disambiguation by means of head and source movements
+* @cite:Wenzel1988personalHrtf importance of individualized HRTF
+* @cite:Wenzel1993 nonindividualized mess with elevation and cone of confusion robust ITD and ILD
+* @cite:ZotkinAntropometricHrtf anthropometry to choose HF HRTF and synth LF HRTF
+* @cite:Brown_SphereHrtfs Snowball synthesized HRTF
 
 
 
+
+\ignore{
+Copied from the military report about the precedent effect.
+
+One additional binaural mechanism that plays an important role in sound source localization is
+the “precedence effect” (Wallach, Newman, & Rosenzweig, 1949). The precedence effect, also
+known as “the law of the first wavefront” (Gardner, 1968; Blauert, 1999) or “Haas effect” (Haas,
+1972), is an inhibitory effect that allows one to localize sounds, based on the signal that reaches
+the ear first (the direct signal) and inhibits the effects of reflections and reverberation. It applies
+to inter-stimulus delays larger than those predicted from the finite dimensions of the human head
+but shorter than ~50 ms. If the interval between two sounds is very small (less than 0.8 ms), the
+precedence effect does not operate and the sound image is heard in a spatial position defined by
+the ITD. However, if the time difference between two brief sounds exceeds 0.8 ms and is shorter
+than 5 ms for single clicks and 30 to 50 ms for complex sounds, both sounds are still heard as a
+single sound. The location of this fused sound image is determined largely by the location of the
+first sound. This is true even if the lagging sound is as much as 10 dB higher than the first sound
+(Wallach, et al., 1949). However, at higher intensities of reflections, the shift in an apparent
+position of the sound source attributable to the presence of an interaural time delay can be
+compensated by the interaural intensity difference inducing the shift in the opposite direction. If
+the time delay exceeds 30 to 50 ms, both sounds are not fused and are heard separately as a direct
+sound and an echo (see section 4). The precedence effect operates primarily in the horizontal
+plane, but it can also be observed in the median plane (Rakerd & Hartmann, 1992, 1994).
+
+The effect of the delayed sound on the spatial position of the fused event depends on the interval
+between the lead and lag. The lagging sound tends to “pull” the perceived sound location away
+from that of the lead. It is noteworthy that if the primary sound and the secondary sound differ
+greatly in their spectral (timbral) characteristics, the precedence effect may not occur. This
+means that the sound reflection from the wall, which is highly dissimilar from the original sound,
+may be heard separately from the original sound even if the time delay is less than 30 to 50 ms
+(Divenyi & Blauert, 1987). The precedence effect does not completely eliminate the effect of
+the delayed sound even if its level is relatively low. It makes the delayed sounds part of a single
+fused event and it reduces the effect of directional information carried by the delayed sounds.
+However, the changes in the pattern of reflections can still be detected and they can affect the
+perceived size of the sound source, its loudness, and its timbre (Blauert, 1999).
+}
+
+
+
+
+=== Evaluation strategies ===
+
+{
+* Metrics
+** ''Localization acuity'' (LA)
+** ''Minimum audible angle'' (MAA), @cite:minimumAudibleAngle
+*** minimum angle between two sources to be perceived as different locations.
+*** Which is the minimum
+*** Rough tendencies
+**** Finer at front
+**** Frequency dependency?
+*** Testing Methodologies?
+** ''Minimum auditory movement angle''' (MAMA) @cite:minimumAduditoryMovementAngle
+* Cue Isolation
+** Head movements: constraining versus tracking
+** Binaural versus free field stimuli
+** Ear deafing
+** Pinna 
+* Reporting strategy
+** Eye tracking
+** Pointing device
+** Acoustic pointer
+** Visual pointer
+* Learning effects
+}
+
+
+
+
+* Localization Accuracy
+** @cite:OldfieldParker1984_acuityNormal 
+*** Horizontal vs vertical accuracy depending on the orientation, 
+*** better in azimuth than with elevation
+*** better behind, fuzzy spots at 120-160 azimuth, and at up behind
+** @cite:OldfieldParker1984_acuityNoPinna
+*** Same with no pinna
+*** More back-front reversals
+*** Increased elevation error, still perceived
+*** No significant impact over azimuth
+** @cite:OldfieldParker1986_acuityMonaural
+*** Same with deafed ear
+*** Increased azimuth errors, still perceived
+*** Front-back reversal good but not as good as normal
+*** Elevation good but with errors on upper and median ones (justification: contribution of the other ear pinna)
 
 
 
