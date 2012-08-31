@@ -10,6 +10,13 @@ import math
 
 from colorfield import ColorField, Reloader
 
+def ead2xyz(e,a,d) :
+	ra, re = math.radians(a), math.radians(e)
+	sa, se = math.sin(ra), math.sin(re)
+	ca, ce = math.cos(ra), math.cos(re)
+	x,y,z = d*ce*ca, d*ce*sa, d*se
+	return [x,y,z]
+
 def cartesian_product(*arrays):
 	import operator
 	broadcastable = np.ix_(*arrays)
@@ -98,13 +105,16 @@ class SpherePointScene(QtGui.QGraphicsScene) :
 		self._frame = 0
 		self._distance = 600
 
-		self._points = []
 		self._trackballs = [
 			TrackBall(),
 			TrackBall(),
 			TrackBall(),
 			]
 		self.startTimer(20)
+		self._points = []
+		self._vertices = None
+		self._indexes = None
+		self._normals = None
 
 	def timerEvent(self, event) :
 		self.update()
@@ -130,13 +140,14 @@ class SpherePointScene(QtGui.QGraphicsScene) :
 		GL.glMatrixMode(GL.GL_MODELVIEW);
 
 		view = QtGui.QMatrix4x4()
-		view.rotate(self._trackballs[2].rotation());
-#		view.data[2, 3] -= 2.0 * math.exp(self._distance / 1200.0);
+		view.rotate(self._trackballs[2].rotation())
+#		view.data().reshape(4,4)[2, 3] -= 2.0 * math.exp(self._distance / 1200.0);
 		GL.glLoadMatrixf(view.data())
-		self.drawPoints()
-#		self.drawSphere()
+		self.drawAxis()
+#		self.drawPoints()
+		self.drawSphere()
 
-		self.setDefaultState();
+		self.setDefaultState()
 		painter.endNativePainting()
 		++self._frame;
 
@@ -144,7 +155,6 @@ class SpherePointScene(QtGui.QGraphicsScene) :
 		GL.glEnable(GL.GL_CULL_FACE)
 		GL.glEnable(GL.GL_LIGHTING)
 		quadric = GLU.gluNewQuadric()
-#		GLU.gluSphere(quadric, 5, 20, 20)
 		for e,a,d in self._points :
 			ra, re = math.radians(a), math.radians(e)
 			sa, se = math.sin(ra), math.sin(re)
@@ -160,37 +170,79 @@ class SpherePointScene(QtGui.QGraphicsScene) :
 			GL.glPopMatrix()
 
 	def drawSphere(self) :
-		if not self._indexes : return
+		if self._indexes is None : return
 
-		GL.glEnable(GL.GL_CULL_FACE)
+		GL.glDisable(GL.GL_CULL_FACE)
 #		GL.glEnable(GL.GL_LIGHTING)
+#		GL.glScale(1,1,1)
 
-		GL.glEnableClientState( GL.GL_VERTEX_ARRAY );
-		GL.glVertexPointer( 3, GL.GL_FLOAT, 0, self._vertices );
-		GL.glDrawElements( GL.GL_TRIANGLE_STRIP, len(self._indexes), GL.GL_UNSIGNED_INT, self._indexes );
-		GL.glDisableClientState( GL.GL_VERTEX_ARRAY );
+#		GL.glDisable(GL.GL_LIGHTING)
+		GL.glEnableClientState( GL.GL_VERTEX_ARRAY )
+		GL.glEnableClientState( GL.GL_COLOR_ARRAY )
+		GL.glEnableClientState( GL.GL_NORMAL_ARRAY )
+
+		GL.glColorPointer( 3, GL.GL_FLOAT, 0, self._meshColors)
+		GL.glVertexPointer( 3, GL.GL_FLOAT, 0, self._vertices )
+		GL.glNormalPointer( GL.GL_FLOAT, 0, self._normals )
+#		GL.glDrawElements( GL.GL_TRIANGLE_STRIP, len(self._indexes), GL.GL_UNSIGNED_INT, self._indexes )
+		
+		GL.glDisableClientState( GL.GL_COLOR_ARRAY )
+		GL.glColor(0.6,.3,.6)
+		GL.glDrawElements( GL.GL_POINTS, len(self._indexes), GL.GL_UNSIGNED_INT, self._indexes )
+
+		GL.glDisableClientState( GL.GL_COLOR_ARRAY )
+		GL.glDisableClientState( GL.GL_VERTEX_ARRAY )
+		GL.glDisableClientState( GL.GL_NORMAL_ARRAY )
+
+
+	def drawAxis(self) :
+
+		GL.glPushAttrib(GL.GL_ENABLE_BIT)
+		GL.glDisable(GL.GL_LIGHTING)
+
+		GL.glLineWidth(1)
+
+		GL.glBegin(GL.GL_LINES)
+
+		GL.glColor(0,0,1.)
+		GL.glVertex3f(0, 0, -10)
+		GL.glVertex3f(0, 0, +10)
+
+		GL.glColor(1.,0,0)
+		GL.glVertex3f(-10, 0, 0)
+		GL.glVertex3f(+10, 0, 0)
+
+		GL.glColor(0,1.,0)
+		GL.glVertex3f(0, -10, 0)
+		GL.glVertex3f(0, +10, 0)
+
+		GL.glEnd()
+
+		GL.glPopAttrib()
+
 
 
 
 	def setStates(self) :
-		GL.glEnable(GL.GL_DEPTH_TEST);
-		GL.glEnable(GL.GL_CULL_FACE);
-		GL.glEnable(GL.GL_LIGHTING);
-		GL.glEnable(GL.GL_COLOR_MATERIAL);
-#		GL.glEnable(GL.GL_TEXTURE_2D);
-		GL.glEnable(GL.GL_NORMALIZE);
+		GL.glEnable(GL.GL_DEPTH_TEST)
+		GL.glEnable(GL.GL_CULL_FACE)
+		GL.glEnable(GL.GL_LIGHTING)
+		GL.glEnable(GL.GL_COLOR_MATERIAL)
+#		GL.glEnable(GL.GL_TEXTURE_2D)
+		GL.glEnable(GL.GL_NORMALIZE)
+		GL.glPolygonMode(GL.GL_FRONT, GL.GL_LINE);
 
-		GL.glMatrixMode(GL.GL_PROJECTION);
-		GL.glPushMatrix();
-		GL.glLoadIdentity();
+		GL.glMatrixMode(GL.GL_PROJECTION)
+		GL.glPushMatrix()
+		GL.glLoadIdentity()
 
-		GL.glMatrixMode(GL.GL_MODELVIEW);
-		GL.glPushMatrix();
-		GL.glLoadIdentity();
+		GL.glMatrixMode(GL.GL_MODELVIEW)
+		GL.glPushMatrix()
+		GL.glLoadIdentity()
 
-		self.setLights();
+		self.setLights()
 
-		materialSpecular = [0.5, 0.5, 0.5, 1.0]
+		materialSpecular = [0.2, 0.5, 0.5, 1.0]
 		GL.glMaterialfv(GL.GL_FRONT_AND_BACK, GL.GL_SPECULAR, materialSpecular);
 		GL.glMaterialf(GL.GL_FRONT_AND_BACK, GL.GL_SHININESS, 32),
 
@@ -220,12 +272,19 @@ class SpherePointScene(QtGui.QGraphicsScene) :
 
 		GL.glColorMaterial(GL.GL_FRONT_AND_BACK, GL.GL_AMBIENT_AND_DIFFUSE)
 		lightColour = 1.0, 1.0, 0.8, 0.1
+		lightDiffuse = .4, .4, 0.4, 1.
 		lightDir = 0.0, 1.0, 0.8, 0.0
-		GL.glLightfv(GL.GL_LIGHT0, GL.GL_DIFFUSE, lightColour)
-#		GL.glLightfv(GL.GL_LIGHT0, GL.GL_SPECULAR, lightColour)
+		GL.glLightfv(GL.GL_LIGHT0, GL.GL_DIFFUSE, lightDiffuse)
+		GL.glLightfv(GL.GL_LIGHT0, GL.GL_SPECULAR, lightColour)
 		GL.glLightfv(GL.GL_LIGHT0, GL.GL_POSITION, lightDir);
 		GL.glLightModelf(GL.GL_LIGHT_MODEL_LOCAL_VIEWER, 1.0)
 		GL.glEnable(GL.GL_LIGHT0)
+
+		GL.glLightfv(GL.GL_LIGHT1, GL.GL_DIFFUSE, (.4,.5,.7))
+		GL.glLightfv(GL.GL_LIGHT1, GL.GL_SPECULAR, lightColour)
+		GL.glLightfv(GL.GL_LIGHT1, GL.GL_POSITION, (-.5,-.2,-.5,0));
+		GL.glLightModelf(GL.GL_LIGHT_MODEL_LOCAL_VIEWER, 1.0)
+		GL.glEnable(GL.GL_LIGHT1)
 
 
 	def wheelEvent(self, event) :
@@ -351,9 +410,12 @@ class SphericalHarmonicsControl(QtGui.QWidget) :
 		topLayout = QtGui.QHBoxLayout()
 		self._orderSpin = addSpin("Order", 0, 5, 10, self.orderChanged)
 		topLayout.addStretch(1)
-		self._parallelsSpin = addSpin("Parallels", 4, 30, 400, self.resolutionChanged)
+		self._parallelsSpin = addSpin("Parallels", 4, 50, 400, self.resolutionChanged)
 		topLayout.addStretch(1)
-		self._meridiansSpin = addSpin("Meridians", 4, 40, 400, self.resolutionChanged)
+		self._meridiansSpin = addSpin("Meridians", 4, 50, 400, self.resolutionChanged)
+		resetButton = QtGui.QPushButton("Reset")
+		resetButton.clicked.connect(self.reset)
+		topLayout.addWidget(resetButton)
 		self.layout().addLayout(topLayout)
 		self.layout().addLayout(self._grid)
 
@@ -372,11 +434,11 @@ class SphericalHarmonicsControl(QtGui.QWidget) :
 			knob.valueChanged.connect(self.functionChanged)
 			return knob
 
-		order = 6
+		order = 5
 		orderColors = [
-			"#77ff77",
-			"#66aa66",
-			"#ff7777",
+			"#889988",
+			"#667766",
+			"#bb7788",
 			"#aa6666",
 			]
 		self._knobs = [[
@@ -395,6 +457,11 @@ class SphericalHarmonicsControl(QtGui.QWidget) :
 			knob.value()/100.
 			for knob in row ]
 			for row in self._knobs ])
+
+	def reset(self) :
+		for row in self._knobs :
+			for knob in row:
+				knob.setValue(0)
 
 
 
@@ -432,10 +499,7 @@ if __name__ == "__main__" :
 
 
 	def sh(sh, e, a) :
-		ra, re = math.radians(a), math.radians(e)
-		sa, se = math.sin(ra), math.sin(re)
-		ca, ce = math.cos(ra), math.cos(re)
-		x,y,z = ce*ca, ce*sa, se
+		x,y,z = ead2xyz(e, a, 1)
 		return 5*math.sqrt(1/math.pi)*(
 			math.sqrt(1./2) * (
 				sh[0,0] +
@@ -483,6 +547,15 @@ if __name__ == "__main__" :
 			(e, a, sh(shMatrix, e, a) )
 			for e,a in cartesian_product(elevations, azimuths)]
 		w2.setEadPoints(sphericalPoints)
+		w2.scene()._vertices = np.array([ead2xyz(e,a,abs(d)) for e,a,d in sphericalPoints])
+		w2.scene()._normals = np.array([ead2xyz(e,a,abs(d)) for e,a,d in sphericalPoints])
+		w2.scene()._meshColors = np.array([[1.,.0,.0] if d<0 else [0.,0.,1.] for e,a,d in sphericalPoints])
+		w2.scene()._indexes = np.array(
+			[[
+				[i+nazimuths*j,i+nazimuths*(j+1)]
+				for i in xrange(nazimuths) ]
+				for j in xrange(nelevations-1) ]
+			).flatten()
 		w2.update()
 		w1.format(nazimuths, nelevations, ColorField.signedScale)
 		w1.data()[:] = data/(10/255.)+127
