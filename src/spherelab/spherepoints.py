@@ -184,7 +184,7 @@ class SpherePointScene(QtGui.QGraphicsScene) :
 		GL.glColorPointer( 3, GL.GL_FLOAT, 0, self._meshColors)
 		GL.glVertexPointer( 3, GL.GL_FLOAT, 0, self._vertices )
 		GL.glNormalPointer( GL.GL_FLOAT, 0, self._normals )
-#		GL.glDrawElements( GL.GL_TRIANGLE_STRIP, len(self._indexes), GL.GL_UNSIGNED_INT, self._indexes )
+		GL.glDrawElements( GL.GL_TRIANGLE_STRIP, len(self._indexes), GL.GL_UNSIGNED_INT, self._indexes )
 		
 		GL.glDisableClientState( GL.GL_COLOR_ARRAY )
 		GL.glColor(0.6,.3,.6)
@@ -201,6 +201,36 @@ class SpherePointScene(QtGui.QGraphicsScene) :
 		GL.glDisable(GL.GL_LIGHTING)
 
 		GL.glLineWidth(1)
+
+		GL.glBegin(GL.GL_TRIANGLE_FAN)
+		GL.glColor(0,0,1.)
+		GL.glVertex3f(0, 0, +10)
+		GL.glVertex3f(-.3, +.3, +9.5)
+		GL.glVertex3f(+.3, +.3, +9.5)
+		GL.glVertex3f(+.3, -.3, +9.5)
+		GL.glVertex3f(-.3, -.3, +9.5)
+		GL.glVertex3f(-.3, +.3, +9.5)
+		GL.glEnd()
+
+		GL.glBegin(GL.GL_TRIANGLE_FAN)
+		GL.glColor(0,1.,0)
+		GL.glVertex3f(0, +10, 0)
+		GL.glVertex3f(-.3, +9.5, +.3)
+		GL.glVertex3f(+.3, +9.5, +.3)
+		GL.glVertex3f(+.3, +9.5, -.3)
+		GL.glVertex3f(-.3, +9.5, -.3)
+		GL.glVertex3f(-.3, +9.5, +.3)
+		GL.glEnd()
+
+		GL.glBegin(GL.GL_TRIANGLE_FAN)
+		GL.glColor(1.,0,0)
+		GL.glVertex3f(+10, 0, 0)
+		GL.glVertex3f(+9.5, -.3, +.3)
+		GL.glVertex3f(+9.5, +.3, +.3)
+		GL.glVertex3f(+9.5, +.3, -.3)
+		GL.glVertex3f(+9.5, -.3, -.3)
+		GL.glVertex3f(+9.5, -.3, +.3)
+		GL.glEnd()
 
 		GL.glBegin(GL.GL_LINES)
 
@@ -219,6 +249,7 @@ class SpherePointScene(QtGui.QGraphicsScene) :
 		GL.glEnd()
 
 		GL.glPopAttrib()
+
 
 
 
@@ -405,11 +436,10 @@ class SphericalHarmonicsControl(QtGui.QWidget) :
 			return spin
 			
 		QtGui.QWidget.__init__(self)
+		self._editing = False
 		self.setLayout(QtGui.QVBoxLayout())
 		self._grid = QtGui.QGridLayout()
 		topLayout = QtGui.QHBoxLayout()
-		self._orderSpin = addSpin("Order", 0, 5, 10, self.orderChanged)
-		topLayout.addStretch(1)
 		self._parallelsSpin = addSpin("Parallels", 4, 50, 400, self.resolutionChanged)
 		topLayout.addStretch(1)
 		self._meridiansSpin = addSpin("Meridians", 4, 50, 400, self.resolutionChanged)
@@ -431,7 +461,7 @@ class SphericalHarmonicsControl(QtGui.QWidget) :
 			label.setAlignment(Qt.AlignCenter)
 			self._grid.addWidget(label, i*2, j)
 			self._grid.addWidget(knob, i*2+1, j)
-			knob.valueChanged.connect(self.functionChanged)
+			knob.valueChanged.connect(self.knobEdited)
 			return knob
 
 		order = 5
@@ -449,8 +479,9 @@ class SphericalHarmonicsControl(QtGui.QWidget) :
 	functionChanged = QtCore.Signal()
 	resolutionChanged = QtCore.Signal()
 
-	def orderChanged(self) :
-		order = self._orderSpin.value()
+	def knobEdited(self) :
+		if self._editing : return
+		self.functionChanged.emit()
 
 	def sphericalHarmonicsMatrix(self) :
 		return np.array([[
@@ -459,9 +490,12 @@ class SphericalHarmonicsControl(QtGui.QWidget) :
 			for row in self._knobs ])
 
 	def reset(self) :
+		self._editing = True
 		for row in self._knobs :
 			for knob in row:
 				knob.setValue(0)
+		self._editing = False
+		self.functionChanged.emit()
 
 
 
@@ -511,12 +545,12 @@ if __name__ == "__main__" :
 				sh[1,0] * y +
 				0
 			) +
-			math.sqrt(15./16) * (
-				sh[2,0] * (x*y) +
-				sh[2,1] * (x*z) +
-				sh[2,2] * (2*z*z -x*x -y*y) * math.sqrt(1./3) +
-				sh[1,2] * (y*z) +
-				sh[0,2] * (x*x -y*y) +
+			(
+				sh[2,0] * (x*y)             * math.sqrt(15./4) +
+				sh[2,1] * (x*z)             * math.sqrt(15./4) +
+				sh[2,2] * (2*z*z -x*x -y*y) * math.sqrt( 5./16) +
+				sh[1,2] * (y*z)             * math.sqrt(15./4) +
+				sh[0,2] * (x*x -y*y)        * math.sqrt(15./16) +
 				0
 			) +
 			(
@@ -529,7 +563,7 @@ if __name__ == "__main__" :
 				sh[0,3] * y*(3*x*x-y*y)           * math.sqrt(35./32) +
 				0
 				)
-			)
+			) 
 
 	def reloadData() :
 		nelevations = w0._parallelsSpin.value()

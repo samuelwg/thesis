@@ -43,7 +43,6 @@ class ColorField(QtGui.QWidget) :
 			dtype=npformat,
 			buffer=self._img.bits())[:,:width]
 
-
 	def data(self) :
 		return self._rawdata
 
