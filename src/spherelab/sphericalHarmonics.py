@@ -100,7 +100,7 @@ class SphericalHarmonicsTests(unittest.TestCase) :
 
 	def test_sh_1_1(self) :
 		components = np.zeros((4,4))
-		components[shIndex2Matrix(1,1)] = 1
+		components[shIndex2Matrix(1,+1)] = 1
 		max = math.sqrt(1./4/math.pi)
 		self.assertAlmostEqual(sh(components,   0,   0)/max,+1)
 		self.assertAlmostEqual(sh(components,   0, 180)/max,-1)
@@ -121,6 +121,48 @@ class SphericalHarmonicsTests(unittest.TestCase) :
 		self.assertAlmostEqual(sh(components,   0, -90)/max,-1)
 		self.assertAlmostEqual(sh(components,   0, +90)/max,+1)
 		self.assertAlmostEqual(sh(components,  30,   4)/max, 0.060410878340834702)
+
+	def test_sh_1_0(self) :
+		components = np.zeros((4,4))
+		components[shIndex2Matrix(1,0)] = 1
+		max = math.sqrt(1./4/math.pi)
+		self.assertAlmostEqual(sh(components,   0,   0)/max, 0)
+		self.assertAlmostEqual(sh(components,   0, 180)/max, 0)
+		self.assertAlmostEqual(sh(components, -90,   0)/max,-1)
+		self.assertAlmostEqual(sh(components, +90,   0)/max,+1)
+		self.assertAlmostEqual(sh(components,   0, -90)/max, 0)
+		self.assertAlmostEqual(sh(components,   0, +90)/max, 0)
+		self.assertAlmostEqual(sh(components,  30,   0)/max, 0.5)
+
+	def test_sh_2_2(self) :
+		components = np.zeros((4,4))
+		components[shIndex2Matrix(2,+2)] = 1
+		max = math.sqrt(15./16/math.pi)
+		self.assertAlmostEqual(sh(components,   0,   0)/max,+1)
+		self.assertAlmostEqual(sh(components,   0, 180)/max,+1)
+		self.assertAlmostEqual(sh(components, -90,   0)/max, 0)
+		self.assertAlmostEqual(sh(components, +90,   0)/max, 0)
+		self.assertAlmostEqual(sh(components,   0, -90)/max,-1)
+		self.assertAlmostEqual(sh(components,   0, +90)/max,-1)
+		self.assertAlmostEqual(sh(components,  30,   4)/max, 0.7427010515561776)
+
+	def test_sh_2_1(self) :
+		components = np.zeros((4,4))
+		components[shIndex2Matrix(2,+1)] = 1
+		max = math.sqrt(15./16/math.pi)
+		self.assertAlmostEqual(sh(components,   0,   0)/max, 0)
+		self.assertAlmostEqual(sh(components,   0, 180)/max, 0)
+		self.assertAlmostEqual(sh(components, -90,   0)/max, 0)
+		self.assertAlmostEqual(sh(components, +90,   0)/max, 0)
+		self.assertAlmostEqual(sh(components,   0, -90)/max, 0)
+		self.assertAlmostEqual(sh(components,   0, +90)/max, 0)
+		self.assertAlmostEqual(sh(components,   0,  45)/max, 1)
+		self.assertAlmostEqual(sh(components,   0, -45)/max, 1)
+		self.assertAlmostEqual(sh(components,   0, 135)/max, 1)
+		self.assertAlmostEqual(sh(components,   0, 315)/max, 1)
+		self.assertAlmostEqual(sh(components,   0, -90)/max, 0)
+		self.assertAlmostEqual(sh(components,   0, +90)/max, 0)
+		self.assertAlmostEqual(sh(components,  30,   4)/max, 0.7427010515561776)
 
 
 class CoordsConversionTests(unittest.TestCase) :

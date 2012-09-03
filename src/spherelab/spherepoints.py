@@ -10,12 +10,7 @@ import math
 
 from colorfield import ColorField, Reloader
 
-def ead2xyz(e,a,d) :
-	ra, re = math.radians(a), math.radians(e)
-	sa, se = math.sin(ra), math.sin(re)
-	ca, ce = math.cos(ra), math.cos(re)
-	x,y,z = d*ce*ca, d*ce*sa, d*se
-	return [x,y,z]
+from sphericalHarmonics import ead2xyz
 
 def cartesian_product(*arrays):
 	import operator
@@ -177,11 +172,14 @@ class SpherePointScene(QtGui.QGraphicsScene) :
 #		GL.glScale(1,1,1)
 
 #		GL.glDisable(GL.GL_LIGHTING)
+		GL.glEnable(GL.GL_BLEND)
+		GL.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA)
+
 		GL.glEnableClientState( GL.GL_VERTEX_ARRAY )
 		GL.glEnableClientState( GL.GL_COLOR_ARRAY )
 		GL.glEnableClientState( GL.GL_NORMAL_ARRAY )
 
-		GL.glColorPointer( 3, GL.GL_FLOAT, 0, self._meshColors)
+		GL.glColorPointer( 4, GL.GL_FLOAT, 0, self._meshColors)
 		GL.glVertexPointer( 3, GL.GL_FLOAT, 0, self._vertices )
 		GL.glNormalPointer( GL.GL_FLOAT, 0, self._normals )
 		GL.glDrawElements( GL.GL_TRIANGLE_STRIP, len(self._indexes), GL.GL_UNSIGNED_INT, self._indexes )
@@ -531,46 +529,13 @@ if __name__ == "__main__" :
 	w.resize(width, height)
 
 
-
-	def sh(sh, e, a) :
-		x,y,z = ead2xyz(e, a, 1)
-		return 5*math.sqrt(1/math.pi)*(
-			math.sqrt(1./2) * (
-				sh[0,0] +
-				0
-			) +
-			math.sqrt(1./4) * (
-				sh[0,1] * x +
-				sh[1,1] * z +
-				sh[1,0] * y +
-				0
-			) +
-			(
-				sh[2,0] * (x*y)             * math.sqrt(15./4) +
-				sh[2,1] * (x*z)             * math.sqrt(15./4) +
-				sh[2,2] * (2*z*z -x*x -y*y) * math.sqrt( 5./16) +
-				sh[1,2] * (y*z)             * math.sqrt(15./4) +
-				sh[0,2] * (x*x -y*y)        * math.sqrt(15./16) +
-				0
-			) +
-			(
-				sh[3,0] * x*(x*x-3*y*y)           * math.sqrt(35./32) +
-				sh[3,1] * z*x*y                   * math.sqrt(105./4)+
-				sh[3,2] * x*(4*z*z -x*x -y*y)     * math.sqrt(21./32) +
-				sh[3,3] * z*(2*z*z -3*x*x -3*y*y) * math.sqrt(7./16) +
-				sh[2,3] * y*(4*z*z -x*x -y*y)     * math.sqrt(21./32) +
-				sh[1,3] * z*(x*x-y*y)             * math.sqrt(105./16) +
-				sh[0,3] * y*(3*x*x-y*y)           * math.sqrt(35./32) +
-				0
-				)
-			) 
-
+	from sphericalHarmonics import sh
 	def reloadData() :
 		nelevations = w0._parallelsSpin.value()
 		nazimuths = w0._meridiansSpin.value()
 		elevations = np.linspace(  -90,  90, nelevations)
 		azimuths = np.linspace( -180, 180, nazimuths, endpoint=False)
-		shMatrix = w0.sphericalHarmonicsMatrix()
+		shMatrix = 5.*w0.sphericalHarmonicsMatrix()
 		data = np.array([[
 			sh(shMatrix, e, a)
 			for a in azimuths ]
@@ -583,7 +548,7 @@ if __name__ == "__main__" :
 		w2.setEadPoints(sphericalPoints)
 		w2.scene()._vertices = np.array([ead2xyz(e,a,abs(d)) for e,a,d in sphericalPoints])
 		w2.scene()._normals = np.array([ead2xyz(e,a,abs(d)) for e,a,d in sphericalPoints])
-		w2.scene()._meshColors = np.array([[1.,.0,.0] if d<0 else [0.,0.,1.] for e,a,d in sphericalPoints])
+		w2.scene()._meshColors = np.array([[1.,.0,.0, .6] if d<0 else [0.,0.,1., .9] for e,a,d in sphericalPoints])
 		w2.scene()._indexes = np.array(
 			[[
 				[i+nazimuths*j,i+nazimuths*(j+1)]
