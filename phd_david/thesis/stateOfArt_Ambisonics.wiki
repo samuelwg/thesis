@@ -1,0 +1,14 @@
+== Ambisonics ==
+
+
+
+
+
+* Spherical harmonics
+* Encoding and decoding
+* Different formalisms compared
+* Truncation error bounds
+* Effect of angular sampling
+
+
+
