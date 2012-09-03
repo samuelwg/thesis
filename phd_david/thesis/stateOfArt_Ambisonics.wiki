@@ -2,6 +2,80 @@
 
 
 
+* Short definition: Technologia for
+** recording, encoding, manipulating and decoding
+** 3D acoustic fields.
+** based on descomposition of the field in SH
+* First Gerzon paper @cite:Gerzon_Periphony
+* Based on early ideas of
+** @cite:cooper1972_discreteMatrixMultichannelStereo Azimuth harmonics
+** @cite:gibson1972compatible
+** @cite:Fellgett1972_directionalInformation
+* @cite:Gerzon_Psychoacoustics Psychoacoustic cues not well known, lets reproduce the sound field
+
+
+
+Ambisonics is a technology for recording, encoding, manipulating and decoding
+three-dimensional acoustic fields,
+based on the decomposition of the pressure field in spherical harmonics.
+It was firstly formalized by Gerzon in @cite:Gerzon_Periphony,
+althought its based on ideas previously published by
+@cite:cooper1972_discreteMatrixMultichannelStereo
+@cite:gibson1972compatible and 
+@cite:Fellgett1972_directionalInformation
+and others.
+
+
+
+=== Spherical harmonics ===
+
+* Why: explain conventions and properties used along the thesis
+* Informal definition:
+** Family orthogonal functions defined on the surface of an sphere.
+** They can be used as base to represent any
+*** orientation dependant function
+*** as a linear combination of them
+** Analogy: Fourier decomposition
+*** for functions defined in the circle vs in the sphere surface
+*** fourier used sinusoids
+*** Azimuthal and elevation frequency
+* Harmonics and components have two indexes: order l and degree m
+** In a given order l, degrees go from $-l$ to $l$
+** Some conventions take out the sign as a third parameter $\sigma$
+** Warning: just real or also complex
+** Components grow quadratic with the order $l^2$
+** Each order l adds $2l-1$ components
+* Harmonics in the same order have the same number nodal lines
+** Parallel or elevation nodal lines ($l-|m|$)
+** Meridian or azimuthal nodal lines ($|m|$)
+
+
+
+* Components in each order are rotational invariant
+** Components of no other order paricipate on the rotation of a given order
+*** 
+* De
+** Several conventions
+*** Real and Complex
+*** Normalizations
+*** Phase
+*** Channel normalization
+
+
+* Complex spherical harmonics @cite:Williams1999_FourierAcoustics
+
+
+* First Gerzon paper @cite:Gerzon_Periphony
+** Yet 3D
+** Cartesian coords
+
+* @cite:montoya2004high Tetramic microphone paper
+* @cite:Gerzon_Soundfield Sound field paper and pattent @cite:Gerzon_Soundfield_Patent
+
+
+@cite:Gerzon_Patent,Gerzon_Periphony,Gerzon_Soundfield,montoya2004high,Gerzon_Broadcasting,Malham_BformatManipulation,Gerzon_VienaDecoder,Wiggins_Phd.
+
+
 
 
 * Spherical harmonics

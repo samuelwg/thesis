@@ -15,7 +15,7 @@ we are not just perceiving the emitted sound,
 but also the position where the sound was emitted from.
 Furthermore, besides source localization,
 we are able to perceive information regarding the surrounding environment,
-for instance, how indirect is the path to the source,
+for instance, how indirect the path to the source is,
 or the size and materials of the surrounding space.
 In summary,
 audition is not just about the ability to listen and interpret sounds signals
@@ -124,6 +124,13 @@ in cases when the source is frontal, close or its orientation is dynamic.
 
 
 === Multi-modalilty, contrast and learning ===
+
+* TODO: Introduce this section
+** Setting up the basic principles of spatial auditory perception
+** Cues are contrasts among proximal stimuli
+** Percepts are fuzzy constructs upon several cues
+** We learn to interprete such cues in a plastic way multi-modal reinforcement
+
 
 \ignore{
 * Human brain uses different cues to co-infer the source location
@@ -408,6 +415,17 @@ perceived size of the sound source, its loudness, and its timbre (Blauert, 1999)
 *** Increased azimuth errors, still perceived
 *** Front-back reversal good but not as good as normal
 *** Elevation good but with errors on upper and median ones (justification: contribution of the other ear pinna)
+
+
+
+
+* References on cue learning
+** Ashmead, D.H., Davis, D.,Whalen,T, Odom, R. (1991), Sound localization and sensitivity to interaural time differences in human infants. Child Dev 62: 1211-1226.
+** Babkoff, H., Muchnik, Ch., Ben-David, N., Furst, M., Even-Zohar, Sh., Hildesheimer, M. (2002). Mapping lateralization of click trains in younger and older populations. Hear Res 165: 117-127.
+** Abel, Sh. M., Giguère, Ch., Consoli, A., Papsin, B.C. (2000).The effect of aging on horizontal plane sound localization. J Acoust Soc Am 108 (2): 743-752.
+** Brown, K.D. \& Balkany,Th. J. (2007). Benefits of bilateral cochlear implantation: a review. Curr Opin Otolaryngol Head Neck Surg 15: 315-318.
+** Laske, R.D.,Varaguth, D., Dillier, N., Binkert, A., Holzmann, D., Huber, A. M. (2009). Subjective and objective results after bilateral cochlear implantation in adults. Otol Neurotol 30: 313-318.
+
 
 
 

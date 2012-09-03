@@ -1,5 +1,18 @@
- 
-User tests i would like to do
+= Reading =
+
+* Look for a reference for ambisonics manipulation
+
+* References on cue learning
+** Ashmead, D.H., Davis, D.,Whalen,T, Odom, R. (1991), Sound localization and sensitivity to interaural time differences in human infants. Child Dev 62: 1211-1226.
+** Babkoff, H., Muchnik, Ch., Ben-David, N., Furst, M., Even-Zohar, Sh., Hildesheimer, M. (2002). Mapping lateralization of click trains in younger and older populations. Hear Res 165: 117-127.
+** Abel, Sh. M., Giguère, Ch., Consoli, A., Papsin, B.C. (2000).The effect of aging on horizontal plane sound localization. J Acoust Soc Am 108 (2): 743-752.
+** Brown, K.D. & Balkany,Th. J. (2007). Benefits of bilateral cochlear implantation: a review. Curr Opin Otolaryngol Head Neck Surg 15: 315-318.
+** Laske, R.D.,Varaguth, D., Dillier, N., Binkert, A., Holzmann, D., Huber, A. M. (2009). Subjective and objective results after bilateral cochlear implantation in adults. Otol Neurotol 30: 313-318.
+
+
+
+
+= User tests i would like to do =
 
 * Ability of learning to localize foreign HRTF
 ** Establishing distance with own HRTF
@@ -19,12 +32,21 @@ User tests i would like to do
 ** Restrained testing after trained
 
 
+* Effect of the head movements on the hrtf
+** Why: Not as just rotating the whole subject as the body, which affects the hrtf, does not rotate
+** Measure HRTF with the neck jawed, pitched, and rolled
+** Compare them relative to head and relative to body
 
+* Whole sphere hrtf measurements
+** Why: current databases lack of the bottom positions and it is required to compute SH
 
-*** Position
-
-
-
+* Effect of the distance on hrtf
+** If considered plane wave both ears have the complementary incidence angles
+** But in near sources ear incidence are not that complementary anymore
+** Test1: Approximate along source to ear channel instead of source to head center
+*** See how the spectral shape vary
+** Test2: Simulate incidence discrepancy with 
+* http://kar.fi/KARAudio/Publications/publications/asaica98.pdf
 
 
 
