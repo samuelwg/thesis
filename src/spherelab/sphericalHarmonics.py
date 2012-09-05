@@ -25,31 +25,31 @@ def sh(sh, e, a) :
 	x,y,z = ead2xyz(e, a, 1)
 	return math.sqrt(1/math.pi)*(
 		math.sqrt(1./2) * (
-			sh[0,0] +
+			sh[shi(0,0)] +
 			0
 		) +
 		math.sqrt(1./4) * (
-			sh[0,1] * x +
-			sh[1,1] * z +
-			sh[1,0] * y +
+			sh[shi(1,+1)] * x +
+			sh[shi(1, 0)] * z +
+			sh[shi(1,-1)] * y +
 			0
 		) +
 		(
-			sh[2,0] * (x*y)             * math.sqrt(15./4) +
-			sh[2,1] * (x*z)             * math.sqrt(15./4) +
-			sh[2,2] * (2*z*z -x*x -y*y) * math.sqrt( 5./16) +
-			sh[1,2] * (y*z)             * math.sqrt(15./4) +
-			sh[0,2] * (x*x -y*y)        * math.sqrt(15./16) +
+			sh[shi(2,-2)] * (x*y)*2           * math.sqrt(3./4) +
+			sh[shi(2,-1)] * (y*z)*2           * math.sqrt(3./4) +
+			sh[shi(2, 0)] * (3*z*z -1)/2  +
+			sh[shi(2,+1)] * (x*z)*2           * math.sqrt(3./4) +
+			sh[shi(2,+2)] * (x*x - y*y)       * math.sqrt(3./4) +
 			0
 		) +
 		(
-			sh[3,0] * x*(x*x-3*y*y)           * math.sqrt(35./32) +
-			sh[3,1] * z*x*y                   * math.sqrt(105./4)+
-			sh[3,2] * x*(4*z*z -x*x -y*y)     * math.sqrt(21./32) +
-			sh[3,3] * z*(2*z*z -3*x*x -3*y*y) * math.sqrt(7./16) +
-			sh[2,3] * y*(4*z*z -x*x -y*y)     * math.sqrt(21./32) +
-			sh[1,3] * z*(x*x-y*y)             * math.sqrt(105./16) +
-			sh[0,3] * y*(3*x*x-y*y)           * math.sqrt(35./32) +
+			sh[shi(3,+3)] * x*(x*x-3*y*y)           * math.sqrt(5./8) +
+			sh[shi(3,+2)] * z*(x*x-y*y)             * math.sqrt(15./4) +
+			sh[shi(3,+1)] * x*(5*z*z -1)            * math.sqrt(3./8) +
+			sh[shi(3, 0)] * z*(2*z*z -3*x*x -3*y*y) * math.sqrt(7./16) +
+			sh[shi(3,-1)] * y*(4*z*z -x*x -y*y)     * math.sqrt(21./32) +
+			sh[shi(3,-2)] * z*x*y                   * math.sqrt(9./8)+
+			sh[shi(3,-3)] * y*(3*x*x-y*y)           * math.sqrt(35./32) +
 			0
 		) +
 		0
@@ -60,7 +60,7 @@ def sh(sh, e, a) :
 def shIndexes(order) :
 	return [(l,m) for l in xrange(order+1) for m in xrange(-l,l+1) ]
 
-def shIndex2Matrix(l,m) :
+def shi(l,m) :
 	return (l-m,l) if m>0 else (l,l+m)
 
 import unittest
@@ -78,92 +78,306 @@ class SphericalHarmonicsTests(unittest.TestCase) :
 
 	def test_shIndex2Matrix(self) :
 
-		self.assertEqual((0,0), shIndex2Matrix(0,0))
+		self.assertEqual((0,0), shi(0,0))
 
-		self.assertEqual((1,0), shIndex2Matrix(1,-1))
-		self.assertEqual((1,1), shIndex2Matrix(1,0))
-		self.assertEqual((0,1), shIndex2Matrix(1,1))
+		self.assertEqual((1,0), shi(1,-1))
+		self.assertEqual((1,1), shi(1,0))
+		self.assertEqual((0,1), shi(1,1))
                              
-		self.assertEqual((2,0), shIndex2Matrix(2,-2))
-		self.assertEqual((2,1), shIndex2Matrix(2,-1))
-		self.assertEqual((2,2), shIndex2Matrix(2,0))
-		self.assertEqual((1,2), shIndex2Matrix(2,1))
-		self.assertEqual((0,2), shIndex2Matrix(2,2))
+		self.assertEqual((2,0), shi(2,-2))
+		self.assertEqual((2,1), shi(2,-1))
+		self.assertEqual((2,2), shi(2,0))
+		self.assertEqual((1,2), shi(2,1))
+		self.assertEqual((0,2), shi(2,2))
 
 
 	def test_sh_0_0(self) :
 		components = np.zeros((4,4))
-		components[shIndex2Matrix(0,0)] = 1
+		components[shi(0,0)] = 1
 		self.assertAlmostEqual(1, sh(components, 90, 0)*math.sqrt(2*math.pi))
 		self.assertAlmostEqual(1, sh(components, -90, 0)*math.sqrt(2*math.pi))
 		self.assertAlmostEqual(1, sh(components, 30, 4)*math.sqrt(2*math.pi))
 
 	def test_sh_1_1(self) :
 		components = np.zeros((4,4))
-		components[shIndex2Matrix(1,+1)] = 1
+		components[shi(1,+1)] = 1
 		max = math.sqrt(1./4/math.pi)
 		self.assertAlmostEqual(sh(components,   0,   0)/max,+1)
 		self.assertAlmostEqual(sh(components,   0, 180)/max,-1)
-		self.assertAlmostEqual(sh(components, -90,   0)/max, 0)
-		self.assertAlmostEqual(sh(components, +90,   0)/max, 0)
 		self.assertAlmostEqual(sh(components,   0, -90)/max, 0)
 		self.assertAlmostEqual(sh(components,   0, +90)/max, 0)
+		self.assertAlmostEqual(sh(components, -90,   0)/max, 0)
+		self.assertAlmostEqual(sh(components, +90,   0)/max, 0)
 		self.assertAlmostEqual(sh(components,  30,   4)/max, 0.86391580942710433)
 
 	def test_sh_1_m1(self) :
 		components = np.zeros((4,4))
-		components[shIndex2Matrix(1,-1)] = 1
+		components[shi(1,-1)] = 1
 		max = math.sqrt(1./4/math.pi)
 		self.assertAlmostEqual(sh(components,   0,   0)/max, 0)
 		self.assertAlmostEqual(sh(components,   0, 180)/max, 0)
-		self.assertAlmostEqual(sh(components, -90,   0)/max, 0)
-		self.assertAlmostEqual(sh(components, +90,   0)/max, 0)
 		self.assertAlmostEqual(sh(components,   0, -90)/max,-1)
 		self.assertAlmostEqual(sh(components,   0, +90)/max,+1)
+		self.assertAlmostEqual(sh(components, -90,   0)/max, 0)
+		self.assertAlmostEqual(sh(components, +90,   0)/max, 0)
 		self.assertAlmostEqual(sh(components,  30,   4)/max, 0.060410878340834702)
 
 	def test_sh_1_0(self) :
 		components = np.zeros((4,4))
-		components[shIndex2Matrix(1,0)] = 1
+		components[shi(1,0)] = 1
 		max = math.sqrt(1./4/math.pi)
 		self.assertAlmostEqual(sh(components,   0,   0)/max, 0)
 		self.assertAlmostEqual(sh(components,   0, 180)/max, 0)
-		self.assertAlmostEqual(sh(components, -90,   0)/max,-1)
-		self.assertAlmostEqual(sh(components, +90,   0)/max,+1)
 		self.assertAlmostEqual(sh(components,   0, -90)/max, 0)
 		self.assertAlmostEqual(sh(components,   0, +90)/max, 0)
+		self.assertAlmostEqual(sh(components, -90,   0)/max,-1)
+		self.assertAlmostEqual(sh(components, +90,   0)/max,+1)
 		self.assertAlmostEqual(sh(components,  30,   0)/max, 0.5)
 
 	def test_sh_2_2(self) :
 		components = np.zeros((4,4))
-		components[shIndex2Matrix(2,+2)] = 1
-		max = math.sqrt(15./16/math.pi)
+		components[shi(2,+2)] = 1
+		max = math.sqrt(3./4/math.pi)
 		self.assertAlmostEqual(sh(components,   0,   0)/max,+1)
 		self.assertAlmostEqual(sh(components,   0, 180)/max,+1)
-		self.assertAlmostEqual(sh(components, -90,   0)/max, 0)
-		self.assertAlmostEqual(sh(components, +90,   0)/max, 0)
 		self.assertAlmostEqual(sh(components,   0, -90)/max,-1)
 		self.assertAlmostEqual(sh(components,   0, +90)/max,-1)
+		self.assertAlmostEqual(sh(components, -90,   0)/max, 0)
+		self.assertAlmostEqual(sh(components, +90,   0)/max, 0)
+
+		self.assertAlmostEqual(sh(components,  45,   0)/max,.5)
+		self.assertAlmostEqual(sh(components,  45, 180)/max,.5)
+		self.assertAlmostEqual(sh(components, -45,   0)/max,.5)
+		self.assertAlmostEqual(sh(components, -45, 180)/max,.5)
+
+		self.assertAlmostEqual(sh(components,   0,  45)/max, 0)
+		self.assertAlmostEqual(sh(components,   0, 135)/max, 0)
+		self.assertAlmostEqual(sh(components,   0, 225)/max, 0)
+		self.assertAlmostEqual(sh(components,   0, 315)/max, 0)
+
+		self.assertAlmostEqual(sh(components,  45, -90)/max,-.5)
+		self.assertAlmostEqual(sh(components,  45, +90)/max,-.5)
+		self.assertAlmostEqual(sh(components, -45, -90)/max,-.5)
+		self.assertAlmostEqual(sh(components, -45, +90)/max,-.5)
+
 		self.assertAlmostEqual(sh(components,  30,   4)/max, 0.7427010515561776)
 
 	def test_sh_2_1(self) :
 		components = np.zeros((4,4))
-		components[shIndex2Matrix(2,+1)] = 1
-		max = math.sqrt(15./16/math.pi)
+		components[shi(2,+1)] = 1
+		max = math.sqrt(3./4/math.pi)
+		# axis
 		self.assertAlmostEqual(sh(components,   0,   0)/max, 0)
 		self.assertAlmostEqual(sh(components,   0, 180)/max, 0)
 		self.assertAlmostEqual(sh(components, -90,   0)/max, 0)
 		self.assertAlmostEqual(sh(components, +90,   0)/max, 0)
 		self.assertAlmostEqual(sh(components,   0, -90)/max, 0)
 		self.assertAlmostEqual(sh(components,   0, +90)/max, 0)
-		self.assertAlmostEqual(sh(components,   0,  45)/max, 1)
-		self.assertAlmostEqual(sh(components,   0, -45)/max, 1)
-		self.assertAlmostEqual(sh(components,   0, 135)/max, 1)
-		self.assertAlmostEqual(sh(components,   0, 315)/max, 1)
+		# extremes
+		self.assertAlmostEqual(sh(components,  45,   0)/max,+1)
+		self.assertAlmostEqual(sh(components,  45, 180)/max,-1)
+		self.assertAlmostEqual(sh(components, -45,   0)/max,-1)
+		self.assertAlmostEqual(sh(components, -45, 180)/max,+1)
+
+		self.assertAlmostEqual(sh(components,   0,  45)/max, 0)
+		self.assertAlmostEqual(sh(components,   0, 135)/max, 0)
+		self.assertAlmostEqual(sh(components,   0, 225)/max, 0)
+		self.assertAlmostEqual(sh(components,   0, 315)/max, 0)
+
+		self.assertAlmostEqual(sh(components,  45, -90)/max, 0)
+		self.assertAlmostEqual(sh(components,  45, +90)/max, 0)
+		self.assertAlmostEqual(sh(components, -45, -90)/max, 0)
+		self.assertAlmostEqual(sh(components, -45, +90)/max, 0)
+
+		self.assertAlmostEqual(sh(components,  30,   4)/max, 0.86391580942710411)
+
+	def test_sh_2_0(self) :
+		components = np.zeros((4,4))
+		components[shi(2, 0)] = 1
+		max = math.sqrt(1./math.pi)
+		# axis
+		self.assertAlmostEqual(sh(components,   0,   0)/max,-.5)
+		self.assertAlmostEqual(sh(components,   0, 180)/max,-.5)
+		self.assertAlmostEqual(sh(components,   0, -90)/max,-.5)
+		self.assertAlmostEqual(sh(components,   0, +90)/max,-.5)
+		self.assertAlmostEqual(sh(components, -90,   0)/max, +1)
+		self.assertAlmostEqual(sh(components, +90,   0)/max, +1)
+		# extremes
+		self.assertAlmostEqual(sh(components,   0,  45)/max,-.5)
+		self.assertAlmostEqual(sh(components,   0, 135)/max,-.5)
+		self.assertAlmostEqual(sh(components,   0, 225)/max,-.5)
+		self.assertAlmostEqual(sh(components,   0, 315)/max,-.5)
+
+		self.assertAlmostEqual(sh(components,  45, -90)/max,+.25)
+		self.assertAlmostEqual(sh(components,  45, +90)/max,+.25)
+		self.assertAlmostEqual(sh(components, -45, -90)/max,+.25)
+		self.assertAlmostEqual(sh(components, -45, +90)/max,+.25)
+
+		self.assertAlmostEqual(sh(components,  45,   0)/max,+.25)
+		self.assertAlmostEqual(sh(components,  45, 180)/max,+.25)
+		self.assertAlmostEqual(sh(components, -45,   0)/max,+.25)
+		self.assertAlmostEqual(sh(components, -45, 180)/max,+.25)
+
+		self.assertAlmostEqual(sh(components,  30,   4)/max, -0.1250000000000011)
+
+	def test_sh_2_m1(self) :
+		components = np.zeros((4,4))
+		components[shi(2,-1)] = 1
+		max = math.sqrt(3./4/math.pi)
+		# axis
+		self.assertAlmostEqual(sh(components,   0,   0)/max, 0)
+		self.assertAlmostEqual(sh(components,   0, 180)/max, 0)
+		self.assertAlmostEqual(sh(components, -90,   0)/max, 0)
+		self.assertAlmostEqual(sh(components, +90,   0)/max, 0)
 		self.assertAlmostEqual(sh(components,   0, -90)/max, 0)
 		self.assertAlmostEqual(sh(components,   0, +90)/max, 0)
-		self.assertAlmostEqual(sh(components,  30,   4)/max, 0.7427010515561776)
+		# extremes
+		self.assertAlmostEqual(sh(components,   0,  45)/max, 0)
+		self.assertAlmostEqual(sh(components,   0, 135)/max, 0)
+		self.assertAlmostEqual(sh(components,   0, 225)/max, 0)
+		self.assertAlmostEqual(sh(components,   0, 315)/max, 0)
 
+		self.assertAlmostEqual(sh(components,  45, -90)/max,-1)
+		self.assertAlmostEqual(sh(components,  45, +90)/max,+1)
+		self.assertAlmostEqual(sh(components, -45, -90)/max,+1)
+		self.assertAlmostEqual(sh(components, -45, +90)/max,-1)
+
+		self.assertAlmostEqual(sh(components,  45,   0)/max, 0)
+		self.assertAlmostEqual(sh(components,  45, 180)/max, 0)
+		self.assertAlmostEqual(sh(components, -45,   0)/max, 0)
+		self.assertAlmostEqual(sh(components, -45, 180)/max, 0)
+
+		self.assertAlmostEqual(sh(components,  30,   4)/max, 0.060410878340834695)
+
+
+	def test_sh_2_m2(self) :
+		components = np.zeros((4,4))
+		components[shi(2,-2)] = 1
+		max = math.sqrt(3./4/math.pi)
+		# axis
+		self.assertAlmostEqual(sh(components,   0,   0)/max, 0)
+		self.assertAlmostEqual(sh(components,   0, 180)/max, 0)
+		self.assertAlmostEqual(sh(components, -90,   0)/max, 0)
+		self.assertAlmostEqual(sh(components, +90,   0)/max, 0)
+		self.assertAlmostEqual(sh(components,   0, -90)/max, 0)
+		self.assertAlmostEqual(sh(components,   0, +90)/max, 0)
+		# extremes
+		self.assertAlmostEqual(sh(components,   0,  45)/max,+1)
+		self.assertAlmostEqual(sh(components,   0, 135)/max,-1)
+		self.assertAlmostEqual(sh(components,   0, 225)/max,+1)
+		self.assertAlmostEqual(sh(components,   0, 315)/max,-1)
+
+		self.assertAlmostEqual(sh(components,  45, -90)/max, 0)
+		self.assertAlmostEqual(sh(components,  45, +90)/max, 0)
+		self.assertAlmostEqual(sh(components, -45, -90)/max, 0)
+		self.assertAlmostEqual(sh(components, -45, +90)/max, 0)
+
+		self.assertAlmostEqual(sh(components,  45,   0)/max, 0)
+		self.assertAlmostEqual(sh(components,  45, 180)/max, 0)
+		self.assertAlmostEqual(sh(components, -45,   0)/max, 0)
+		self.assertAlmostEqual(sh(components, -45, 180)/max, 0)
+
+		self.assertAlmostEqual(sh(components,  30,   4)/max, 0.10437982572004907)
+
+	def test_sh_3_3(self) :
+		components = np.zeros((4,4))
+		components[shi(3,+3)] = 1
+		max = math.sqrt(5./8/math.pi)
+		# axis
+		self.assertAlmostEqual(sh(components, -90,   0)/max, 0)
+		self.assertAlmostEqual(sh(components, +90,   0)/max, 0)
+		self.assertAlmostEqual(sh(components,   0,   0)/max,+1)
+		self.assertAlmostEqual(sh(components,   0,  30)/max, 0)
+		self.assertAlmostEqual(sh(components,   0,  60)/max,-1)
+		self.assertAlmostEqual(sh(components,   0,  90)/max, 0)
+		self.assertAlmostEqual(sh(components,   0, 120)/max,+1)
+		self.assertAlmostEqual(sh(components,   0, 150)/max, 0)
+		self.assertAlmostEqual(sh(components,   0, 180)/max,-1)
+		self.assertAlmostEqual(sh(components,   0, 210)/max, 0)
+		self.assertAlmostEqual(sh(components,   0, 240)/max,+1)
+		self.assertAlmostEqual(sh(components,   0, 270)/max, 0)
+		self.assertAlmostEqual(sh(components,   0, 300)/max,-1)
+		self.assertAlmostEqual(sh(components,   0, 330)/max, 0)
+
+	def test_sh_3_2(self) :
+		components = np.zeros((4,4))
+		components[shi(3,+2)] = 1
+		max = math.sqrt(5./9/math.pi)
+		# axis
+		self.assertAlmostEqual(sh(components, -90,   0)/max, 0)
+		self.assertAlmostEqual(sh(components, +90,   0)/max, 0)
+		self.assertAlmostEqual(sh(components,   0,   0)/max, 0)
+		self.assertAlmostEqual(sh(components,   0,  30)/max, 0)
+		self.assertAlmostEqual(sh(components,   0,  60)/max, 0)
+		self.assertAlmostEqual(sh(components,   0,  90)/max, 0)
+		self.assertAlmostEqual(sh(components,   0, 120)/max, 0)
+		self.assertAlmostEqual(sh(components,   0, 150)/max, 0)
+		self.assertAlmostEqual(sh(components,   0, 180)/max, 0)
+		self.assertAlmostEqual(sh(components,   0, 210)/max, 0)
+		self.assertAlmostEqual(sh(components,   0, 240)/max, 0)
+		self.assertAlmostEqual(sh(components,   0, 270)/max, 0)
+		self.assertAlmostEqual(sh(components,   0, 300)/max, 0)
+		self.assertAlmostEqual(sh(components,   0, 330)/max, 0)
+
+		# asin(sqrt(1./3)) = 35.2644
+		self.assertAlmostEqual(sh(components, +35.2644,   0)/max,+1)
+		self.assertAlmostEqual(sh(components, +35.2644,  45)/max, 0)
+		self.assertAlmostEqual(sh(components, +35.2644,  90)/max,-1)
+		self.assertAlmostEqual(sh(components, +35.2644, 135)/max, 0)
+		self.assertAlmostEqual(sh(components, +35.2644, 180)/max,+1)
+		self.assertAlmostEqual(sh(components, +35.2644, 225)/max, 0)
+		self.assertAlmostEqual(sh(components, +35.2644, 270)/max,-1)
+		self.assertAlmostEqual(sh(components, +35.2644, 315)/max, 0)
+
+		self.assertAlmostEqual(sh(components, -35.2644,   0)/max,-1)
+		self.assertAlmostEqual(sh(components, -35.2644,  45)/max, 0)
+		self.assertAlmostEqual(sh(components, -35.2644,  90)/max,+1)
+		self.assertAlmostEqual(sh(components, -35.2644, 135)/max, 0)
+		self.assertAlmostEqual(sh(components, -35.2644, 180)/max,-1)
+		self.assertAlmostEqual(sh(components, -35.2644, 225)/max, 0)
+		self.assertAlmostEqual(sh(components, -35.2644, 270)/max,+1)
+		self.assertAlmostEqual(sh(components, -35.2644, 315)/max, 0)
+
+		self.assertAlmostEqual(sh(components,  30,   4)/max, 0.96479696709759877)
+
+	def test_sh_3_1(self) :
+		components = np.zeros((4,4))
+		components[shi(3,+1)] = 1
+		max = math.sqrt(32./45/math.pi)
+		# axis
+		self.assertAlmostEqual(sh(components, -90,   0)/max, 0)
+		self.assertAlmostEqual(sh(components, +90,   0)/max, 0)
+		self.assertAlmostEqual(sh(components,   0,   0)/max,-0.72618437741389052)
+		self.assertAlmostEqual(sh(components,   0,  30)/max,-0.62889411867181577)
+		self.assertAlmostEqual(sh(components,   0,  60)/max,-0.36309218870694532)
+		self.assertAlmostEqual(sh(components,   0,  90)/max, 0)
+		self.assertAlmostEqual(sh(components,   0, 120)/max,+0.36309218870694515)
+		self.assertAlmostEqual(sh(components,   0, 150)/max,+0.62889411867181577)
+		self.assertAlmostEqual(sh(components,   0, 180)/max,+0.72618437741389052)
+		self.assertAlmostEqual(sh(components,   0, 210)/max,+0.62889411867181577)
+		self.assertAlmostEqual(sh(components,   0, 240)/max,+0.36309218870694515)
+		self.assertAlmostEqual(sh(components,   0, 270)/max, 0)
+		self.assertAlmostEqual(sh(components,   0, 300)/max,-0.36309218870694515)
+		self.assertAlmostEqual(sh(components,   0, 330)/max,-0.62889411867181577)
+
+		self.assertAlmostEqual(sh(components, +15,   0)/max,-0.46650231087843524)
+		self.assertAlmostEqual(sh(components, +30,   0)/max,+0.15722352966795367)
+		self.assertAlmostEqual(sh(components, +45,   0)/max,+0.77023484649163954)
+		self.assertAlmostEqual(sh(components, +60,   0)/max,+0.99850351894409951)
+		self.assertAlmostEqual(sh(components, +75,   0)/max,+0.68884995885902411)
+		self.assertAlmostEqual(sh(components, +90,   0)/max, 0)
+
+		self.assertAlmostEqual(sh(components, +58.8999,   0)/max, 1)
+
+		self.assertAlmostEqual(sh(components, +45,   0)/max,+1)
+		self.assertAlmostEqual(sh(components, +45,  45)/max, 0)
+		self.assertAlmostEqual(sh(components, +45,  90)/max,-1)
+		self.assertAlmostEqual(sh(components, +45, 135)/max, 0)
+		self.assertAlmostEqual(sh(components, +45, 180)/max,+1)
+		self.assertAlmostEqual(sh(components, +45, 225)/max, 0)
+		self.assertAlmostEqual(sh(components, +45, 270)/max,-1)
+		self.assertAlmostEqual(sh(components, +45, 315)/max, 0)
+		self.assertAlmostEqual(sh(components,  30,   4)/max, 0)
 
 class CoordsConversionTests(unittest.TestCase) :
 
