@@ -26,7 +26,7 @@ def sh(sh, e, a) :
 	re, ra = [math.radians(_) for _ in e,a]
 	ce, ca = [math.cos(_) for _ in re,ra]
 	se, sa = [math.sin(_) for _ in re,ra]
-	return math.sqrt(1/math.pi)*(
+	return (
 		math.sqrt(1./2) * (
 			sh[shi(0,0)] +
 			0
@@ -97,14 +97,15 @@ class SphericalHarmonicsTests(unittest.TestCase) :
 	def test_sh_0_0(self) :
 		components = np.zeros((4,4))
 		components[shi(0,0)] = 1
-		self.assertAlmostEqual(1, sh(components, 90, 0)*math.sqrt(2*math.pi))
-		self.assertAlmostEqual(1, sh(components, -90, 0)*math.sqrt(2*math.pi))
-		self.assertAlmostEqual(1, sh(components, 30, 4)*math.sqrt(2*math.pi))
+		max = math.sqrt(1./2)
+		self.assertAlmostEqual(1, sh(components, 90, 0)/max)
+		self.assertAlmostEqual(1, sh(components, -90, 0)/max)
+		self.assertAlmostEqual(1, sh(components, 30, 4)/max)
 
 	def test_sh_1_1(self) :
 		components = np.zeros((4,4))
 		components[shi(1,+1)] = 1
-		max = math.sqrt(1./4/math.pi)
+		max = math.sqrt(1./4)
 		self.assertAlmostEqual(sh(components,   0,   0)/max,+1)
 		self.assertAlmostEqual(sh(components,   0, 180)/max,-1)
 		self.assertAlmostEqual(sh(components,   0, -90)/max, 0)
@@ -116,7 +117,7 @@ class SphericalHarmonicsTests(unittest.TestCase) :
 	def test_sh_1_m1(self) :
 		components = np.zeros((4,4))
 		components[shi(1,-1)] = 1
-		max = math.sqrt(1./4/math.pi)
+		max = math.sqrt(1./4)
 		self.assertAlmostEqual(sh(components,   0,   0)/max, 0)
 		self.assertAlmostEqual(sh(components,   0, 180)/max, 0)
 		self.assertAlmostEqual(sh(components,   0, -90)/max,-1)
@@ -128,7 +129,7 @@ class SphericalHarmonicsTests(unittest.TestCase) :
 	def test_sh_1_0(self) :
 		components = np.zeros((4,4))
 		components[shi(1,0)] = 1
-		max = math.sqrt(1./4/math.pi)
+		max = math.sqrt(1./4)
 		self.assertAlmostEqual(sh(components,   0,   0)/max, 0)
 		self.assertAlmostEqual(sh(components,   0, 180)/max, 0)
 		self.assertAlmostEqual(sh(components,   0, -90)/max, 0)
@@ -140,7 +141,7 @@ class SphericalHarmonicsTests(unittest.TestCase) :
 	def test_sh_2_2(self) :
 		components = np.zeros((4,4))
 		components[shi(2,+2)] = 1
-		max = math.sqrt(3./4/math.pi)
+		max = math.sqrt(3./4)
 		self.assertAlmostEqual(sh(components,   0,   0)/max,+1)
 		self.assertAlmostEqual(sh(components,   0, 180)/max,+1)
 		self.assertAlmostEqual(sh(components,   0, -90)/max,-1)
@@ -168,7 +169,7 @@ class SphericalHarmonicsTests(unittest.TestCase) :
 	def test_sh_2_1(self) :
 		components = np.zeros((4,4))
 		components[shi(2,+1)] = 1
-		max = math.sqrt(3./4/math.pi)
+		max = math.sqrt(3./4)
 		# axis
 		self.assertAlmostEqual(sh(components,   0,   0)/max, 0)
 		self.assertAlmostEqual(sh(components,   0, 180)/max, 0)
@@ -197,7 +198,7 @@ class SphericalHarmonicsTests(unittest.TestCase) :
 	def test_sh_2_0(self) :
 		components = np.zeros((4,4))
 		components[shi(2, 0)] = 1
-		max = math.sqrt(1./math.pi)
+		max = math.sqrt(1.)
 		# axis
 		self.assertAlmostEqual(sh(components,   0,   0)/max,-.5)
 		self.assertAlmostEqual(sh(components,   0, 180)/max,-.5)
@@ -226,7 +227,7 @@ class SphericalHarmonicsTests(unittest.TestCase) :
 	def test_sh_2_m1(self) :
 		components = np.zeros((4,4))
 		components[shi(2,-1)] = 1
-		max = math.sqrt(3./4/math.pi)
+		max = math.sqrt(3./4)
 		# axis
 		self.assertAlmostEqual(sh(components,   0,   0)/max, 0)
 		self.assertAlmostEqual(sh(components,   0, 180)/max, 0)
@@ -256,7 +257,7 @@ class SphericalHarmonicsTests(unittest.TestCase) :
 	def test_sh_2_m2(self) :
 		components = np.zeros((4,4))
 		components[shi(2,-2)] = 1
-		max = math.sqrt(3./4/math.pi)
+		max = math.sqrt(3./4)
 		# axis
 		self.assertAlmostEqual(sh(components,   0,   0)/max, 0)
 		self.assertAlmostEqual(sh(components,   0, 180)/max, 0)
@@ -285,7 +286,7 @@ class SphericalHarmonicsTests(unittest.TestCase) :
 	def test_sh_3_3(self) :
 		components = np.zeros((4,4))
 		components[shi(3,+3)] = 1
-		max = math.sqrt(5./8/math.pi)
+		max = math.sqrt(5./8)
 		# axis
 		self.assertAlmostEqual(sh(components, -90,   0)/max, 0)
 		self.assertAlmostEqual(sh(components, +90,   0)/max, 0)
@@ -305,7 +306,7 @@ class SphericalHarmonicsTests(unittest.TestCase) :
 	def test_sh_3_2(self) :
 		components = np.zeros((4,4))
 		components[shi(3,+2)] = 1
-		max = math.sqrt(5./9/math.pi)
+		max = math.sqrt(5./9)
 		# axis
 		self.assertAlmostEqual(sh(components, -90,   0)/max, 0)
 		self.assertAlmostEqual(sh(components, +90,   0)/max, 0)
@@ -347,7 +348,7 @@ class SphericalHarmonicsTests(unittest.TestCase) :
 	def test_sh_3_1(self) :
 		components = np.zeros((4,4))
 		components[shi(3,+1)] = 1
-		max = math.sqrt(32./45/math.pi)
+		max = math.sqrt(32./45)
 
 		self.assertAlmostEqual(sh(components, -90,   0)/max, 0)
 		self.assertAlmostEqual(sh(components, +90,   0)/max, 0)
@@ -388,7 +389,7 @@ class SphericalHarmonicsTests(unittest.TestCase) :
 	def test_sh_3_0(self) :
 		components = np.zeros((4,4))
 		components[shi(3,+0)] = 1
-		max = math.sqrt(1./math.pi)
+		max = math.sqrt(1.)
 		# axis
 		self.assertAlmostEqual(sh(components, -90,   0)/max,-1)
 		self.assertAlmostEqual(sh(components, +90,   0)/max,+1)
@@ -435,7 +436,7 @@ class SphericalHarmonicsTests(unittest.TestCase) :
 	def test_sh_3_m1(self) :
 		components = np.zeros((4,4))
 		components[shi(3,-1)] = 1
-		max = math.sqrt(32./45/math.pi)
+		max = math.sqrt(32./45)
 		# axis
 
 		self.assertAlmostEqual(sh(components, -90,   0)/max, 0)
@@ -475,7 +476,7 @@ class SphericalHarmonicsTests(unittest.TestCase) :
 	def test_sh_3_m2(self) :
 		components = np.zeros((4,4))
 		components[shi(3,-2)] = 1
-		max = math.sqrt(5./9/math.pi)
+		max = math.sqrt(5./9)
 
 		self.assertAlmostEqual(sh(components, -90,   0)/max, 0)
 		self.assertAlmostEqual(sh(components, +90,   0)/max, 0)
@@ -519,7 +520,7 @@ class SphericalHarmonicsTests(unittest.TestCase) :
 	def test_sh_3_m3(self) :
 		components = np.zeros((4,4))
 		components[shi(3,-3)] = 1
-		max = math.sqrt(5./8/math.pi)
+		max = math.sqrt(5./8)
 
 		self.assertAlmostEqual(sh(components, -90,   0)/max, 0)
 		self.assertAlmostEqual(sh(components, +90,   0)/max, 0)
