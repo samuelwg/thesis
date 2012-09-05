@@ -22,41 +22,40 @@ def ead2xyz(e,a,d) :
 	return x,y,z
 
 def sh(sh, e, a) :
+	projection = shProjection(e,a)
+	return (sh*projection).sum()
+
+def shProjection(e, a) :
+	"""
+	Returns the value of the sh components at the specified orientation
+	"""
 	x,y,z = ead2xyz(e, a, 1)
 	re, ra = [math.radians(_) for _ in e,a]
 	ce, ca = [math.cos(_) for _ in re,ra]
 	se, sa = [math.sin(_) for _ in re,ra]
-	return (
-		(
-			sh[shi(0,0)] * 1 +
-			0
-		) +
-		(
-			sh[shi(1,+1)] * x +
-			sh[shi(1, 0)] * z +
-			sh[shi(1,-1)] * y +
-			0
-		) +
-		(
-			sh[shi(2,-2)] * (x*y)*2           * math.sqrt(3./4) +
-			sh[shi(2,-1)] * (y*z)*2           * math.sqrt(3./4) +
-			sh[shi(2, 0)] * (3*z*z -1)/2  +
-			sh[shi(2,+1)] * (x*z)*2           * math.sqrt(3./4) +
-			sh[shi(2,+2)] * (x*x - y*y)       * math.sqrt(3./4) +
-			0
-		) +
-		(
-			sh[shi(3,+3)] * x*(x*x-3*y*y)  * math.sqrt(5./8) +
-			sh[shi(3,+2)] * z*(x*x-y*y)    * math.sqrt(15./4) +
-			sh[shi(3,+1)] * x*(5*z*z -1)   * math.sqrt(3./8) +
-			sh[shi(3, 0)] * z*(5*z*z -3)   * math.sqrt(1./4) +
-			sh[shi(3,-1)] * y*(5*z*z -1)   * math.sqrt(3./8) +
-			sh[shi(3,-2)] * z*x*y          * math.sqrt(15.)+
-			sh[shi(3,-3)] * y*(3*x*x-y*y)  * math.sqrt(5./8) +
-			0
-		) +
-		0
-	)
+	sh = np.zeros((4,4))
+
+	sh[shi(0, 0)] = 1
+
+	sh[shi(1,+1)] = x
+	sh[shi(1, 0)] = z
+	sh[shi(1,-1)] = y
+
+	sh[shi(2,-2)] = (x*y)*2       * math.sqrt(3./4)
+	sh[shi(2,-1)] = (y*z)*2       * math.sqrt(3./4)
+	sh[shi(2, 0)] = (3*z*z -1)/2
+	sh[shi(2,+1)] = (x*z)*2       * math.sqrt(3./4)
+	sh[shi(2,+2)] = (x*x - y*y)   * math.sqrt(3./4)
+
+	sh[shi(3,+3)] = x*(x*x-3*y*y) * math.sqrt(5./8)
+	sh[shi(3,+2)] = z*(x*x-y*y)   * math.sqrt(15./4)
+	sh[shi(3,+1)] = x*(5*z*z -1)  * math.sqrt(3./8)
+	sh[shi(3, 0)] = z*(5*z*z -3)  * math.sqrt(1./4)
+	sh[shi(3,-1)] = y*(5*z*z -1)  * math.sqrt(3./8)
+	sh[shi(3,-2)] = z*x*y         * math.sqrt(15.)
+	sh[shi(3,-3)] = y*(3*x*x-y*y) * math.sqrt(5./8)
+
+	return sh
 
 
 
