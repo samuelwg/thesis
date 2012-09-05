@@ -52,14 +52,29 @@ and others.
 
 
 * Components in each order are rotational invariant
-** Components of no other order paricipate on the rotation of a given order
+** Components of no other order participate on the rotation of a given order
 *** 
-* De
-** Several conventions
-*** Real and Complex
-*** Normalizations
-*** Phase
-*** Channel normalization
+
+* Real and Complex
+** Mathematical SH definition is a complex function
+** Real version is convenient for the engineering sense
+*** TODO: Why Poletti
+** Analytical treatment is often easier in complex
+** Conversion from one to another is well stablished
+
+
+
+* Normalizations
+** N3D: Ortho-normalized so that each spherical harmonic has unity power when integrated over the sphere
+*** Convenient for mathematical treatment
+*** TODO: Integral expression
+** SN3D: The power is TODO: Expression
+*** $N3D = \sqrt{2m+1} SN3D$
+*** Still convenient properties and simpler expression
+*** Simpler in form and still 
+** Furse-Malham: Max value for all spherical harmonics is 1 (except for the 0,0, attenuated 3dB)
+* Phase
+* Channel normalization
 
 
 * Complex spherical harmonics @cite:Williams1999_FourierAcoustics
@@ -71,9 +86,14 @@ and others.
 
 * @cite:montoya2004high Tetramic microphone paper
 * @cite:Gerzon_Soundfield Sound field paper and pattent @cite:Gerzon_Soundfield_Patent
+* Decodings \url{http://en.wikipedia.org/wiki/Ambisonic_decoding}
+
+* @cite:Gerzon_VienaDecoder Irregular speakers decoders TODO: more info
+* @cite:malham2001oformat coding the shape of object in ambisonics
 
 
-@cite:Gerzon_Patent,Gerzon_Periphony,Gerzon_Soundfield,montoya2004high,Gerzon_Broadcasting,Malham_BformatManipulation,Gerzon_VienaDecoder,Wiggins_Phd.
+@cite:Gerzon_Patent,Gerzon_Periphony,Gerzon_Soundfield,montoya2004high,Gerzon_Broadcasting,Malham_BformatManipulation,Wiggins_Phd.
+
 
 
 

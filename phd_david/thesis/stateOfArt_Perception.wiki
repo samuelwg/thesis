@@ -63,11 +63,10 @@ related to the head reference frame.
 Frontal direction is azimuth and elevation zero.
 Positive azimuth go left and positive elevation go up.
 
-Several conventions are used in literature regarding azimuth and elevation.
 In this work, unless stated otherwise,
-we adhere to a common convention in Ambisonics literature.
-Such convention, illustrated in \autoref{fig:ambisonicsConvention},
-is the following:
+we adhere to a common convention using in Ambisonics literature
+for elevation an azimuth, which is illustrated in \autoref{fig:ambisonicsConvention},
+and can be described as follows:
 Zero elevation and azimuth is in frontal direction,
 positive azimuths are to the left and negative to the right,
 while positive elevation goes up and negative goes down, being 90º and -90º at the poles.
