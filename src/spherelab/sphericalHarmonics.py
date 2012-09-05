@@ -6,6 +6,11 @@ import numpy as np
 import time
 import math
 
+def shIndexes(order) :
+	return [(l,m) for l in xrange(order+1) for m in xrange(-l,l+1) ]
+
+def shi(l,m) :
+	return (l-m,l) if m>0 else (l,l+m)
 
 def ead2xyz(e,a,d) :
 	"""
@@ -20,10 +25,6 @@ def ead2xyz(e,a,d) :
 	ca, ce = math.cos(ra), math.cos(re)
 	x,y,z = d*ce*ca, d*ce*sa, d*se
 	return x,y,z
-
-def sh(sh, e, a) :
-	projection = shProjection(e,a)
-	return (sh*projection).sum()
 
 def shProjection(e, a) :
 	"""
@@ -57,15 +58,10 @@ def shProjection(e, a) :
 
 	return sh
 
+def sh(sh, e, a) :
+	projection = shProjection(e,a)
+	return (sh*projection).sum()
 
-
-def shIndexes(order) :
-	return [(l,m) for l in xrange(order+1) for m in xrange(-l,l+1) ]
-
-def shi(l,m) :
-	return (l-m,l) if m>0 else (l,l+m)
-
-import unittest
 
 fuma=np.zeros((4,4))
 fuma[shi(0, 0)] = math.sqrt(1./2)
@@ -87,6 +83,8 @@ fuma[shi(3, 0)] = 1.
 fuma[shi(3,-1)] = math.sqrt(45./32)
 fuma[shi(3,-2)] = math.sqrt(9./5)
 fuma[shi(3,-3)] = math.sqrt(8./5)
+
+import unittest
 
 
 class SphericalHarmonicsTests(unittest.TestCase) :
