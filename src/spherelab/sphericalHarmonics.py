@@ -26,63 +26,82 @@ def ead2xyz(e,a,d) :
 	x,y,z = d*ce*ca, d*ce*sa, d*se
 	return x,y,z
 
-def shProjection(e, a) :
+def semiNormalizedSH(e, a) :
 	"""
 	Returns the value of the sh components at the specified orientation
 	"""
 	x,y,z = ead2xyz(e, a, 1)
-	re, ra = [math.radians(_) for _ in e,a]
-	ce, ca = [math.cos(_) for _ in re,ra]
-	se, sa = [math.sin(_) for _ in re,ra]
-	sh = np.zeros((4,4))
+	sn3d = np.zeros((4,4))
 
-	sh[shi(0, 0)] = 1
+	sn3d[shi(0, 0)] = 1.
 
-	sh[shi(1,+1)] = x
-	sh[shi(1, 0)] = z
-	sh[shi(1,-1)] = y
+	sn3d[shi(1,+1)] = x
+	sn3d[shi(1, 0)] = z
+	sn3d[shi(1,-1)] = y
 
-	sh[shi(2,-2)] = (x*y)*2       * math.sqrt(3./4)
-	sh[shi(2,-1)] = (y*z)*2       * math.sqrt(3./4)
-	sh[shi(2, 0)] = (3*z*z -1)/2
-	sh[shi(2,+1)] = (x*z)*2       * math.sqrt(3./4)
-	sh[shi(2,+2)] = (x*x - y*y)   * math.sqrt(3./4)
+	sn3d[shi(2,-2)] = (x*y)*2       * math.sqrt(3./4)
+	sn3d[shi(2,-1)] = (y*z)*2       * math.sqrt(3./4)
+	sn3d[shi(2, 0)] = (3*z*z -1)/2
+	sn3d[shi(2,+1)] = (x*z)*2       * math.sqrt(3./4)
+	sn3d[shi(2,+2)] = (x*x - y*y)   * math.sqrt(3./4)
 
-	sh[shi(3,+3)] = x*(x*x-3*y*y) * math.sqrt(5./8)
-	sh[shi(3,+2)] = z*(x*x-y*y)   * math.sqrt(15./4)
-	sh[shi(3,+1)] = x*(5*z*z -1)  * math.sqrt(3./8)
-	sh[shi(3, 0)] = z*(5*z*z -3)  * math.sqrt(1./4)
-	sh[shi(3,-1)] = y*(5*z*z -1)  * math.sqrt(3./8)
-	sh[shi(3,-2)] = z*x*y         * math.sqrt(15.)
-	sh[shi(3,-3)] = y*(3*x*x-y*y) * math.sqrt(5./8)
+	sn3d[shi(3,+3)] = x*(x*x-3*y*y) * math.sqrt(5./8)
+	sn3d[shi(3,+2)] = z*(x*x-y*y)   * math.sqrt(15./4)
+	sn3d[shi(3,+1)] = x*(5*z*z -1)  * math.sqrt(3./8)
+	sn3d[shi(3, 0)] = z*(5*z*z -3)  * math.sqrt(1./4)
+	sn3d[shi(3,-1)] = y*(5*z*z -1)  * math.sqrt(3./8)
+	sn3d[shi(3,-2)] = z*x*y         * math.sqrt(15.)
+	sn3d[shi(3,-3)] = y*(3*x*x-y*y) * math.sqrt(5./8)
 
 	return sh
 
+
 def sh(sh, e, a) :
-	projection = shProjection(e,a)
+	"""
+	Decodes the sh components for (e,a) position.
+	"""
+	projection = semiNormalizedSH(e,a)
 	return (sh*projection).sum()
 
 
-fuma=np.zeros((4,4))
+# factors to be applied to a sn3d sh to get n3d normalization.
+# n3d normalization is 
+n3d = np.zeros((4,4))
+for l in xrange(0,4) :
+	for m in xrange(-l, l+1) :
+		n3d[shi(l,m)] = math.sqrt(2*l+1)
+
+# factors to be applied to sn3d to get maxn normalization.
+# maxn normalization is that so that absolute maximum value
+# for each sh is 1.
+maxn=np.zeros((4,4))
+maxn[shi(0, 0)] = 1.
+
+maxn[shi(1,+1)] = 1.
+maxn[shi(1, 0)] = 1.
+maxn[shi(1,-1)] = 1.
+
+maxn[shi(2,+2)] = math.sqrt(4./3)
+maxn[shi(2,+1)] = math.sqrt(4./3)
+maxn[shi(2, 0)] = 1.
+maxn[shi(2,-1)] = math.sqrt(4./3)
+maxn[shi(2,-2)] = math.sqrt(4./3)
+
+maxn[shi(3,+3)] = math.sqrt(8./5)
+maxn[shi(3,+2)] = math.sqrt(9./5)
+maxn[shi(3,+1)] = math.sqrt(45./32)
+maxn[shi(3, 0)] = 1.
+maxn[shi(3,-1)] = math.sqrt(45./32)
+maxn[shi(3,-2)] = math.sqrt(9./5)
+maxn[shi(3,-3)] = math.sqrt(8./5)
+
+
+# factors to be applied to sn3d sh to get fuma normalization.
+# fuma is like maxn but applying a sqrt(1./2) factor to the 0,0 channel
+# in order to be compatible with B-Format standard for the first order.
+fuma=maxn.copy()
 fuma[shi(0, 0)] = math.sqrt(1./2)
 
-fuma[shi(1,+1)] = 1.
-fuma[shi(1, 0)] = 1.
-fuma[shi(1,-1)] = 1.
-
-fuma[shi(2,+2)] = math.sqrt(4./3)
-fuma[shi(2,+1)] = math.sqrt(4./3)
-fuma[shi(2, 0)] = 1.
-fuma[shi(2,-1)] = math.sqrt(4./3)
-fuma[shi(2,-2)] = math.sqrt(4./3)
-
-fuma[shi(3,+3)] = math.sqrt(8./5)
-fuma[shi(3,+2)] = math.sqrt(9./5)
-fuma[shi(3,+1)] = math.sqrt(45./32)
-fuma[shi(3, 0)] = 1.
-fuma[shi(3,-1)] = math.sqrt(45./32)
-fuma[shi(3,-2)] = math.sqrt(9./5)
-fuma[shi(3,-3)] = math.sqrt(8./5)
 
 import unittest
 
@@ -111,17 +130,17 @@ class SphericalHarmonicsTests(unittest.TestCase) :
 
 	def test_shIndex2Matrix(self) :
 
-		self.assertEqual((0,0), shi(0,0))
+		self.assertEqual((0,0), shi(0, 0))
 
 		self.assertEqual((1,0), shi(1,-1))
-		self.assertEqual((1,1), shi(1,0))
-		self.assertEqual((0,1), shi(1,1))
+		self.assertEqual((1,1), shi(1, 0))
+		self.assertEqual((0,1), shi(1,+1))
 
 		self.assertEqual((2,0), shi(2,-2))
 		self.assertEqual((2,1), shi(2,-1))
-		self.assertEqual((2,2), shi(2,0))
-		self.assertEqual((1,2), shi(2,1))
-		self.assertEqual((0,2), shi(2,2))
+		self.assertEqual((2,2), shi(2, 0))
+		self.assertEqual((1,2), shi(2,+1))
+		self.assertEqual((0,2), shi(2,+2))
 
 
 	def test_sh_0_0(self) :
