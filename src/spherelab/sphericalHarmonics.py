@@ -32,7 +32,6 @@ def semiNormalizedSH(e, a) :
 	"""
 	x,y,z = ead2xyz(e, a, 1)
 	sn3d = np.zeros((4,4))
-
 	sn3d[shi(0, 0)] = 1.
 
 	sn3d[shi(1,+1)] = x
@@ -53,15 +52,21 @@ def semiNormalizedSH(e, a) :
 	sn3d[shi(3,-2)] = z*x*y         * math.sqrt(15.)
 	sn3d[shi(3,-3)] = y*(3*x*x-y*y) * math.sqrt(5./8)
 
-	return sh
+	return sn3d
+
+def semiNormalizedSHSymbolic(e,a) :
+	x,y,z = ead2xyz(e, a, 1)
+	for l in xrange(0,4) :
+		for m in xrange(-l, l+1) :
+			sn3d[shi(l,m)] = N(-1)**m * sympy.assoc_legendre(m,l,z)
 
 
-def sh(sh, e, a) :
+def sh(components, e, a) :
 	"""
 	Decodes the sh components for (e,a) position.
 	"""
 	projection = semiNormalizedSH(e,a)
-	return (sh*projection).sum()
+	return (components*projection).sum()
 
 
 # factors to be applied to a sn3d sh to get n3d normalization.
@@ -102,8 +107,9 @@ maxn[shi(3,-3)] = math.sqrt(8./5)
 fuma=maxn.copy()
 fuma[shi(0, 0)] = math.sqrt(1./2)
 
-
 import unittest
+
+
 
 
 class SphericalHarmonicsTests(unittest.TestCase) :
