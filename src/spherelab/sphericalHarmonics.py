@@ -19,46 +19,144 @@ def ead2xyz(e,a,d) :
 		0 elevation and azimuth front
 		positive elevation up, positive azimuth left
 	"""
-
-	ra, re = math.radians(a), math.radians(e)
-	sa, se = math.sin(ra), math.sin(re)
-	ca, ce = math.cos(ra), math.cos(re)
+	ra, re = np.radians(a), np.radians(e)
+	sa, se = np.sin(ra), np.sin(re)
+	ca, ce = np.cos(ra), np.cos(re)
 	x,y,z = d*ce*ca, d*ce*sa, d*se
 	return x,y,z
 
-def semiNormalizedSH(e, a) :
+
+class SemiNormalizedSH(object) :
+	shXYZ = dict()
+	def __init__(self, compiled=False) :
+		from sympy import S, symbols, sqrt, Lambda
+		from sympy.utilities.autowrap import autowrap
+		x,y,z = symbols("x y z")
+
+		self.order = 3
+		self.sn3d = np.array([[None]*(self.order+1)]*(self.order+1))
+
+		self.sn3d[shi(0, 0)] = S(1)
+
+		self.sn3d[shi(1,+1)] = x
+		self.sn3d[shi(1, 0)] = z
+		self.sn3d[shi(1,-1)] = y
+
+		self.sn3d[shi(2,-2)] = (x*y)*2       * sqrt(S(3)/4)
+		self.sn3d[shi(2,-1)] = (y*z)*2       * sqrt(S(3)/4)
+		self.sn3d[shi(2, 0)] = (3*z*z -1)/2
+		self.sn3d[shi(2,+1)] = (x*z)*2       * sqrt(S(3)/4)
+		self.sn3d[shi(2,+2)] = (x*x - y*y)   * sqrt(S(3)/4)
+
+		self.sn3d[shi(3,+3)] = x*(x*x-3*y*y) * sqrt(S(5)/8)
+		self.sn3d[shi(3,+2)] = z*(x*x-y*y)   * sqrt(S(15)/4)
+		self.sn3d[shi(3,+1)] = x*(5*z*z -1)  * sqrt(S(3)/8)
+		self.sn3d[shi(3, 0)] = z*(5*z*z -3)  * sqrt(S(1)/4)
+		self.sn3d[shi(3,-1)] = y*(5*z*z -1)  * sqrt(S(3)/8)
+		self.sn3d[shi(3,-2)] = z*x*y*2       * sqrt(S(15)/4)
+		self.sn3d[shi(3,-3)] = y*(3*x*x-y*y) * sqrt(S(5)/8)
+
+		if compiled :
+			for i in xrange(self.order+1) :
+				for j in xrange(self.order+1) :
+					self.sn3d[i,j] = autowrap(
+						self.sn3d[i,j],
+						language='c',
+						backend='cython',
+						args=(x,y,z))
+		else :
+			for i in xrange(self.order+1) :
+				for j in xrange(self.order+1) :
+					self.sn3d[i,j] = Lambda(
+						(x,y,z),
+						self.sn3d[i,j],
+						)
+
+	def evalEA(self, e, a, target=None) :
+		x,y,z = ead2xyz(e, a, 1)
+		return self.evalXYZ(x,y,z, target)
+		
+
+	def evalXYZ(self, x,y,z, target=None) :
+		if target is None : target = np.zeros(self.sn3d.shape)
+		assert target.shape == self.sn3d.shape
+		for i in xrange(self.order+1) :
+			for j in xrange(self.order+1) :
+				target[i,j] = self.sn3d[i,j](x,y,z)
+		return target
+
+print "Precomputing..."
+from time import time
+t = time()
+obj = SemiNormalizedSH()
+print "done, elapsed: %.4fs"%(time()-t)
+
+def semiNormalizedSH(e, a, target=None) :
 	"""
 	Returns the value of the sh components at the specified orientation
 	"""
+#	return obj.evalEA(e,a, target)
+
 	x,y,z = ead2xyz(e, a, 1)
-	sn3d = np.zeros((4,4))
+
+	sn3d = np.zeros((4,4)) if target is None else target
+
 	sn3d[shi(0, 0)] = 1.
 
 	sn3d[shi(1,+1)] = x
 	sn3d[shi(1, 0)] = z
 	sn3d[shi(1,-1)] = y
 
-	sn3d[shi(2,-2)] = (x*y)*2       * math.sqrt(3./4)
-	sn3d[shi(2,-1)] = (y*z)*2       * math.sqrt(3./4)
+	sn3d[shi(2,-2)] = (x*y)*2       * np.sqrt(3./4)
+	sn3d[shi(2,-1)] = (y*z)*2       * np.sqrt(3./4)
 	sn3d[shi(2, 0)] = (3*z*z -1)/2
-	sn3d[shi(2,+1)] = (x*z)*2       * math.sqrt(3./4)
-	sn3d[shi(2,+2)] = (x*x - y*y)   * math.sqrt(3./4)
+	sn3d[shi(2,+1)] = (x*z)*2       * np.sqrt(3./4)
+	sn3d[shi(2,+2)] = (x*x - y*y)   * np.sqrt(3./4)
 
-	sn3d[shi(3,+3)] = x*(x*x-3*y*y) * math.sqrt(5./8)
-	sn3d[shi(3,+2)] = z*(x*x-y*y)   * math.sqrt(15./4)
-	sn3d[shi(3,+1)] = x*(5*z*z -1)  * math.sqrt(3./8)
-	sn3d[shi(3, 0)] = z*(5*z*z -3)  * math.sqrt(1./4)
-	sn3d[shi(3,-1)] = y*(5*z*z -1)  * math.sqrt(3./8)
-	sn3d[shi(3,-2)] = z*x*y         * math.sqrt(15.)
-	sn3d[shi(3,-3)] = y*(3*x*x-y*y) * math.sqrt(5./8)
+	sn3d[shi(3,+3)] = x*(x*x-3*y*y) * np.sqrt(5./8)
+	sn3d[shi(3,+2)] = z*(x*x-y*y)   * np.sqrt(15./4)
+	sn3d[shi(3,+1)] = x*(5*z*z -1)  * np.sqrt(3./8)
+	sn3d[shi(3, 0)] = z*(5*z*z -3)  * np.sqrt(1./4)
+	sn3d[shi(3,-1)] = y*(5*z*z -1)  * np.sqrt(3./8)
+	sn3d[shi(3,-2)] = z*x*y         * np.sqrt(15.)
+	sn3d[shi(3,-3)] = y*(3*x*x-y*y) * np.sqrt(5./8)
 
 	return sn3d
 
-def semiNormalizedSHSymbolic(e,a) :
-	x,y,z = ead2xyz(e, a, 1)
-	for l in xrange(0,4) :
-		for m in xrange(-l, l+1) :
-			sn3d[shi(l,m)] = N(-1)**m * sympy.assoc_legendre(m,l,z)
+if 0 :
+	class SympyEvaluator :
+		def __init__(self, function, *args) :
+			self._variables = args
+			self._function = function
+		def __call__(self, *args) :
+			return self._function.subs(dict(zip(self._variables,args))).evalf()
+		def __repr__(self) :
+			return "f(" + (",".join( [var.name for var in self._variables])) + ") = " + str(self._function)
+
+	def sphericalHarmonic(l,n) :
+		"""Returns an evaluator for the seminormalized real spherical harmonic
+		of order l, degree n as defined in:
+		http://ambisonics.iem.at/xchange/format/ambisonics-xchange-format-appendix
+		"""
+		import sympy as sp
+		sign = -1 if n<0 else +1
+		n = abs(n)
+		x,y=sp.var("x y")
+		f= sp.powsimp(sp.trigsimp(
+			sp.assoc_legendre(l,n,sp.sin(x)) *
+			(-1)**n *
+			sp.sqrt((2*l+1) *
+			(1 if n==0 else 2) *
+			sp.factorial(l-n)/sp.factorial(l+n)) *
+			(sp.cos(n*y) if sign>=0 else sp.sin(n*y))
+			))
+		return SympyEvaluator(f,x,y)
+
+	def semiNormalizedSHSymbolic(e,a) :
+		x,y,z = ead2xyz(e, a, 1)
+		for l in xrange(0,4) :
+			for m in xrange(-l, l+1) :
+				sn3d[shi(l,m)] = N(-1)**m * sp.assoc_legendre(m,l,z)
 
 
 def sh(components, e, a) :

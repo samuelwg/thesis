@@ -10,7 +10,7 @@ import math
 
 from colorfield import ColorField, Reloader
 
-from sphericalHarmonics import ead2xyz
+from sphericalHarmonics import ead2xyz, semiNormalizedSH, sh
 
 def cartesian_product(*arrays):
 	import operator
@@ -144,7 +144,7 @@ class SpherePointScene(QtGui.QGraphicsScene) :
 
 		self.setDefaultState()
 		painter.endNativePainting()
-		++self._frame;
+		self._frame+=1
 
 	def drawPoints(self) :
 		GL.glEnable(GL.GL_CULL_FACE)
@@ -440,7 +440,7 @@ class SphericalHarmonicsControl(QtGui.QWidget) :
 		topLayout = QtGui.QHBoxLayout()
 		self._parallelsSpin = addSpin("Parallels", 4, 50, 400, self.resolutionChanged)
 		topLayout.addStretch(1)
-		self._meridiansSpin = addSpin("Meridians", 4, 50, 400, self.resolutionChanged)
+		self._meridiansSpin = addSpin("Meridians", 4, 80, 400, self.resolutionChanged)
 		resetButton = QtGui.QPushButton("Reset")
 		resetButton.clicked.connect(self.reset)
 		topLayout.addWidget(resetButton)
@@ -462,7 +462,7 @@ class SphericalHarmonicsControl(QtGui.QWidget) :
 			knob.valueChanged.connect(self.knobEdited)
 			return knob
 
-		order = 5
+		order = 3
 		orderColors = [
 			"#889988",
 			"#667766",
@@ -521,49 +521,86 @@ if __name__ == "__main__" :
 #	reloader1.startTimer(0)
 	leftLayout.addWidget(w1)
 
+	w3 = ColorField(width, height)
+	leftLayout.addWidget(w3)
+
 	leftLayout.setStretch(0,3)
 	leftLayout.setStretch(1,1)
+	leftLayout.setStretch(2,1)
 	w.layout().setStretch(0,1)
 	w.layout().setStretch(1,1)
 
 	w.resize(width, height)
 
 
-	from sphericalHarmonics import sh
+	global shProjections
+	shProjections = np.array([[[[]]]])
+
 	def reloadData() :
+		global shProjections, elevations, azimuths, xyzs, sphericalPoints, indexes
 		nelevations = w0._parallelsSpin.value()
 		nazimuths = w0._meridiansSpin.value()
-		elevations = np.linspace(  -90,  90, nelevations)
-		azimuths = np.linspace( -180, 180, nazimuths, endpoint=False)
-		shMatrix = 5.*w0.sphericalHarmonicsMatrix()
-		data = np.array([[
-			sh(shMatrix, e, a)
-			for a in azimuths ]
-			for e in elevations ]
-			)
+		if shProjections.shape[:2] != (nelevations, nazimuths) :
+			print "Reshaping..."
+			elevations = np.linspace(-90,  90, nelevations)
+			azimuths = np.linspace( -180, 180, nazimuths, endpoint=False)
+			shProjections = np.array([[
+				semiNormalizedSH(e,a)
+				for a in azimuths]
+				for e in elevations]
+				)
+			sphericalPoints = np.array([
+				[elevations[ei], azimuths[ai], 0 ]
+				for ei in xrange(nelevations)
+				for ai in xrange(nazimuths)
+				])
+			indexes = np.array(
+				[[
+					[i+nazimuths*j,i+nazimuths*(j+1)]
+					for i in xrange(nazimuths) ]
+					for j in xrange(nelevations-1) ]
+				).flatten()
 
-		sphericalPoints = [
-			(e, a, sh(shMatrix, e, a) )
-			for e,a in cartesian_product(elevations, azimuths)]
+		shMatrix = w0.sphericalHarmonicsMatrix()
+		print shMatrix.shape, shMatrix.size
+		print shProjections.shape, shProjections.size
+
+		data = shProjections.reshape(nazimuths*nelevations, shMatrix.size).dot(
+			shMatrix.reshape(shMatrix.size )
+			).reshape(shProjections.shape[:2])
+		print data.shape
+
+		sphericalPoints[:,2] = (5*data).reshape(nelevations*nazimuths)
+
 		w2.setEadPoints(sphericalPoints)
-		w2.scene()._vertices = np.array([ead2xyz(e,a,abs(d)) for e,a,d in sphericalPoints])
-		w2.scene()._normals = np.array([ead2xyz(e,a,abs(d)) for e,a,d in sphericalPoints])
+		xyzs = np.array([ead2xyz(e,a,abs(d)) for e,a,d in sphericalPoints])
+		w2.scene()._vertices = xyzs
+		w2.scene()._normals = xyzs
 		w2.scene()._meshColors = np.array([[1.,.0,.0, .6] if d<0 else [0.,0.,1., .9] for e,a,d in sphericalPoints])
-		w2.scene()._indexes = np.array(
-			[[
-				[i+nazimuths*j,i+nazimuths*(j+1)]
-				for i in xrange(nazimuths) ]
-				for j in xrange(nelevations-1) ]
-			).flatten()
+		w2.scene()._indexes = indexes
 		w2.update()
+		maxValue = abs(data).max()
+		if maxValue > 1 : data /= maxValue
 		w1.format(nazimuths, nelevations, ColorField.signedScale)
-		w1.data()[:] = data/(10/255.)+127
-#		w1.data()[:,0] =127 # azimuth
-#		w1.data()[:,-1] =127 # azimuth
-		w1.data()[0,:] =127 # elevation
-		w1.data()[-1,:] =127 # elevation
-		print w1.data()
+		w1.data()[:] = data/(2/255.)+127
 		w1.reload()
+
+	def imageData(filename, width=None, height=None) :
+		qimage = QtGui.QImage(filename)
+		scaled = qimage if width is None and height is None else (
+			qimage.scaled(width,height) )
+		buffer = scaled.bits()
+		return np.ndarray(
+			shape = (height,width),
+			dtype = np.uint8,
+			buffer = buffer,
+			)[:,:width]
+
+	mapWidth, mapHeight = 360, 180, 
+	imageBytes = imageData("16bit_world_height.png", mapWidth, mapHeight)
+	w3.format(mapWidth, mapHeight, ColorField.signedScale)
+	w3.data()[:] = imageBytes+255-imageBytes.max()
+
 
 	w0.resolutionChanged.connect(reloadData)
 	w0.functionChanged.connect(reloadData)
