@@ -12,6 +12,8 @@ from colorfield import ColorField, Reloader
 
 from sphericalHarmonics import ead2xyz, semiNormalizedSH, sh
 
+sampleResolution = 36, 18
+
 def cartesian_product(*arrays):
 	import operator
 	broadcastable = np.ix_(*arrays)
@@ -23,6 +25,80 @@ def cartesian_product(*arrays):
 		out[start:end] = a.reshape(-1)
 		start, end = end, end + rows
 	return out.reshape(cols, rows).T
+
+def sample_map() :
+	w,h = sampleResolution
+	image = imageData("16bit_world_height.png", w, h)
+	max = float(image.max())
+	min = float(image.min())
+	image = (image-min)/(max-min)
+	loadFromSamples(image)
+
+def sample_omni() :
+	w,h = sampleResolution
+	image = np.ones((h,w))
+	loadFromSamples(image)
+
+def sample_frontPoint() :
+	w,h = sampleResolution
+	image = np.zeros((h,w))
+	image[h/2,w/2] = +1
+	loadFromSamples(image)
+
+def sample_frontNegativePoint() :
+	w,h = sampleResolution
+	image = np.zeros((h,w))
+	image[h/2,w/2] = -1
+	loadFromSamples(image)
+
+def sample_backNegativePoint() :
+	w,h = sampleResolution
+	image = np.zeros((h,w))
+	image[h/2,0] = -1
+	loadFromSamples(image)
+
+def sample_backPoint() :
+	w,h = sampleResolution
+	image = np.zeros((h,w))
+	image[h/2,0] = +1
+	loadFromSamples(image)
+
+def sample_rightPoint() :
+	w,h = sampleResolution
+	image = np.zeros((h,w))
+	image[h/2,w/4] = +1
+	loadFromSamples(image)
+
+def sample_leftPoint() :
+	w,h = sampleResolution
+	image = np.zeros((h,w))
+	image[h/2,3*w/4] = +1
+	loadFromSamples(image)
+
+def sample_topPoint() :
+	w,h = sampleResolution
+	image = np.zeros((h,w))
+	image[1,:] = +1 # north pole
+	loadFromSamples(image)
+
+def sample_downPoint() :
+	w,h = sampleResolution
+	image = np.zeros((h,w))
+	image[-2,:] = +1 # south pole
+	loadFromSamples(image)
+
+def sample_equator() :
+	w,h = sampleResolution
+	image = np.zeros((h,w))
+	image[h/2,:] = +1 # equator
+	loadFromSamples(image)
+
+def sample_greenwitch() :
+	w,h = sampleResolution
+	image = np.zeros((h,w))
+	image[:,w/2] = +1 # Grenwitch
+	loadFromSamples(image)
+
 
 class TrackBall(object) :
 	def __init__(self, angularVelocity=0., axis=QtGui.QVector3D(0,1,0)) :
@@ -441,10 +517,30 @@ class SphericalHarmonicsControl(QtGui.QWidget) :
 		self._parallelsSpin = addSpin("Parallels", 4, 50, 400, self.resolutionChanged)
 		topLayout.addStretch(1)
 		self._meridiansSpin = addSpin("Meridians", 4, 80, 400, self.resolutionChanged)
-		resetButton = QtGui.QPushButton("Reset")
-		resetButton.clicked.connect(self.reset)
-		topLayout.addWidget(resetButton)
+
+		def addButton(layout, name, slot) :
+			button = QtGui.QPushButton(name)
+			button.clicked.connect(slot)
+			layout.addWidget(button)
+
+		addButton(topLayout, "Reset", self.reset)
+		addButton(topLayout, "Negate", self.negate)
+		presetLayout1 = QtGui.QHBoxLayout()
+		presetLayout2 = QtGui.QHBoxLayout()
+		addButton(presetLayout1, "Front", sample_frontPoint)
+		addButton(presetLayout1, "Back", sample_backPoint)
+		addButton(presetLayout1, "Top", sample_topPoint)
+		addButton(presetLayout1, "Down", sample_downPoint)
+		addButton(presetLayout1, "Left", sample_leftPoint)
+		addButton(presetLayout1, "Right", sample_rightPoint)
+		addButton(presetLayout2, "Omni", sample_omni)
+		addButton(presetLayout2, "Equator", sample_equator)
+		addButton(presetLayout2, "Greenwitch", sample_greenwitch)
+		addButton(presetLayout2, "Map", sample_map)
+
 		self.layout().addLayout(topLayout)
+		self.layout().addLayout(presetLayout1)
+		self.layout().addLayout(presetLayout2)
 		self.layout().addLayout(self._grid)
 
 
@@ -487,11 +583,27 @@ class SphericalHarmonicsControl(QtGui.QWidget) :
 			for knob in row ]
 			for row in self._knobs ])
 
+	def setSphericalHarmonicsMatrix(self, array) :
+		self._editing = True
+		for i, row in enumerate(self._knobs) :
+			for j,knob in enumerate(row) :
+				knob.setValue(array[i,j])
+		self._editing = False
+		self.functionChanged.emit()
+
 	def reset(self) :
 		self._editing = True
 		for row in self._knobs :
 			for knob in row:
 				knob.setValue(0)
+		self._editing = False
+		self.functionChanged.emit()
+
+	def negate(self) :
+		self._editing = True
+		for row in self._knobs :
+			for knob in row:
+				knob.setValue(-knob.value())
 		self._editing = False
 		self.functionChanged.emit()
 
@@ -542,13 +654,7 @@ if __name__ == "__main__" :
 		nazimuths = w0._meridiansSpin.value()
 		if shProjections.shape[:2] != (nelevations, nazimuths) :
 			print "Reshaping..."
-			elevations = np.linspace(-90,  90, nelevations)
-			azimuths = np.linspace( -180, 180, nazimuths, endpoint=False)
-			shProjections = np.array([[
-				semiNormalizedSH(e,a)
-				for a in azimuths]
-				for e in elevations]
-				)
+			elevations, azimuths, shProjections = shGrid(nelevations, nazimuths)
 			sphericalPoints = np.array([
 				[elevations[ei], azimuths[ai], 0 ]
 				for ei in xrange(nelevations)
@@ -562,13 +668,10 @@ if __name__ == "__main__" :
 				).flatten()
 
 		shMatrix = w0.sphericalHarmonicsMatrix()
-		print shMatrix.shape, shMatrix.size
-		print shProjections.shape, shProjections.size
 
 		data = shProjections.reshape(nazimuths*nelevations, shMatrix.size).dot(
 			shMatrix.reshape(shMatrix.size )
 			).reshape(shProjections.shape[:2])
-		print data.shape
 
 		sphericalPoints[:,2] = (5*data).reshape(nelevations*nazimuths)
 
@@ -594,13 +697,56 @@ if __name__ == "__main__" :
 			shape = (height,width),
 			dtype = np.uint8,
 			buffer = buffer,
-			)[:,:width]
+			)[:,:width].copy() # copy needed because the buffer is not persistent
 
-	mapWidth, mapHeight = 360, 180, 
-	imageBytes = imageData("16bit_world_height.png", mapWidth, mapHeight)
-	w3.format(mapWidth, mapHeight, ColorField.signedScale)
-	w3.data()[:] = imageBytes+255-imageBytes.max()
+	def shGrid(nelevations, nazimuths) :
+		# inverted elevation order
+		elevations = np.linspace(90,  -90, nelevations)
+		azimuths = np.linspace( -180, 180, nazimuths, endpoint=False)
+		shProjections = np.array([[
+			semiNormalizedSH(e,a)
+			for a in azimuths]
+			for e in elevations]
+			)
+		return elevations, azimuths, shProjections
 
+	def projectImageToSH(image) :
+		"""
+		Maps an array representing samples of a function defined in the surface
+		of an sphere into spherical harmonics of the specified representation
+		and order.
+		Points are sampled at equal angular intervals for azimuth and elevation.
+		(plate-carree projection).
+		"""
+		h,w = image.shape
+		print h,w
+		elevations, azimuths, sh = shGrid(h,w)
+		shShape = sh.shape[2:]
+		shSize = shShape[0]*shShape[1]
+		# normalize, regarding its concentration on higher elevations
+		for ei, e in enumerate(elevations) :
+			sh[ei] *= np.cos(np.radians(e))
+
+		imageInSH = image.reshape(w*h).dot(sh.reshape(w*h,(shSize))).reshape(shShape)
+		return imageInSH
+
+
+	def loadFromSamples(image) :
+		h,w = image.shape
+		imageBytesIn8Bits = 127 + image*127./(max(1.,abs(image.max())))
+
+		w3.format(w, h, ColorField.signedScale)
+		w3.data()[:,:] = imageBytesIn8Bits
+		w3.reload()
+
+		imageInSH = projectImageToSH(image)
+		imageInSH *= 100./max(1.,abs(imageInSH).max())
+
+		w0.setSphericalHarmonicsMatrix(imageInSH)
+		reloadData()
+
+	imageInSH = np.arange(16).reshape((4,4))*100./16
+	w0.setSphericalHarmonicsMatrix(imageInSH)
 
 	w0.resolutionChanged.connect(reloadData)
 	w0.functionChanged.connect(reloadData)
