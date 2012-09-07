@@ -96,11 +96,32 @@ def semiNormalizedSH(e, a, target=None) :
 	Returns the value of the sh components at the specified orientation
 	"""
 #	return obj.evalEA(e,a, target)
+	order = 3
 
 	x,y,z = ead2xyz(e, a, 1)
 
-	sn3d = np.zeros((4,4)) if target is None else target
+	sn3d = np.zeros((order+1,order+1)) if target is None else target
 
+	
+
+	from sympy import factorial, sqrt, S
+	import sympy as sp
+	ra = math.radians(a)
+	for l in xrange(order+1) :
+		for m in xrange(-l,l+1) :
+			absm = abs(m)
+			factor = math.sqrt(2) if m else 1.
+			sn3d[shi(l,m)] = (factor
+				/ math.sqrt(
+					# simplification of fact(l-abs(m))/fact(l+abs(m))
+					np.prod(xrange(l-absm+1, l+absm+1))
+					)
+				* ( sp.assoc_legendre(l,absm,z) * S(-1)**m ).evalf()
+				* ( np.cos(m*ra) if m>=0 else np.sin(-m*ra) )
+				)
+	return sn3d
+	"""
+	"""
 	sn3d[shi(0, 0)] = 1.
 
 	sn3d[shi(1,+1)] = x
@@ -118,7 +139,7 @@ def semiNormalizedSH(e, a, target=None) :
 	sn3d[shi(3,+1)] = x*(5*z*z -1)  * np.sqrt(3./8)
 	sn3d[shi(3, 0)] = z*(5*z*z -3)  * np.sqrt(1./4)
 	sn3d[shi(3,-1)] = y*(5*z*z -1)  * np.sqrt(3./8)
-	sn3d[shi(3,-2)] = z*x*y         * np.sqrt(15.)
+	sn3d[shi(3,-2)] = z*x*y*2       * np.sqrt(15./4)
 	sn3d[shi(3,-3)] = y*(3*x*x-y*y) * np.sqrt(5./8)
 
 	return sn3d
@@ -152,12 +173,6 @@ if 0 :
 			))
 		return SympyEvaluator(f,x,y)
 
-	def semiNormalizedSHSymbolic(e,a) :
-		x,y,z = ead2xyz(e, a, 1)
-		for l in xrange(0,4) :
-			for m in xrange(-l, l+1) :
-				sn3d[shi(l,m)] = N(-1)**m * sp.assoc_legendre(m,l,z)
-
 
 def sh(components, e, a) :
 	"""
@@ -168,11 +183,15 @@ def sh(components, e, a) :
 
 
 # factors to be applied to a sn3d sh to get n3d normalization.
-# n3d normalization is 
+# n3d normalization is that so that they have unit power
 n3d = np.zeros((4,4))
 for l in xrange(0,4) :
 	for m in xrange(-l, l+1) :
 		n3d[shi(l,m)] = math.sqrt(2*l+1)
+
+# real orthonormalized with an an extra factor of 1/sqrt(4 pi)
+# Ensure that the autoconvolution is one instead of 1/4pi
+on3d = n3d/np.sqrt(4*np.pi)
 
 # factors to be applied to sn3d to get maxn normalization.
 # maxn normalization is that so that absolute maximum value
@@ -198,16 +217,15 @@ maxn[shi(3,-1)] = math.sqrt(45./32)
 maxn[shi(3,-2)] = math.sqrt(9./5)
 maxn[shi(3,-3)] = math.sqrt(8./5)
 
-
 # factors to be applied to sn3d sh to get fuma normalization.
 # fuma is like maxn but applying a sqrt(1./2) factor to the 0,0 channel
 # in order to be compatible with B-Format standard for the first order.
 fuma=maxn.copy()
 fuma[shi(0, 0)] = math.sqrt(1./2)
 
+
+
 import unittest
-
-
 
 
 class SphericalHarmonicsTests(unittest.TestCase) :
