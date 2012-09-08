@@ -6,6 +6,10 @@ import numpy as np
 import time
 import math
 
+order = 4
+shShape = (order+1,order+1)
+shSize = np.prod(shShape)
+
 def shIndexes(order) :
 	return [(l,m) for l in xrange(order+1) for m in xrange(-l,l+1) ]
 
@@ -91,12 +95,20 @@ t = time()
 obj = SemiNormalizedSH()
 print "done, elapsed: %.4fs"%(time()-t)
 
+_associated_legendre_cache = {}
+def associated_legendre(l,m,z) :
+	import sympy as sp
+	if (l,m,z) in _associated_legendre_cache :
+		print "using cache"
+		return _associated_legendre_cache[(l,m,z)]
+	return sp.assoc_legendre(l,m,z)
+
 def semiNormalizedSH(e, a, target=None) :
 	"""
 	Returns the value of the sh components at the specified orientation
 	"""
 #	return obj.evalEA(e,a, target)
-	order = 3
+	order = 4
 
 	x,y,z = ead2xyz(e, a, 1)
 
@@ -113,13 +125,13 @@ def semiNormalizedSH(e, a, target=None) :
 			factor = math.sqrt(2) if m else 1.
 			sn3d[shi(l,m)] = (factor
 				/ math.sqrt(
-					# simplification of fact(l-abs(m))/fact(l+abs(m))
-					np.prod(xrange(l-absm+1, l+absm+1))
+					sp.factorial(l+abs(m)) / sp.factorial(l-abs(m)) # clearest for the next one
+#					np.prod(xrange(l-absm+1, l+absm+1))
 					)
 				* ( sp.assoc_legendre(l,absm,z) * S(-1)**m ).evalf()
 				* ( np.cos(m*ra) if m>=0 else np.sin(-m*ra) )
 				)
-	return sn3d
+#	return sn3d
 	"""
 	"""
 	sn3d[shi(0, 0)] = 1.
@@ -141,6 +153,26 @@ def semiNormalizedSH(e, a, target=None) :
 	sn3d[shi(3,-1)] = y*(5*z*z -1)  * np.sqrt(3./8)
 	sn3d[shi(3,-2)] = z*x*y*2       * np.sqrt(15./4)
 	sn3d[shi(3,-3)] = y*(3*x*x-y*y) * np.sqrt(5./8)
+
+#	sn3d[shi(4,+3)] = 
+#	sn3d[shi(4,+2)] = 12*5**(1/2)*(-z**2 + 1)*(105*z**2/2 - 15/2)*(2*cos(a)**2 - 1)
+	sn3d[shi(4,+1)] = z*x*(7*z*z -3)       * np.sqrt(5./8)
+	sn3d[shi(4, 0)] = (3+z*z*(-30+z*z*35)) * np.sqrt(1./64)
+#	sn3d[shi(4,-1)] =
+#	sn3d[shi(4,-2)] =
+#	sn3d[shi(4,-3)] =
+
+# (4, -4) 5040*35**(1/2)*(-z**2 + 1)**2*(8*sin(a)*cos(a)**3 - 4*sin(a)*cos(a))
+# (4, -3) 1260*70**(1/2)*z*(-z**2 + 1)**(3/2)*(4*sin(a)*cos(a)**2 - sin(a))
+# (4, -2) 24*5**(1/2)*(-z**2 + 1)*(105*z**2/2 - 15/2)*sin(a)*cos(a)
+# (4, -1) 2*10**(1/2)*(-z**2 + 1)**(1/2)*(35*z**3/2 - 15*z/2)*sin(a)
+# (4, 0) 35*z**4/8 - 15*z**2/4 + 3/8
+# (4, 1) 2*10**(1/2)*(-z**2 + 1)**(1/2)*(35*z**3/2 - 15*z/2)*cos(a)
+# (4, 2) 12*5**(1/2)*(-z**2 + 1)*(105*z**2/2 - 15/2)*(2*cos(a)**2 - 1)
+# (4, 3) 1260*70**(1/2)*z*(-z**2 + 1)**(3/2)*(4*cos(a)**3 - 3*cos(a))
+# (4, 4) 5040*35**(1/2)*(-z**2 + 1)**2*(8*cos(a)**4 - 8*cos(a)**2 + 1)
+
+
 
 	return sn3d
 
@@ -181,11 +213,15 @@ def sh(components, e, a) :
 	projection = semiNormalizedSH(e,a)
 	return (components*projection).sum()
 
+########################################
+# Normalization factors,
+# They are to be applied to the sn3d to get a different one.
+
 
 # factors to be applied to a sn3d sh to get n3d normalization.
 # n3d normalization is that so that they have unit power
-n3d = np.zeros((4,4))
-for l in xrange(0,4) :
+n3d = np.zeros(shShape)
+for l in xrange(order+1) :
 	for m in xrange(-l, l+1) :
 		n3d[shi(l,m)] = math.sqrt(2*l+1)
 
@@ -196,7 +232,7 @@ on3d = n3d/np.sqrt(4*np.pi)
 # factors to be applied to sn3d to get maxn normalization.
 # maxn normalization is that so that absolute maximum value
 # for each sh is 1.
-maxn=np.zeros((4,4))
+maxn=np.zeros(shShape)
 maxn[shi(0, 0)] = 1.
 
 maxn[shi(1,+1)] = 1.
@@ -217,6 +253,18 @@ maxn[shi(3,-1)] = math.sqrt(45./32)
 maxn[shi(3,-2)] = math.sqrt(9./5)
 maxn[shi(3,-3)] = math.sqrt(8./5)
 
+maxn[shi(4,+4)] = math.sqrt(8./5)
+maxn[shi(4,+3)] = math.sqrt(8./5)
+maxn[shi(4,+2)] = math.sqrt(9./5)
+maxn[shi(4,+1)] = math.sqrt(45./32)
+maxn[shi(4, 0)] = 1.
+maxn[shi(4,-1)] = math.sqrt(45./32)
+maxn[shi(4,-2)] = math.sqrt(9./5)
+maxn[shi(4,-3)] = math.sqrt(8./5)
+maxn[shi(4,-4)] = math.sqrt(8./5)
+
+
+
 # factors to be applied to sn3d sh to get fuma normalization.
 # fuma is like maxn but applying a sqrt(1./2) factor to the 0,0 channel
 # in order to be compatible with B-Format standard for the first order.
@@ -236,7 +284,7 @@ class SphericalHarmonicsTests(unittest.TestCase) :
 		and is normalized using the FuMa normalization so that the maximum
 		value is one (but the 0,0 component which is normalized to 1/sqrt(2))
 		"""
-		components = np.zeros((4,4))
+		components = np.zeros(shShape)
 		components[shi(l,m)] = fuma[shi(l,m)]
 		return components
 
@@ -696,6 +744,92 @@ class SphericalHarmonicsTests(unittest.TestCase) :
 		self.assertAlmostEqual(sh(components,   0, 330), -1)
 
 		self.assertAlmostEqual(sh(components,  30,   4),  0.13504260449396654)
+
+	def test_sh_4_0(self) :
+		components = self._fumaNormalizedComponents(4,-0)
+
+		self.assertAlmostEqual(sh(components, -90,   0), +1)
+		self.assertAlmostEqual(sh(components, +90,   0), +1)
+
+		maxvalue = 3./8
+
+		self.assertAlmostEqual(sh(components, 0,   0), maxvalue)
+		self.assertAlmostEqual(sh(components, 0,  90), maxvalue)
+		self.assertAlmostEqual(sh(components, 0, 180), maxvalue)
+		self.assertAlmostEqual(sh(components, 0, -90), maxvalue)
+
+		maxangle = math.degrees(math.asin(math.sqrt(3./7))) # 40.8933946491309
+		maxvalue = -3./7
+
+		self.assertAlmostEqual(sh(components, maxangle,   0), maxvalue)
+		self.assertAlmostEqual(sh(components, maxangle,  90), maxvalue)
+		self.assertAlmostEqual(sh(components, maxangle, 180), maxvalue)
+		self.assertAlmostEqual(sh(components, maxangle, -90), maxvalue)
+
+		zero1 = math.degrees(math.asin(math.sqrt(3./7 + 2*math.sqrt(6./5)/7)))
+		zero2 = math.degrees(math.asin(math.sqrt(3./7 - 2*math.sqrt(6./5)/7)))
+
+		self.assertAlmostEqual(sh(components, -zero1,   0),  0)
+		self.assertAlmostEqual(sh(components, -zero2,   0),  0)
+		self.assertAlmostEqual(sh(components, +zero2,   0),  0)
+		self.assertAlmostEqual(sh(components, +zero1,   0),  0)
+
+		self.assertAlmostEqual(sh(components,  30,   4), -0.28906249999999989)
+
+	def test_sh_4_1(self) :
+		components = self._fumaNormalizedComponents(4,+1)
+
+		self.assertAlmostEqual(sh(components,  30,   4), -0.50620066958619414)
+
+		self.assertAlmostEqual(sh(components, -90,   0), 0)
+		self.assertAlmostEqual(sh(components, +90,   0), 0)
+
+		self.assertAlmostEqual(sh(components, 0,   0), 0)
+		self.assertAlmostEqual(sh(components, 0,  30), 0)
+		self.assertAlmostEqual(sh(components, 0,  45), 0)
+		self.assertAlmostEqual(sh(components, 0,  60), 0)
+		self.assertAlmostEqual(sh(components, 0,  90), 0)
+		self.assertAlmostEqual(sh(components, 0, 180), 0)
+		self.assertAlmostEqual(sh(components, 0, -90), 0)
+
+		zeroangle = math.degrees(math.asin(math.sqrt(3./7)))
+
+		self.assertAlmostEqual(sh(components, -zeroangle, +90),  0)
+		self.assertAlmostEqual(sh(components, -zeroangle, + 3),  0)
+		self.assertAlmostEqual(sh(components, +zeroangle, +90),  0)
+		self.assertAlmostEqual(sh(components, +zeroangle, + 3),  0)
+
+		maxangle1 = math.degrees(math.asin(math.sqrt( (27-math.sqrt(393))/7/8) ))
+		maxvalue1 = 0.65899241473965087 # b2b, not analytically checked
+		maxangle2 = math.degrees(math.asin(math.sqrt( (27+math.sqrt(393))/7/8) )) # 66.1221762567095 
+		maxvalue2 = 0.99002458431152618 # b2b, not analytically checked
+
+		self.assertAlmostEqual(sh(components, +maxangle1,   0), -maxvalue1)
+		self.assertAlmostEqual(sh(components, +maxangle1,  90),  0)
+		self.assertAlmostEqual(sh(components, +maxangle1, 180), +maxvalue1)
+		self.assertAlmostEqual(sh(components, +maxangle1, -90),  0)
+
+		self.assertAlmostEqual(sh(components, +maxangle2,   0), +maxvalue2)
+		self.assertAlmostEqual(sh(components, +maxangle2,  90),  0)
+		self.assertAlmostEqual(sh(components, +maxangle2, 180), -maxvalue2)
+		self.assertAlmostEqual(sh(components, +maxangle2, -90),  0)
+
+		self.assertAlmostEqual(sh(components, -maxangle1,   0), +maxvalue1)
+		self.assertAlmostEqual(sh(components, -maxangle1,  90),  0)
+		self.assertAlmostEqual(sh(components, -maxangle1, 180), -maxvalue1)
+		self.assertAlmostEqual(sh(components, -maxangle1, -90),  0)
+
+		self.assertAlmostEqual(sh(components, -maxangle2,   0), -maxvalue2)
+		self.assertAlmostEqual(sh(components, -maxangle2,  90),  0)
+		self.assertAlmostEqual(sh(components, -maxangle2, 180), +maxvalue2)
+		self.assertAlmostEqual(sh(components, -maxangle2, -90),  0)
+
+	def test_sh_4_2(self) :
+		components = self._fumaNormalizedComponents(4,+2)
+
+		self.assertAlmostEqual(sh(components,  30,   4), 0.41776934150034972)
+
+
 
 class CoordsConversionTests(unittest.TestCase) :
 

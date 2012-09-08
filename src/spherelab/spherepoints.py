@@ -558,7 +558,7 @@ class SphericalHarmonicsControl(QtGui.QWidget) :
 			knob.valueChanged.connect(self.knobEdited)
 			return knob
 
-		order = 3
+		order = 4
 		orderColors = [
 			"#889988",
 			"#667766",
@@ -745,7 +745,9 @@ if __name__ == "__main__" :
 		w0.setSphericalHarmonicsMatrix(imageInSH)
 		reloadData()
 
-	imageInSH = np.arange(16).reshape((4,4))*100./16
+	from sphericalHarmonics import shSize, shShape
+	imageInSH = np.arange(shSize).reshape(shShape)*100./shSize
+
 	w0.setSphericalHarmonicsMatrix(imageInSH)
 
 	w0.resolutionChanged.connect(reloadData)
