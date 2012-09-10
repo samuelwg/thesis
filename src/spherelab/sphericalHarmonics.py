@@ -6,7 +6,7 @@ import numpy as np
 import time
 import math
 
-order = 4
+order = 5
 shShape = (order+1,order+1)
 shSize = np.prod(shShape)
 
@@ -37,7 +37,7 @@ class SemiNormalizedSH(object) :
 		from sympy.utilities.autowrap import autowrap
 		x,y,z = symbols("x y z")
 
-		self.order = 3
+		self.order = order
 		self.sn3d = np.array([[None]*(self.order+1)]*(self.order+1))
 
 		self.sn3d[shi(0, 0)] = S(1)
@@ -59,6 +59,29 @@ class SemiNormalizedSH(object) :
 		self.sn3d[shi(3,-1)] = y*(5*z*z -1)  * sqrt(S(3)/8)
 		self.sn3d[shi(3,-2)] = z*x*y*2       * sqrt(S(15)/4)
 		self.sn3d[shi(3,-3)] = y*(3*x*x-y*y) * sqrt(S(5)/8)
+
+		self.sn3d[shi(4,+4)] = (x**4 -6*x*x*y*y +y**4)  * sqrt(S(35)/64)
+		self.sn3d[shi(4,+3)] = z*x*(x*x -3*y*y)         * sqrt(S(35)/8)
+		self.sn3d[shi(4,+2)] = (x*x-y*y)*(7*z*z -1)     * sqrt(S(5)/16)
+		self.sn3d[shi(4,+1)] = z*x*(7*z*z -3)           * sqrt(S(5)/8)
+		self.sn3d[shi(4, 0)] = (3+z*z*(-30+z*z*35))     * sqrt(S(1)/64)
+		self.sn3d[shi(4,-1)] = z*y*(7*z*z -3)           * sqrt(S(5)/8)
+		self.sn3d[shi(4,-2)] = 2*x*y*(7*z*z -1)         * sqrt(S(5)/16)
+		self.sn3d[shi(4,-3)] = z*y*(3*x*x -y*y)         * sqrt(S(35)/8)
+		self.sn3d[shi(4,-4)] = 4*x*y*(x*x -y*y)         * sqrt(S(35)/64)
+
+		self.sn3d[shi(5,+5)] = x*(x**4 -10*x*x*y*y +5*y**4) * sqrt(S(9)*7/64/2)
+		self.sn3d[shi(5,+4)] = z*(x**4 -6*x*x*y*y +y**4)    * sqrt(S(35)*9/64)
+		self.sn3d[shi(5,+3)] = x*(x*x-3*y*y)*(9*z*z-1)      * sqrt(S(5)*7/128)
+		self.sn3d[shi(5,+2)] = 3*z*(x*x-y*y)*(3*z*z-1)      * sqrt(S(7)*5/3/16)
+		self.sn3d[shi(5,+1)] = x*(21*z**4 -14*z**2 + 1)     * sqrt(S(3)*5/64)
+		self.sn3d[shi(5, 0)] = z*(63*z**4 -70*z**2 + 15)    * sqrt(S(1)/64) 
+		self.sn3d[shi(5,-1)] = y*(21*z**4 -14*z**2 + 1)     * sqrt(S(3)*5/64)
+		self.sn3d[shi(5,-2)] = 2*x*y*z*(3*z*z -1)           * sqrt(S(105)/16)
+		self.sn3d[shi(5,-3)] = y*(9*z*z-1)*(3*x*x-y*y)      * sqrt(S(35)/8/16)
+		self.sn3d[shi(5,-4)] = 4*x*y*z*(x*x -y*y)           * sqrt(S(9)*35./64)
+		self.sn3d[shi(5,-5)] = (x*self.sn3d[shi(4,-4)] +y*self.sn3d[shi(4,+4)]) * sqrt(S(9)/10)
+
 
 		if compiled :
 			for i in xrange(self.order+1) :
@@ -108,17 +131,14 @@ def semiNormalizedSH(e, a, target=None) :
 	Returns the value of the sh components at the specified orientation
 	"""
 #	return obj.evalEA(e,a, target)
-	order = 4
 
 	x,y,z = ead2xyz(e, a, 1)
 
 	sn3d = np.zeros((order+1,order+1)) if target is None else target
-
-	
-
 	from sympy import factorial, sqrt, S
 	import sympy as sp
 	ra = math.radians(a)
+	"""
 	for l in xrange(order+1) :
 		for m in xrange(-l,l+1) :
 			absm = abs(m)
@@ -133,13 +153,66 @@ def semiNormalizedSH(e, a, target=None) :
 				)
 #	return sn3d
 	"""
+
 	"""
+	# sympy generated from generic formula
+	sn3d[shi(0, 0)] = 1
+	sn3d[shi(1,-1)] = (-z**2 + 1)**(1./2)*np.sin(ra)
+	sn3d[shi(1, 0)] = z
+	sn3d[shi(1,+1)] = (-z**2 + 1)**(1./2)*np.cos(ra)
+	sn3d[shi(2,-2)] = 3**(1./2)*(-z**2 + 1)*np.sin(2*ra)/2
+	sn3d[shi(2,-1)] = 3**(1./2)*z*(-z**2 + 1)**(1./2)*np.sin(ra)
+	sn3d[shi(2, 0)] = 3*z**2/2 - 1./2
+	sn3d[shi(2,+1)] = 3**(1./2)*z*(-z**2 + 1)**(1./2)*np.cos(ra)
+	sn3d[shi(2,+2)] = 3**(1./2)*(-z**2 + 1)*np.cos(2*ra)/2
+	sn3d[shi(3,-3)] = 10**(1./2)*(-z**2 + 1)**(3./2)*np.sin(3*ra)/4
+	sn3d[shi(3,-2)] = 15**(1./2)*z*(-z**2 + 1)*np.sin(2*ra)/2
+	sn3d[shi(3,-1)] = 6**(1./2)*(-z**2 + 1)**(1./2)*(5*z**2 - 1)*np.sin(ra)/4
+	sn3d[shi(3, 0)] = z*(5*z**2 - 3)/2
+	sn3d[shi(3,+1)] = 6**(1./2)*(-z**2 + 1)**(1./2)*(5*z**2 - 1)*np.cos(ra)/4
+	sn3d[shi(3,+2)] = 15**(1./2)*z*(-z**2 + 1)*np.cos(2*ra)/2
+	sn3d[shi(3,+3)] = 10**(1./2)*(-z**2 + 1)**(3./2)*np.cos(3*ra)/4
+	sn3d[shi(4,-4)] = 35**(1./2)*(z**4 - 2*z**2 + 1)*np.sin(4*ra)/8
+	sn3d[shi(4,-3)] = 70**(1./2)*z*(-z**2 + 1)**(3./2)*np.sin(3*ra)/4
+	sn3d[shi(4,-2)] = 5**(1./2)*(-7*z**4 + 8*z**2 - 1)*np.sin(2*ra)/4
+	sn3d[shi(4,-1)] = 10**(1./2)*z*(-z**2 + 1)**(1./2)*(7*z**2 - 3)*np.sin(ra)/4
+	sn3d[shi(4, 0)] = 35*z**4/8 - 15*z**2/4 + 3./8
+	sn3d[shi(4,+1)] = 10**(1./2)*z*(-z**2 + 1)**(1./2)*(7*z**2 - 3)*np.cos(ra)/4
+	sn3d[shi(4,+2)] = 5**(1./2)*(-7*z**4 + 8*z**2 - 1)*np.cos(2*ra)/4
+	sn3d[shi(4,+3)] = 70**(1./2)*z*(-z**2 + 1)**(3./2)*np.cos(3*ra)/4
+	sn3d[shi(4,+4)] = 35**(1./2)*(z**4 - 2*z**2 + 1)*np.cos(4*ra)/8
+	sn3d[shi(5,-5)] = 3*14**(1./2)*(-z**2 + 1)**(1./2)*(z**4 - 2*z**2 + 1)*np.sin(5*ra)/16
+	sn3d[shi(5,-4)] = 3*35**(1./2)*z*(z**4 - 2*z**2 + 1)*np.sin(4*ra)/8
+	sn3d[shi(5,-3)] = 70**(1./2)*(-z**2 + 1)**(1./2)*(-9*z**4 + 10*z**2 - 1)*np.sin(3*ra)/16
+	sn3d[shi(5,-2)] = 105**(1./2)*z*(-3*z**4 + 4*z**2 - 1)*np.sin(2*ra)/4
+	sn3d[shi(5,-1)] = 15**(1./2)*(-z**2 + 1)**(1./2)*(21*z**4 - 14*z**2 + 1)*np.sin(ra)/8
+	sn3d[shi(5, 0)] = z*(63*z**4 - 70*z**2 + 15)/8
+	sn3d[shi(5,+1)] = 15**(1./2)*(-z**2 + 1)**(1./2)*(21*z**4 - 14*z**2 + 1)*np.cos(ra)/8
+	sn3d[shi(5,+2)] = 105**(1./2)*z*(-3*z**4 + 4*z**2 - 1)*np.cos(2*ra)/4
+	sn3d[shi(5,+3)] = 70**(1./2)*(-z**2 + 1)**(1./2)*(-9*z**4 + 10*z**2 - 1)*np.cos(3*ra)/16
+	sn3d[shi(5,+4)] = 3*35**(1./2)*z*(z**4 - 2*z**2 + 1)*np.cos(4*ra)/8
+	sn3d[shi(5,+5)] = 3*14**(1./2)*(-z**2 + 1)**(1./2)*(z**4 - 2*z**2 + 1)*np.cos(5*ra)/16
+	sn3d[shi(6,-6)] = 462**(1./2)*(-z**6 + 3*z**4 - 3*z**2 + 1)*np.sin(6*ra)/32
+	sn3d[shi(6,-5)] = 3*154**(1./2)*z*(-z**2 + 1)**(1./2)*(z**4 - 2*z**2 + 1)*np.sin(5*ra)/16
+	sn3d[shi(6,-4)] = 3*7**(1./2)*(11*z**6 - 23*z**4 + 13*z**2 - 1)*np.sin(4*ra)/16
+	sn3d[shi(6,-3)] = 210**(1./2)*z*(-z**2 + 1)**(1./2)*(-11*z**4 + 14*z**2 - 3)*np.sin(3*ra)/16
+	sn3d[shi(6,-2)] = 210**(1./2)*(-33*z**6 + 51*z**4 - 19*z**2 + 1)*np.sin(2*ra)/32
+	sn3d[shi(6,-1)] = 21**(1./2)*z*(-z**2 + 1)**(1./2)*(33*z**4 - 30*z**2 + 5)*np.sin(ra)/8
+	sn3d[shi(6, 0)] = 231*z**6/16 - 315*z**4/16 + 105*z**2/16 - 5./16
+	sn3d[shi(6,+1)] = 21**(1./2)*z*(-z**2 + 1)**(1./2)*(33*z**4 - 30*z**2 + 5)*np.cos(ra)/8
+	sn3d[shi(6,+2)] = 210**(1./2)*(-33*z**6 + 51*z**4 - 19*z**2 + 1)*np.cos(2*ra)/32
+	sn3d[shi(6,+3)] = 210**(1./2)*z*(-z**2 + 1)**(1./2)*(-11*z**4 + 14*z**2 - 3)*np.cos(3*ra)/16
+	sn3d[shi(6,+4)] = 3*7**(1./2)*(11*z**6 - 23*z**4 + 13*z**2 - 1)*np.cos(4*ra)/16
+	sn3d[shi(6,+5)] = 3*154**(1./2)*z*(-z**2 + 1)**(1./2)*(z**4 - 2*z**2 + 1)*np.cos(5*ra)/16
+	sn3d[shi(6,+6)] = 462**(1./2)*(-z**6 + 3*z**4 - 3*z**2 + 1)*np.cos(6*ra)/32
+"""
+	# Synthetic version
+
 	sn3d[shi(0, 0)] = 1.
 
 	sn3d[shi(1,+1)] = x
 	sn3d[shi(1, 0)] = z
 	sn3d[shi(1,-1)] = y
-
 	sn3d[shi(2,-2)] = (x*y)*2       * np.sqrt(3./4)
 	sn3d[shi(2,-1)] = (y*z)*2       * np.sqrt(3./4)
 	sn3d[shi(2, 0)] = (3*z*z -1)/2
@@ -154,56 +227,89 @@ def semiNormalizedSH(e, a, target=None) :
 	sn3d[shi(3,-2)] = z*x*y*2       * np.sqrt(15./4)
 	sn3d[shi(3,-3)] = y*(3*x*x-y*y) * np.sqrt(5./8)
 
-#	sn3d[shi(4,+3)] = 
-#	sn3d[shi(4,+2)] = 12*5**(1/2)*(-z**2 + 1)*(105*z**2/2 - 15/2)*(2*cos(a)**2 - 1)
-	sn3d[shi(4,+1)] = z*x*(7*z*z -3)       * np.sqrt(5./8)
-	sn3d[shi(4, 0)] = (3+z*z*(-30+z*z*35)) * np.sqrt(1./64)
-#	sn3d[shi(4,-1)] =
-#	sn3d[shi(4,-2)] =
-#	sn3d[shi(4,-3)] =
 
-# (4, -4) 5040*35**(1/2)*(-z**2 + 1)**2*(8*sin(a)*cos(a)**3 - 4*sin(a)*cos(a))
-# (4, -3) 1260*70**(1/2)*z*(-z**2 + 1)**(3/2)*(4*sin(a)*cos(a)**2 - sin(a))
-# (4, -2) 24*5**(1/2)*(-z**2 + 1)*(105*z**2/2 - 15/2)*sin(a)*cos(a)
-# (4, -1) 2*10**(1/2)*(-z**2 + 1)**(1/2)*(35*z**3/2 - 15*z/2)*sin(a)
-# (4, 0) 35*z**4/8 - 15*z**2/4 + 3/8
-# (4, 1) 2*10**(1/2)*(-z**2 + 1)**(1/2)*(35*z**3/2 - 15*z/2)*cos(a)
-# (4, 2) 12*5**(1/2)*(-z**2 + 1)*(105*z**2/2 - 15/2)*(2*cos(a)**2 - 1)
-# (4, 3) 1260*70**(1/2)*z*(-z**2 + 1)**(3/2)*(4*cos(a)**3 - 3*cos(a))
-# (4, 4) 5040*35**(1/2)*(-z**2 + 1)**2*(8*cos(a)**4 - 8*cos(a)**2 + 1)
+#	sn3d[shi(4,+4)] = (x*x*(x*x-3*y*y)-y*y*(3*x*x-y*y))   * np.sqrt(35./64) # reference
+	sn3d[shi(4,+4)] = (x**4 -6*x*x*y*y +y**4)  * np.sqrt(35./64)
+	sn3d[shi(4,+3)] = z*x*(x*x -3*y*y)         * np.sqrt(35./8)
+	sn3d[shi(4,+2)] = (x*x-y*y)*(7*z*z -1)     * np.sqrt(5./16)
+	sn3d[shi(4,+1)] = z*x*(7*z*z -3)           * np.sqrt(5./8)
+	sn3d[shi(4, 0)] = (3+z*z*(-30+z*z*35))     * np.sqrt(1./64)
+	sn3d[shi(4,-1)] = z*y*(7*z*z -3)           * np.sqrt(5./8)
+	sn3d[shi(4,-2)] = 2*x*y*(7*z*z -1)         * np.sqrt(5./16)
+	sn3d[shi(4,-3)] = z*y*(3*x*x -y*y)         * np.sqrt(35./8)
+	sn3d[shi(4,-4)] = 4*x*y*(x*x -y*y)         * np.sqrt(35./64)
 
+	sn3d[shi(5,+5)] = x*(x**4 -10*x*x*y*y +5*y**4)           * np.sqrt(9.*7./64/2)
+	sn3d[shi(5,+4)] = z*(x**4 -6*x*x*y*y +y**4)              * np.sqrt(35*9./64)
+	sn3d[shi(5,+3)] = x*(x*x-3*y*y)*(9*z*z-1)                * np.sqrt(5.*7./128)
+	sn3d[shi(5,+2)] = 3*z*(x*x-y*y)*(3*z*z-1)                * np.sqrt(7.*5/3/16)
+	sn3d[shi(5,+1)] = x*(21*z**4 -14*z**2 + 1)               * np.sqrt(3.*5/64)
+	sn3d[shi(5, 0)] = z*(63*z**4 -70*z**2 + 15)              * np.sqrt(1./64) 
+	sn3d[shi(5,-1)] = y*(21*z**4 -14*z**2 + 1)               * np.sqrt(3.*5/64)
+	sn3d[shi(5,-2)] = 2*x*y*z*(3*z*z -1)                     * np.sqrt(105./16)
+	sn3d[shi(5,-3)] = y*(9*z*z-1)*(3*x*x-y*y)                * np.sqrt(35./8/16)
+	sn3d[shi(5,-4)] = 4*x*y*z*(x*x -y*y)                     * np.sqrt(9.*35./64)
+	sn3d[shi(5,-5)] = (x*sn3d[shi(4,-4)] +y*sn3d[shi(4,+4)]) * np.sqrt(9./10)
 
+	assert abs(sn3d[shi(5,+5)]  - 3*14**(1./2)*(-z**2 + 1)**(1./2)*(z**4 - 2*z**2 + 1)*np.cos(5*ra)/16) < 1e-7
+	assert abs(sn3d[shi(5,+4)]  - 3*35**(1./2)*z*(z**4 - 2*z**2 + 1)*np.cos(4*ra)/8 ) < 1e-7
+	assert abs(sn3d[shi(5,+3)]  - 70**(1./2)*(-z**2 + 1)**(1./2)*(-9*z**4 + 10*z**2 - 1)*np.cos(3*ra)/16 ) < 1e-7
+	assert abs(sn3d[shi(5,+2)]  - 105**(1./2)*z*(-3*z**4 + 4*z**2 - 1)*np.cos(2*ra)/4  ) < 1e-7
+	assert abs(sn3d[shi(5,+1)]  - 15**(1./2)*(-z**2 + 1)**(1./2)*(21*z**4 - 14*z**2 + 1)*np.cos(ra)/8  ) < 1e-7
+	assert abs(sn3d[shi(5, 0)]  -  z*(63*z**4 - 70*z**2 + 15)/8 )< 1e-7
+	assert abs(sn3d[shi(5,-1)]  - 15**(1./2)*(-z**2 + 1)**(1./2)*(21*z**4 - 14*z**2 + 1)*np.sin(ra)/8 ) < 1e-7
+	assert abs(sn3d[shi(5,-5)]  - 3*14**(1./2)*(-z**2 + 1)**(1./2)*(z**4 - 2*z**2 + 1)*np.sin(5*ra)/16 ) < 1e-7
+	assert abs(sn3d[shi(5,-4)]  - 3*35**(1./2)*z*(z**4 - 2*z**2 + 1)*np.sin(4*ra)/8 ) < 1e-7
+	assert abs(sn3d[shi(5,-3)]  - 70**(1./2)*(-z**2 + 1)**(1./2)*(-9*z**4 + 10*z**2 - 1)*np.sin(3*ra)/16 ) < 1e-7
+	assert abs(sn3d[shi(5,-2)]  - 105**(1./2)*z*(-3*z**4 + 4*z**2 - 1)*np.sin(2*ra)/4 ) < 1e-7
+	assert abs(sn3d[shi(5,-1)]  - 15**(1./2)*(-z**2 + 1)**(1./2)*(21*z**4 - 14*z**2 + 1)*np.sin(ra)/8 ) < 1e-7
 
-	return sn3d
+	"""
+# recursive versions
 
-if 0 :
-	class SympyEvaluator :
-		def __init__(self, function, *args) :
-			self._variables = args
-			self._function = function
-		def __call__(self, *args) :
-			return self._function.subs(dict(zip(self._variables,args))).evalf()
-		def __repr__(self) :
-			return "f(" + (",".join( [var.name for var in self._variables])) + ") = " + str(self._function)
+#	sn3d[shi(1,-1)] = (y*sn3d[shi(0,+0)] +x*sn3d[shi(0,-0)]) * np.sqrt(1)
+#	sn3d[shi(1, 0)] = (z*z -1)
+#	sn3d[shi(1,+1)] = (x*sn3d[shi(0,+0)] -y*sn3d[shi(0,-0)]) * np.sqrt(1)
 
-	def sphericalHarmonic(l,n) :
-		"""Returns an evaluator for the seminormalized real spherical harmonic
-		of order l, degree n as defined in:
-		http://ambisonics.iem.at/xchange/format/ambisonics-xchange-format-appendix
-		"""
-		import sympy as sp
-		sign = -1 if n<0 else +1
-		n = abs(n)
-		x,y=sp.var("x y")
-		f= sp.powsimp(sp.trigsimp(
-			sp.assoc_legendre(l,n,sp.sin(x)) *
-			(-1)**n *
-			sp.sqrt((2*l+1) *
-			(1 if n==0 else 2) *
-			sp.factorial(l-n)/sp.factorial(l+n)) *
-			(sp.cos(n*y) if sign>=0 else sp.sin(n*y))
-			))
-		return SympyEvaluator(f,x,y)
+	sn3d[shi(2,-2)] = (y*sn3d[shi(1,+1)] +x*sn3d[shi(1,-1)]) * np.sqrt(3./4)
+	sn3d[shi(2,-1)] = z*sn3d[shi(1,-1)]                      * np.sqrt(3.)
+	sn3d[shi(2, 0)] = (3*z*z -1)*sn3d[shi(0, 0)]             * np.sqrt(1./4)
+	sn3d[shi(2,+1)] = z*sn3d[shi(1,+1)]                      * np.sqrt(3.)
+	sn3d[shi(2,+2)] = (x*sn3d[shi(1,+1)] -y*sn3d[shi(1,-1)]) * np.sqrt(3./4)
+
+	sn3d[shi(3,+3)] = (x*sn3d[shi(2,+2)] -y*sn3d[shi(2,-2)]) * np.sqrt(5./6)
+	sn3d[shi(3,+2)] = z*sn3d[shi(2,+2)]                      * np.sqrt(5.)
+	sn3d[shi(3,+1)] = (5*z*z -1)*sn3d[shi(1,+1)]             * np.sqrt(3./8)
+	sn3d[shi(3, 0)] = (5*z*z -3)*sn3d[shi(1, 0)]             * np.sqrt(1./4)
+	sn3d[shi(3,-1)] = (5*z*z -1)*sn3d[shi(1,-1)]             * np.sqrt(3./8)
+	sn3d[shi(3,-2)] = z*sn3d[shi(2,-2)]                      * np.sqrt(5.)
+	sn3d[shi(3,-3)] = (y*sn3d[shi(2,+2)] +x*sn3d[shi(2,-2)]) * np.sqrt(5./6)
+
+	sn3d[shi(4,+4)] = (x*sn3d[shi(3,+3)] -y*sn3d[shi(3,-3)]) * np.sqrt(7./8)
+	sn3d[shi(4,+3)] = z*sn3d[shi(3,+3)]                      * np.sqrt(7.)
+	sn3d[shi(4,+2)] = (7*z*z-1)*sn3d[shi(2,+2)]              * np.sqrt(5./3/4)
+	sn3d[shi(4,+1)] = (7*z*z-3)*sn3d[shi(2,+1)]              * np.sqrt(5./3/8)
+	sn3d[shi(4, 0)] = (3+z*z*(-30+z*z*35))                   * np.sqrt(1./64) # Recursion?
+	sn3d[shi(4,-1)] = (7*z*z-3)*sn3d[shi(2,-1)]              * np.sqrt(5./3/8)
+	sn3d[shi(4,-2)] = (7*z*z-1)*sn3d[shi(2,-2)]              * np.sqrt(5./3/4)
+	sn3d[shi(4,-3)] = z*sn3d[shi(3,-3)]                      * np.sqrt(7.)
+	sn3d[shi(4,-4)] = (y*sn3d[shi(3,+3)] +x*sn3d[shi(3,-3)]) * np.sqrt(7./8)
+
+	sn3d[shi(5,+5)] = (x*sn3d[shi(4,+4)] -y*sn3d[shi(4,-4)]) * np.sqrt(9./10)
+	sn3d[shi(5,+4)] = z*sn3d[shi(4,+4)]                      * np.sqrt(9.)
+	sn3d[shi(5,+3)] = (9*z*z-1)*sn3d[shi(3,+3)]              * np.sqrt(7./8/2)
+	sn3d[shi(5,+2)] = (9*z*z-3)*sn3d[shi(3,+2)]              * np.sqrt(7./9/4)
+	sn3d[shi(5,+1)] = x*(21*z**4 -14*z**2 + 1)               * np.sqrt(3.*5/64)
+	sn3d[shi(5, 0)] = z*(63*z**4 -70*z**2 + 15)              * np.sqrt(1./64) 
+	sn3d[shi(5,-1)] = y*(21*z**4 -14*z**2 + 1)               * np.sqrt(3.*5/64)
+	sn3d[shi(5,-2)] = 2*x*y*z*(3*z*z -1)                     * np.sqrt(105./16)
+	sn3d[shi(5,-3)] = y*(9*z*z-1)*(3*x*x-y*y)                * np.sqrt(35./8/16)
+	sn3d[shi(5,-4)] = z*sn3d[shi(4,-4)]                      * np.sqrt(9.)
+	sn3d[shi(5,-5)] = (x*sn3d[shi(4,-4)] +y*sn3d[shi(4,+4)]) * np.sqrt(9./10)
+
+	"""
+
+	return sn3d[:order+1,:order+1]
 
 
 def sh(components, e, a) :
@@ -253,15 +359,28 @@ maxn[shi(3,-1)] = math.sqrt(45./32)
 maxn[shi(3,-2)] = math.sqrt(9./5)
 maxn[shi(3,-3)] = math.sqrt(8./5)
 
-maxn[shi(4,+4)] = math.sqrt(8./5)
-maxn[shi(4,+3)] = math.sqrt(8./5)
-maxn[shi(4,+2)] = math.sqrt(9./5)
-maxn[shi(4,+1)] = math.sqrt(45./32)
+# TODO: maxn for 4th order
+maxn[shi(4,+4)] = 1.
+maxn[shi(4,+3)] = 1.
+maxn[shi(4,+2)] = 1.
+maxn[shi(4,+1)] = 1.
 maxn[shi(4, 0)] = 1.
-maxn[shi(4,-1)] = math.sqrt(45./32)
-maxn[shi(4,-2)] = math.sqrt(9./5)
-maxn[shi(4,-3)] = math.sqrt(8./5)
-maxn[shi(4,-4)] = math.sqrt(8./5)
+maxn[shi(4,-1)] = 1.
+maxn[shi(4,-2)] = 1.
+maxn[shi(4,-3)] = 1.
+maxn[shi(4,-4)] = 1.
+
+maxn[shi(5,+5)] = 1.
+maxn[shi(5,+4)] = 1.
+maxn[shi(5,+3)] = 1.
+maxn[shi(5,+2)] = 1.
+maxn[shi(5,+1)] = 1.
+maxn[shi(5, 0)] = 1.
+maxn[shi(5,-1)] = 1.
+maxn[shi(5,-2)] = 1.
+maxn[shi(5,-3)] = 1.
+maxn[shi(5,-4)] = 1.
+maxn[shi(5,-5)] = 1.
 
 
 
@@ -745,6 +864,8 @@ class SphericalHarmonicsTests(unittest.TestCase) :
 
 		self.assertAlmostEqual(sh(components,  30,   4),  0.13504260449396654)
 
+	# TODO: Warning 4th and above are not FuMa normalized yet!!!
+
 	def test_sh_4_0(self) :
 		components = self._fumaNormalizedComponents(4,-0)
 
@@ -779,7 +900,7 @@ class SphericalHarmonicsTests(unittest.TestCase) :
 	def test_sh_4_1(self) :
 		components = self._fumaNormalizedComponents(4,+1)
 
-		self.assertAlmostEqual(sh(components,  30,   4), -0.50620066958619414)
+		self.assertAlmostEqual(sh(components,  30,   4), -0.42686588506525242)
 
 		self.assertAlmostEqual(sh(components, -90,   0), 0)
 		self.assertAlmostEqual(sh(components, +90,   0), 0)
@@ -800,9 +921,9 @@ class SphericalHarmonicsTests(unittest.TestCase) :
 		self.assertAlmostEqual(sh(components, +zeroangle, + 3),  0)
 
 		maxangle1 = math.degrees(math.asin(math.sqrt( (27-math.sqrt(393))/7/8) ))
-		maxvalue1 = 0.65899241473965087 # b2b, not analytically checked
+		maxvalue1 = 0.55571119769376354 # b2b, not analytically checked
 		maxangle2 = math.degrees(math.asin(math.sqrt( (27+math.sqrt(393))/7/8) )) # 66.1221762567095 
-		maxvalue2 = 0.99002458431152618 # b2b, not analytically checked
+		maxvalue2 = 0.83486203359622035 # b2b, not analytically checked
 
 		self.assertAlmostEqual(sh(components, +maxangle1,   0), -maxvalue1)
 		self.assertAlmostEqual(sh(components, +maxangle1,  90),  0)
@@ -827,8 +948,61 @@ class SphericalHarmonicsTests(unittest.TestCase) :
 	def test_sh_4_2(self) :
 		components = self._fumaNormalizedComponents(4,+2)
 
-		self.assertAlmostEqual(sh(components,  30,   4), 0.41776934150034972)
+		self.assertAlmostEqual(sh(components,  30,   4), 0.3113868821700353)
 
+	def test_sh_4_3(self) :
+		components = self._fumaNormalizedComponents(4,+3)
+
+		self.assertAlmostEqual(sh(components,  30,   4), 0.66443931541944656)
+
+	def test_sh_4_4(self) :
+		components = self._fumaNormalizedComponents(4,+4)
+
+		self.assertAlmostEqual(sh(components,  30,   4), 0.39986021851936454)
+
+	def test_sh_4_m1(self) :
+		components = self._fumaNormalizedComponents(4,-1)
+
+		self.assertAlmostEqual(sh(components,  30,   4), -0.029849370470058041)
+
+	def test_sh_4_m2(self) :
+		components = self._fumaNormalizedComponents(4,-2)
+
+		self.assertAlmostEqual(sh(components,  30,   4), 0.043762572335551975)
+
+	def test_sh_4_m3(self) :
+		components = self._fumaNormalizedComponents(4,-3)
+
+		self.assertAlmostEqual(sh(components,  30,   4), 0.14123093632394088)
+
+	def test_sh_4_m4(self) :
+		components = self._fumaNormalizedComponents(4,-4)
+
+		self.assertAlmostEqual(sh(components,  30,   4), 0.1146580726089364)
+
+	def test_sh_5_all(self) :
+		components = self._fumaNormalizedComponents(5,-5)
+		self.assertAlmostEqual(sh(components,  30,   4), +0.116888055250392)
+		components = self._fumaNormalizedComponents(5,-4)
+		self.assertAlmostEqual(sh(components,  30,   4), +0.171987108913405)
+		components = self._fumaNormalizedComponents(5,-3)
+		self.assertAlmostEqual(sh(components,  30,   4), +0.0882693352024631)
+		components = self._fumaNormalizedComponents(5,-2)
+		self.assertAlmostEqual(sh(components,  30,   4), -0.0334242167222746)
+		components = self._fumaNormalizedComponents(5,-1)
+		self.assertAlmostEqual(sh(components,  30,   4), -0.0347299702275976)
+		components = self._fumaNormalizedComponents(5, 0)
+		self.assertAlmostEqual(sh(components,  30,   4), +0.0898437500000000)
+		components = self._fumaNormalizedComponents(5,+1)
+		self.assertAlmostEqual(sh(components,  30,   4), -0.496661713330414)
+		components = self._fumaNormalizedComponents(5,+2)
+		self.assertAlmostEqual(sh(components,  30,   4), -0.237825659660080)
+		components = self._fumaNormalizedComponents(5,+3)
+		self.assertAlmostEqual(sh(components,  30,   4), +0.415274572137154)
+		components = self._fumaNormalizedComponents(5,+4)
+		self.assertAlmostEqual(sh(components,  30,   4), +0.599790327779047)
+		components = self._fumaNormalizedComponents(5,+5)
+		self.assertAlmostEqual(sh(components,  30,   4), +0.321147292404416)
 
 
 class CoordsConversionTests(unittest.TestCase) :

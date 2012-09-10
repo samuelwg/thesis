@@ -12,7 +12,7 @@ from colorfield import ColorField, Reloader
 
 from sphericalHarmonics import ead2xyz, semiNormalizedSH, sh
 
-sampleResolution = 36, 18
+sampleResolution = 36*4, 18*4
 
 def cartesian_product(*arrays):
 	import operator
@@ -558,7 +558,7 @@ class SphericalHarmonicsControl(QtGui.QWidget) :
 			knob.valueChanged.connect(self.knobEdited)
 			return knob
 
-		order = 4
+		order = 5
 		orderColors = [
 			"#889988",
 			"#667766",
@@ -719,7 +719,6 @@ if __name__ == "__main__" :
 		(plate-carree projection).
 		"""
 		h,w = image.shape
-		print h,w
 		elevations, azimuths, sh = shGrid(h,w)
 		shShape = sh.shape[2:]
 		shSize = shShape[0]*shShape[1]
