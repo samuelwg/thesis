@@ -102,7 +102,6 @@ class SemiNormalizedSH(object) :
 	def evalEA(self, e, a, target=None) :
 		x,y,z = ead2xyz(e, a, 1)
 		return self.evalXYZ(x,y,z, target)
-		
 
 	def evalXYZ(self, x,y,z, target=None) :
 		if target is None : target = np.zeros(self.sn3d.shape)
@@ -125,6 +124,8 @@ def associated_legendre(l,m,z) :
 		print "using cache"
 		return _associated_legendre_cache[(l,m,z)]
 	return sp.assoc_legendre(l,m,z)
+
+
 
 def semiNormalizedSH(e, a, target=None) :
 	"""
@@ -403,17 +404,25 @@ class SphericalHarmonicsTests(unittest.TestCase) :
 		and is normalized using the FuMa normalization so that the maximum
 		value is one (but the 0,0 component which is normalized to 1/sqrt(2))
 		"""
-		components = np.zeros(shShape)
-		components[shi(l,m)] = fuma[shi(l,m)]
-		self._components = components
-		return components
+		self._components = np.zeros(shShape)
+		self._components[shi(l,m)] = fuma[shi(l,m)]
+
+	def sh(self, e, a) :
+		"""
+		Decodes the sh components for (e,a) position.
+		"""
+		return (self._components*semiNormalizedSH(e,a)).sum()
 
 	def prepareOrder(self, l,m) :
-		self._components = self._fumaNormalizedComponents(l,m)
+		# Create projection of a single SH component,
+		# normalized alla Furse-Malham so that the result
+		# max values of 1. in max but for 0,0
+		self._components = np.zeros(shShape)
+		self._components[shi(l,m)] = fuma[shi(l,m)]
 
 	def assertEqualAt(self, ea, value) :
 		e,a=ea
-		self.assertAlmostEqual(sh(self._components, e, a), value)
+		self.assertAlmostEqual(self.sh(e, a), value)
 
 	def test_shIndexes(self) :
 		self.assertEqual(
@@ -955,37 +964,30 @@ class SphericalHarmonicsTests(unittest.TestCase) :
 
 	def test_sh_4_2(self) :
 		self.prepareOrder(4,+2)
-
 		self.assertEqualAt((  30,   4), 0.3113868821700353)
 
 	def test_sh_4_3(self) :
 		self.prepareOrder(4,+3)
-
 		self.assertEqualAt((  30,   4), 0.66443931541944656)
 
 	def test_sh_4_4(self) :
 		self.prepareOrder(4,+4)
-
 		self.assertEqualAt((  30,   4), 0.39986021851936454)
 
 	def test_sh_4_m1(self) :
 		self.prepareOrder(4,-1)
-
 		self.assertEqualAt((  30,   4), -0.029849370470058041)
 
 	def test_sh_4_m2(self) :
 		self.prepareOrder(4,-2)
-
 		self.assertEqualAt((  30,   4), 0.043762572335551975)
 
 	def test_sh_4_m3(self) :
 		self.prepareOrder(4,-3)
-
 		self.assertEqualAt((  30,   4), 0.14123093632394088)
 
 	def test_sh_4_m4(self) :
 		self.prepareOrder(4,-4)
-
 		self.assertEqualAt((  30,   4), 0.1146580726089364)
 
 	def test_sh_5_all(self) :
