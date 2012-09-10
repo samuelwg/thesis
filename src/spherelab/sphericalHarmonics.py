@@ -80,7 +80,7 @@ class SemiNormalizedSH(object) :
 		self.sn3d[shi(5,-2)] = 2*x*y*z*(3*z*z -1)           * sqrt(S(105)/16)
 		self.sn3d[shi(5,-3)] = y*(9*z*z-1)*(3*x*x-y*y)      * sqrt(S(35)/8/16)
 		self.sn3d[shi(5,-4)] = 4*x*y*z*(x*x -y*y)           * sqrt(S(9)*35./64)
-		self.sn3d[shi(5,-5)] = (x*self.sn3d[shi(4,-4)] +y*self.sn3d[shi(4,+4)]) * sqrt(S(9)/10)
+		self.sn3d[shi(5,-5)] = y*(5*x**4 -7*x*x*y*y +y**4)  * sqrt(S(9)/10)
 
 
 		if compiled :
@@ -239,17 +239,17 @@ def semiNormalizedSH(e, a, target=None) :
 	sn3d[shi(4,-3)] = z*y*(3*x*x -y*y)         * np.sqrt(35./8)
 	sn3d[shi(4,-4)] = 4*x*y*(x*x -y*y)         * np.sqrt(35./64)
 
-	sn3d[shi(5,+5)] = x*(x**4 -10*x*x*y*y +5*y**4)           * np.sqrt(9.*7./64/2)
-	sn3d[shi(5,+4)] = z*(x**4 -6*x*x*y*y +y**4)              * np.sqrt(35*9./64)
-	sn3d[shi(5,+3)] = x*(x*x-3*y*y)*(9*z*z-1)                * np.sqrt(5.*7./128)
-	sn3d[shi(5,+2)] = 3*z*(x*x-y*y)*(3*z*z-1)                * np.sqrt(7.*5/3/16)
-	sn3d[shi(5,+1)] = x*(21*z**4 -14*z**2 + 1)               * np.sqrt(3.*5/64)
-	sn3d[shi(5, 0)] = z*(63*z**4 -70*z**2 + 15)              * np.sqrt(1./64) 
-	sn3d[shi(5,-1)] = y*(21*z**4 -14*z**2 + 1)               * np.sqrt(3.*5/64)
-	sn3d[shi(5,-2)] = 2*x*y*z*(3*z*z -1)                     * np.sqrt(105./16)
-	sn3d[shi(5,-3)] = y*(9*z*z-1)*(3*x*x-y*y)                * np.sqrt(35./8/16)
-	sn3d[shi(5,-4)] = 4*x*y*z*(x*x -y*y)                     * np.sqrt(9.*35./64)
-	sn3d[shi(5,-5)] = (x*sn3d[shi(4,-4)] +y*sn3d[shi(4,+4)]) * np.sqrt(9./10)
+	sn3d[shi(5,+5)] = x*(x**4 -10*x*x*y*y +5*y**4)    * np.sqrt(9.*7./64/2)
+	sn3d[shi(5,+4)] = z*(x**4 -6*x*x*y*y +y**4)       * np.sqrt(35*9./64)
+	sn3d[shi(5,+3)] = x*(x*x-3*y*y)*(9*z*z-1)         * np.sqrt(5.*7./128)
+	sn3d[shi(5,+2)] = 3*z*(x*x-y*y)*(3*z*z-1)         * np.sqrt(7.*5/3/16)
+	sn3d[shi(5,+1)] = x*(21*z**4 -14*z**2 + 1)        * np.sqrt(3.*5/64)
+	sn3d[shi(5, 0)] = z*(63*z**4 -70*z**2 + 15)       * np.sqrt(1./64) 
+	sn3d[shi(5,-1)] = y*(21*z**4 -14*z**2 + 1)        * np.sqrt(3.*5/64)
+	sn3d[shi(5,-2)] = 2*x*y*z*(3*z*z -1)              * np.sqrt(105./16)
+	sn3d[shi(5,-3)] = y*(9*z*z-1)*(3*x*x-y*y)         * np.sqrt(35./8/16)
+	sn3d[shi(5,-4)] = 4*x*y*z*(x*x -y*y)              * np.sqrt(9.*35./64)
+	sn3d[shi(5,-5)] = y*( 5*x**4 -10*x*x*y*y +y**4 )  * np.sqrt(9.*7/64/2)
 
 	assert abs(sn3d[shi(5,+5)]  - 3*14**(1./2)*(-z**2 + 1)**(1./2)*(z**4 - 2*z**2 + 1)*np.cos(5*ra)/16) < 1e-7
 	assert abs(sn3d[shi(5,+4)]  - 3*35**(1./2)*z*(z**4 - 2*z**2 + 1)*np.cos(4*ra)/8 ) < 1e-7
