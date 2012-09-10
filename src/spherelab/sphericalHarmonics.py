@@ -10,6 +10,7 @@ order = 5
 shShape = (order+1,order+1)
 shSize = np.prod(shShape)
 
+
 def shIndexes(order) :
 	return [(l,m) for l in xrange(order+1) for m in xrange(-l,l+1) ]
 
@@ -30,15 +31,85 @@ def ead2xyz(e,a,d) :
 	return x,y,z
 
 
+########################################
+# Normalization factors,
+# They are to be applied to the sn3d to get a different normalization.
+
+
+# factors to be applied to a sn3d sh to get n3d normalization.
+# n3d normalization is that so that they have unit power
+n3d = np.zeros(shShape)
+for l in xrange(order+1) :
+	for m in xrange(-l, l+1) :
+		n3d[shi(l,m)] = math.sqrt(2*l+1)
+
+# real orthonormalized with an an extra factor of 1/sqrt(4 pi)
+# Ensure that the autoconvolution is one instead of 1/4pi
+on3d = n3d/np.sqrt(4*np.pi)
+
+# factors to be applied to sn3d to get maxn normalization.
+# maxn normalization is that so that absolute maximum value
+# for each sh is 1.
+maxn=np.zeros(shShape)
+maxn[shi(0, 0)] = 1.
+
+maxn[shi(1,+1)] = 1.
+maxn[shi(1, 0)] = 1.
+maxn[shi(1,-1)] = 1.
+
+maxn[shi(2,+2)] = math.sqrt(4./3)
+maxn[shi(2,+1)] = math.sqrt(4./3)
+maxn[shi(2, 0)] = 1.
+maxn[shi(2,-1)] = math.sqrt(4./3)
+maxn[shi(2,-2)] = math.sqrt(4./3)
+
+maxn[shi(3,+3)] = math.sqrt(8./5)
+maxn[shi(3,+2)] = math.sqrt(9./5)
+maxn[shi(3,+1)] = math.sqrt(45./32)
+maxn[shi(3, 0)] = 1.
+maxn[shi(3,-1)] = math.sqrt(45./32)
+maxn[shi(3,-2)] = math.sqrt(9./5)
+maxn[shi(3,-3)] = math.sqrt(8./5)
+
+# TODO: maxn for 4th order and beyond
+maxn[shi(4,+4)] = 1.
+maxn[shi(4,+3)] = 1.
+maxn[shi(4,+2)] = 1.
+maxn[shi(4,+1)] = 1.
+maxn[shi(4, 0)] = 1.
+maxn[shi(4,-1)] = 1.
+maxn[shi(4,-2)] = 1.
+maxn[shi(4,-3)] = 1.
+maxn[shi(4,-4)] = 1.
+
+maxn[shi(5,+5)] = 1.
+maxn[shi(5,+4)] = 1.
+maxn[shi(5,+3)] = 1.
+maxn[shi(5,+2)] = 1.
+maxn[shi(5,+1)] = 1.
+maxn[shi(5, 0)] = 1.
+maxn[shi(5,-1)] = 1.
+maxn[shi(5,-2)] = 1.
+maxn[shi(5,-3)] = 1.
+maxn[shi(5,-4)] = 1.
+maxn[shi(5,-5)] = 1.
+
+# factors to be applied to sn3d sh to get fuma normalization.
+# fuma is like maxn but applying a sqrt(1./2) factor to the 0,0 channel
+# in order to be compatible with B-Format standard for the first order.
+fuma=maxn.copy()
+fuma[shi(0, 0)] = math.sqrt(1./2)
+
+
 class SemiNormalizedSH(object) :
-	shXYZ = dict()
+
 	def __init__(self, compiled=False) :
-		from sympy import S, symbols, sqrt, Lambda
+		from sympy import S, symbols, sqrt, Lambda, lambdify, Matrix
 		from sympy.utilities.autowrap import autowrap
 		x,y,z = symbols("x y z")
 
 		self.order = order
-		self.sn3d = np.array([[None]*(self.order+1)]*(self.order+1))
+		self.sn3d = np.array([[None]*(order+1)]*(order+1))
 
 		self.sn3d[shi(0, 0)] = S(1)
 
@@ -75,15 +146,21 @@ class SemiNormalizedSH(object) :
 		self.sn3d[shi(5,+3)] = x*(x*x-3*y*y)*(9*z*z-1)      * sqrt(S(5)*7/128)
 		self.sn3d[shi(5,+2)] = 3*z*(x*x-y*y)*(3*z*z-1)      * sqrt(S(7)*5/3/16)
 		self.sn3d[shi(5,+1)] = x*(21*z**4 -14*z**2 + 1)     * sqrt(S(3)*5/64)
-		self.sn3d[shi(5, 0)] = z*(63*z**4 -70*z**2 + 15)    * sqrt(S(1)/64) 
+		self.sn3d[shi(5, 0)] = z*(63*z**4 -70*z**2 + 15)    * sqrt(S(1)/64)
 		self.sn3d[shi(5,-1)] = y*(21*z**4 -14*z**2 + 1)     * sqrt(S(3)*5/64)
 		self.sn3d[shi(5,-2)] = 2*x*y*z*(3*z*z -1)           * sqrt(S(105)/16)
 		self.sn3d[shi(5,-3)] = y*(9*z*z-1)*(3*x*x-y*y)      * sqrt(S(35)/8/16)
 		self.sn3d[shi(5,-4)] = 4*x*y*z*(x*x -y*y)           * sqrt(S(9)*35./64)
 		self.sn3d[shi(5,-5)] = y*(5*x**4 -7*x*x*y*y +y**4)  * sqrt(S(9)/10)
-
+		self.sn3d[shi(5,-5)] = y*( 5*x**4 -10*x*x*y*y +y**4 )  * sqrt(S(9)*7/64/2)
 
 		if compiled :
+			# TODO: Get a single function that returns the whole matrix
+			# Compiling a library for each cell takes soooo long
+			# Hints for future work:
+			# http://ojensen.wordpress.com/2010/08/10/fast-ufunc-ish-hydrogen-solutions/
+			# https://groups.google.com/forum/?fromgroups=#!topic/sympy/KXoO-BvmD_w
+
 			for i in xrange(self.order+1) :
 				for j in xrange(self.order+1) :
 					self.sn3d[i,j] = autowrap(
@@ -94,7 +171,11 @@ class SemiNormalizedSH(object) :
 		else :
 			for i in xrange(self.order+1) :
 				for j in xrange(self.order+1) :
-					self.sn3d[i,j] = Lambda(
+#					self.sn3d[i,j] = Lambda(
+#						(x,y,z),
+#						self.sn3d[i,j],
+#						)
+					self.sn3d[i,j] = lambdify(
 						(x,y,z),
 						self.sn3d[i,j],
 						)
@@ -117,45 +198,52 @@ t = time()
 obj = SemiNormalizedSH()
 print "done, elapsed: %.4fs"%(time()-t)
 
-_associated_legendre_cache = {}
-def associated_legendre(l,m,z) :
-	import sympy as sp
-	if (l,m,z) in _associated_legendre_cache :
-		print "using cache"
-		return _associated_legendre_cache[(l,m,z)]
-	return sp.assoc_legendre(l,m,z)
-
-
-
-def semiNormalizedSH(e, a, target=None) :
+def semiNormalizedSH_lambdified(e, a, target=None) :
 	"""
 	Returns the value of the sh components at the specified orientation
 	"""
-#	return obj.evalEA(e,a, target)
+	return obj.evalEA(e,a, target)
 
+# TODO: Test compiled version
+
+
+def semiNormalizedSH_genericNumpy(e, a, target=None) :
+	"""
+	Returns the value of the sh components at the specified orientation.
+	Version based on the generic formula, using sympy just for legendre.
+	"""
 	x,y,z = ead2xyz(e, a, 1)
 
 	sn3d = np.zeros((order+1,order+1)) if target is None else target
 	from sympy import factorial, sqrt, S
 	import sympy as sp
 	ra = math.radians(a)
-	"""
+
 	for l in xrange(order+1) :
 		for m in xrange(-l,l+1) :
 			absm = abs(m)
 			factor = math.sqrt(2) if m else 1.
 			sn3d[shi(l,m)] = (factor
 				/ math.sqrt(
-					sp.factorial(l+abs(m)) / sp.factorial(l-abs(m)) # clearest for the next one
+					sp.factorial(l+absm) / sp.factorial(l-absm) # clearest for the next one
 #					np.prod(xrange(l-absm+1, l+absm+1))
 					)
 				* ( sp.assoc_legendre(l,absm,z) * S(-1)**m ).evalf()
-				* ( np.cos(m*ra) if m>=0 else np.sin(-m*ra) )
+				* ( np.cos(m*ra) if m>=0 else np.sin(absm*ra) )
 				)
-#	return sn3d
-	"""
+	return sn3d
 
+def semiNormalizedSH_sympyGeneratedExpressions(e, a, target=None) :
 	"""
+	Returns the value of the sh components at the specified orientation
+	Version based on sympy expansion of the generic formula for each l,m.
+	being a function of z (sin(elevation) and azimuth
+	"""
+	x,y,z = ead2xyz(e, a, 1)
+
+	sn3d = np.zeros((order+1,order+1)) if target is None else target
+	ra = math.radians(a)
+
 	# sympy generated from generic formula
 	sn3d[shi(0, 0)] = 1
 	sn3d[shi(1,-1)] = (-z**2 + 1)**(1./2)*np.sin(ra)
@@ -193,6 +281,7 @@ def semiNormalizedSH(e, a, target=None) :
 	sn3d[shi(5,+3)] = 70**(1./2)*(-z**2 + 1)**(1./2)*(-9*z**4 + 10*z**2 - 1)*np.cos(3*ra)/16
 	sn3d[shi(5,+4)] = 3*35**(1./2)*z*(z**4 - 2*z**2 + 1)*np.cos(4*ra)/8
 	sn3d[shi(5,+5)] = 3*14**(1./2)*(-z**2 + 1)**(1./2)*(z**4 - 2*z**2 + 1)*np.cos(5*ra)/16
+	"""
 	sn3d[shi(6,-6)] = 462**(1./2)*(-z**6 + 3*z**4 - 3*z**2 + 1)*np.sin(6*ra)/32
 	sn3d[shi(6,-5)] = 3*154**(1./2)*z*(-z**2 + 1)**(1./2)*(z**4 - 2*z**2 + 1)*np.sin(5*ra)/16
 	sn3d[shi(6,-4)] = 3*7**(1./2)*(11*z**6 - 23*z**4 + 13*z**2 - 1)*np.sin(4*ra)/16
@@ -206,7 +295,20 @@ def semiNormalizedSH(e, a, target=None) :
 	sn3d[shi(6,+4)] = 3*7**(1./2)*(11*z**6 - 23*z**4 + 13*z**2 - 1)*np.cos(4*ra)/16
 	sn3d[shi(6,+5)] = 3*154**(1./2)*z*(-z**2 + 1)**(1./2)*(z**4 - 2*z**2 + 1)*np.cos(5*ra)/16
 	sn3d[shi(6,+6)] = 462**(1./2)*(-z**6 + 3*z**4 - 3*z**2 + 1)*np.cos(6*ra)/32
-"""
+	"""
+
+	return sn3d
+
+def semiNormalizedSH_cartesian(e, a, target=None) :
+	"""
+	Returns the value of the sh components at the specified orientation
+	"""
+	x,y,z = ead2xyz(e, a, 1)
+
+	sn3d = np.zeros((order+1,order+1)) if target is None else target
+	from sympy import factorial, sqrt, S
+	import sympy as sp
+	ra = math.radians(a)
 	# Synthetic version
 
 	sn3d[shi(0, 0)] = 1.
@@ -245,7 +347,7 @@ def semiNormalizedSH(e, a, target=None) :
 	sn3d[shi(5,+3)] = x*(x*x-3*y*y)*(9*z*z-1)         * np.sqrt(5.*7./128)
 	sn3d[shi(5,+2)] = 3*z*(x*x-y*y)*(3*z*z-1)         * np.sqrt(7.*5/3/16)
 	sn3d[shi(5,+1)] = x*(21*z**4 -14*z**2 + 1)        * np.sqrt(3.*5/64)
-	sn3d[shi(5, 0)] = z*(63*z**4 -70*z**2 + 15)       * np.sqrt(1./64) 
+	sn3d[shi(5, 0)] = z*(63*z**4 -70*z**2 + 15)       * np.sqrt(1./64)
 	sn3d[shi(5,-1)] = y*(21*z**4 -14*z**2 + 1)        * np.sqrt(3.*5/64)
 	sn3d[shi(5,-2)] = 2*x*y*z*(3*z*z -1)              * np.sqrt(105./16)
 	sn3d[shi(5,-3)] = y*(9*z*z-1)*(3*x*x-y*y)         * np.sqrt(35./8/16)
@@ -265,12 +367,24 @@ def semiNormalizedSH(e, a, target=None) :
 	assert abs(sn3d[shi(5,-2)]  - 105**(1./2)*z*(-3*z**4 + 4*z**2 - 1)*np.sin(2*ra)/4 ) < 1e-7
 	assert abs(sn3d[shi(5,-1)]  - 15**(1./2)*(-z**2 + 1)**(1./2)*(21*z**4 - 14*z**2 + 1)*np.sin(ra)/8 ) < 1e-7
 
-	"""
-# recursive versions
+	return sn3d
 
-#	sn3d[shi(1,-1)] = (y*sn3d[shi(0,+0)] +x*sn3d[shi(0,-0)]) * np.sqrt(1)
-#	sn3d[shi(1, 0)] = (z*z -1)
-#	sn3d[shi(1,+1)] = (x*sn3d[shi(0,+0)] -y*sn3d[shi(0,-0)]) * np.sqrt(1)
+def semiNormalizedSH_cartesianRecursive(e, a, target=None) :
+	"""
+	Returns the value of the sh components at the specified orientation
+	"""
+	x,y,z = ead2xyz(e, a, 1)
+
+	sn3d = np.zeros((order+1,order+1)) if target is None else target
+	from sympy import factorial, sqrt, S
+	import sympy as sp
+	ra = math.radians(a)
+
+	sn3d[shi(0, 0)] = 1.
+
+	sn3d[shi(1,-1)] = y
+	sn3d[shi(1, 0)] = z
+	sn3d[shi(1,+1)] = x
 
 	sn3d[shi(2,-2)] = (y*sn3d[shi(1,+1)] +x*sn3d[shi(1,-1)]) * np.sqrt(3./4)
 	sn3d[shi(2,-1)] = z*sn3d[shi(1,-1)]                      * np.sqrt(3.)
@@ -301,17 +415,21 @@ def semiNormalizedSH(e, a, target=None) :
 	sn3d[shi(5,+3)] = (9*z*z-1)*sn3d[shi(3,+3)]              * np.sqrt(7./8/2)
 	sn3d[shi(5,+2)] = (9*z*z-3)*sn3d[shi(3,+2)]              * np.sqrt(7./9/4)
 	sn3d[shi(5,+1)] = x*(21*z**4 -14*z**2 + 1)               * np.sqrt(3.*5/64)
-	sn3d[shi(5, 0)] = z*(63*z**4 -70*z**2 + 15)              * np.sqrt(1./64) 
+	sn3d[shi(5, 0)] = z*(63*z**4 -70*z**2 + 15)              * np.sqrt(1./64)
 	sn3d[shi(5,-1)] = y*(21*z**4 -14*z**2 + 1)               * np.sqrt(3.*5/64)
 	sn3d[shi(5,-2)] = 2*x*y*z*(3*z*z -1)                     * np.sqrt(105./16)
 	sn3d[shi(5,-3)] = y*(9*z*z-1)*(3*x*x-y*y)                * np.sqrt(35./8/16)
 	sn3d[shi(5,-4)] = z*sn3d[shi(4,-4)]                      * np.sqrt(9.)
 	sn3d[shi(5,-5)] = (x*sn3d[shi(4,-4)] +y*sn3d[shi(4,+4)]) * np.sqrt(9./10)
 
+	return sn3d
+
+
+def semiNormalizedSH(e, a, target=None) :
 	"""
-
-	return sn3d[:order+1,:order+1]
-
+	Returns the value of the sh components at the specified orientation
+	"""
+	return semiNormalizedSH_cartesian(e,a,target)
 
 def sh(components, e, a) :
 	"""
@@ -319,78 +437,6 @@ def sh(components, e, a) :
 	"""
 	projection = semiNormalizedSH(e,a)
 	return (components*projection).sum()
-
-########################################
-# Normalization factors,
-# They are to be applied to the sn3d to get a different one.
-
-
-# factors to be applied to a sn3d sh to get n3d normalization.
-# n3d normalization is that so that they have unit power
-n3d = np.zeros(shShape)
-for l in xrange(order+1) :
-	for m in xrange(-l, l+1) :
-		n3d[shi(l,m)] = math.sqrt(2*l+1)
-
-# real orthonormalized with an an extra factor of 1/sqrt(4 pi)
-# Ensure that the autoconvolution is one instead of 1/4pi
-on3d = n3d/np.sqrt(4*np.pi)
-
-# factors to be applied to sn3d to get maxn normalization.
-# maxn normalization is that so that absolute maximum value
-# for each sh is 1.
-maxn=np.zeros(shShape)
-maxn[shi(0, 0)] = 1.
-
-maxn[shi(1,+1)] = 1.
-maxn[shi(1, 0)] = 1.
-maxn[shi(1,-1)] = 1.
-
-maxn[shi(2,+2)] = math.sqrt(4./3)
-maxn[shi(2,+1)] = math.sqrt(4./3)
-maxn[shi(2, 0)] = 1.
-maxn[shi(2,-1)] = math.sqrt(4./3)
-maxn[shi(2,-2)] = math.sqrt(4./3)
-
-maxn[shi(3,+3)] = math.sqrt(8./5)
-maxn[shi(3,+2)] = math.sqrt(9./5)
-maxn[shi(3,+1)] = math.sqrt(45./32)
-maxn[shi(3, 0)] = 1.
-maxn[shi(3,-1)] = math.sqrt(45./32)
-maxn[shi(3,-2)] = math.sqrt(9./5)
-maxn[shi(3,-3)] = math.sqrt(8./5)
-
-# TODO: maxn for 4th order
-maxn[shi(4,+4)] = 1.
-maxn[shi(4,+3)] = 1.
-maxn[shi(4,+2)] = 1.
-maxn[shi(4,+1)] = 1.
-maxn[shi(4, 0)] = 1.
-maxn[shi(4,-1)] = 1.
-maxn[shi(4,-2)] = 1.
-maxn[shi(4,-3)] = 1.
-maxn[shi(4,-4)] = 1.
-
-maxn[shi(5,+5)] = 1.
-maxn[shi(5,+4)] = 1.
-maxn[shi(5,+3)] = 1.
-maxn[shi(5,+2)] = 1.
-maxn[shi(5,+1)] = 1.
-maxn[shi(5, 0)] = 1.
-maxn[shi(5,-1)] = 1.
-maxn[shi(5,-2)] = 1.
-maxn[shi(5,-3)] = 1.
-maxn[shi(5,-4)] = 1.
-maxn[shi(5,-5)] = 1.
-
-
-
-# factors to be applied to sn3d sh to get fuma normalization.
-# fuma is like maxn but applying a sqrt(1./2) factor to the 0,0 channel
-# in order to be compatible with B-Format standard for the first order.
-fuma=maxn.copy()
-fuma[shi(0, 0)] = math.sqrt(1./2)
-
 
 
 import unittest
@@ -907,7 +953,7 @@ class SphericalHarmonicsTests(unittest.TestCase) :
 
 		maxangle1 = math.degrees(math.asin(math.sqrt( (27-math.sqrt(393))/7/8) ))
 		maxvalue1 = 0.55571119769376354 # b2b, not analytically checked
-		maxangle2 = math.degrees(math.asin(math.sqrt( (27+math.sqrt(393))/7/8) )) # 66.1221762567095 
+		maxangle2 = math.degrees(math.asin(math.sqrt( (27+math.sqrt(393))/7/8) )) # 66.1221762567095
 		maxvalue2 = 0.83486203359622035 # b2b, not analytically checked
 
 		self.assertEqualAt(( +maxangle1,   0), -maxvalue1)
@@ -982,6 +1028,38 @@ class SphericalHarmonicsTests(unittest.TestCase) :
 		self.prepareOrder(5,+5)
 		self.assertEqualAt((  30,   4), +0.321147292404416)
 
+#@unittest.skip("Slow")
+class SphericalHarmonicsTests_cartesianRecursive(SphericalHarmonicsTests) :
+	def sh(self, e, a) :
+		"""Decodes the sh components for (e,a) position."""
+		return (self._components*semiNormalizedSH_cartesianRecursive(e,a)).sum()
+
+#@unittest.skip("Slow")
+class SphericalHarmonicsTests_cartesian(SphericalHarmonicsTests) :
+	def sh(self, e, a) :
+		"""Decodes the sh components for (e,a) position."""
+		return (self._components*semiNormalizedSH_cartesian(e,a)).sum()
+
+#@unittest.skip("Slow")
+class SphericalHarmonicsTests_lambdified(SphericalHarmonicsTests) :
+	def sh(self, e, a) :
+		"""Decodes the sh components for (e,a) position."""
+		return (self._components*semiNormalizedSH_lambdified(e,a)).sum()
+
+#@unittest.skip("Slow")
+class SphericalHarmonicsTests_genericNumpy(SphericalHarmonicsTests) :
+	def sh(self, e, a) :
+		"""Decodes the sh components for (e,a) position."""
+		return (self._components*semiNormalizedSH_genericNumpy(e,a)).sum()
+
+#@unittest.skip("Slow")
+class SphericalHarmonicsTests_sympyGeneratedExpressions(SphericalHarmonicsTests) :
+	def sh(self, e, a) :
+		"""Decodes the sh components for (e,a) position."""
+		return (self._components*semiNormalizedSH_sympyGeneratedExpressions(e,a)).sum()
+
+
+
 
 class SHComponentIndexingAndEnumerationTests(unittest.TestCase) :
 
@@ -996,6 +1074,7 @@ class SHComponentIndexingAndEnumerationTests(unittest.TestCase) :
 			)
 
 	def test_shIndex2Matrix_mapsToOrdersToSquareMatrixIndex(self) :
+		"shIndex2Matrix mapsToOrdersToSquareMatrixIndex"
 
 		self.assertEqual((0,0), shi(0, 0))
 
