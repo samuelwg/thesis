@@ -30,7 +30,7 @@ import math
 
 from colorfield import ColorField, Reloader
 
-from sphericalHarmonics import ead2xyz, semiNormalizedSH, sh
+from sphericalHarmonics import ead2xyz, semiNormalizedSH, sh, shi_reverse
 
 sampleResolution = 36*4, 18*4
 
@@ -149,7 +149,7 @@ class TrackBall(object) :
 		msecs = self._lastTime.msecsTo(currentTime)
 		if msecs <= 20 : return # ignore frequent
 
-		if True : # Plane method
+		if False : # Plane method
 			delta = QtCore.QLineF(self._lastPos, point)
 			self._angularVelocity = 180*delta.length() / (math.pi*msecs)
 			self._axis = QtGui.QVector3D(-delta.dy(), delta.dx(), 0.0).normalized()
@@ -279,7 +279,7 @@ class SpherePointScene(QtGui.QGraphicsScene) :
 		GL.glVertexPointer( 3, GL.GL_FLOAT, 0, self._vertices )
 		GL.glNormalPointer( GL.GL_FLOAT, 0, self._normals )
 		GL.glDrawElements( GL.GL_TRIANGLE_STRIP, len(self._indexes), GL.GL_UNSIGNED_INT, self._indexes )
-		
+
 		GL.glDisableClientState( GL.GL_COLOR_ARRAY )
 		GL.glColor(0.6,.3,.6)
 		GL.glDrawElements( GL.GL_POINTS, len(self._indexes), GL.GL_UNSIGNED_INT, self._indexes )
@@ -528,7 +528,7 @@ class SphericalHarmonicsControl(QtGui.QWidget) :
 			spin.valueChanged.connect(slot)
 			topLayout.addWidget(spin)
 			return spin
-			
+
 		QtGui.QWidget.__init__(self)
 		self._editing = False
 		self.setLayout(QtGui.QVBoxLayout())
@@ -565,8 +565,7 @@ class SphericalHarmonicsControl(QtGui.QWidget) :
 
 
 		def componentKnob(i,j) :
-			l = max(i,j)
-			m = i-j
+			l,m = shi_reverse(i,j)
 			knob = QtGui.QDial()
 			knob.setMinimum(-100)
 			knob.setMaximum(+100)
@@ -644,7 +643,7 @@ if __name__ == "__main__" :
 
 	leftLayout = QtGui.QVBoxLayout()
 	w.layout().addLayout(leftLayout)
-	
+
 	w2 = SpherePointView()
 	leftLayout.addWidget(w2)
 

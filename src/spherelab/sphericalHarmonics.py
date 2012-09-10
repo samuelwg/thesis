@@ -40,9 +40,7 @@ def shi(l,m) :
 	return (l-m,l) if m>0 else (l,l+m)
 
 def shi_reverse(i,j) :
-	l = max(i,j)
-	absm = l-min(i,j)
-	return (l,absm) if i<j else (l,-absm)
+	return max(i,j), j-i
 
 def ead2xyz(e,a,d) :
 	"""
