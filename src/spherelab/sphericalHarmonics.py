@@ -398,20 +398,15 @@ import unittest
 
 class SphericalHarmonicsTests(unittest.TestCase) :
 
-	def _fumaNormalizedComponents(self, l, m) :
-		"""
-		Returns a SH projection that has only the indicated component
-		and is normalized using the FuMa normalization so that the maximum
-		value is one (but the 0,0 component which is normalized to 1/sqrt(2))
-		"""
-		self._components = np.zeros(shShape)
-		self._components[shi(l,m)] = fuma[shi(l,m)]
-
 	def sh(self, e, a) :
 		"""
 		Decodes the sh components for (e,a) position.
 		"""
 		return (self._components*semiNormalizedSH(e,a)).sum()
+
+	def assertEqualAt(self, ea, value) :
+		e,a=ea
+		self.assertAlmostEqual(self.sh(e, a), value)
 
 	def prepareOrder(self, l,m) :
 		# Create projection of a single SH component,
@@ -420,33 +415,6 @@ class SphericalHarmonicsTests(unittest.TestCase) :
 		self._components = np.zeros(shShape)
 		self._components[shi(l,m)] = fuma[shi(l,m)]
 
-	def assertEqualAt(self, ea, value) :
-		e,a=ea
-		self.assertAlmostEqual(self.sh(e, a), value)
-
-	def test_shIndexes(self) :
-		self.assertEqual(
-			[
-				(0,0),
-				(1,-1), (1,0), (1,1),
-				(2,-2), (2,-1), (2,0), (2,1), (2,2)
-			],
-			shIndexes(2),
-			)
-
-	def test_shIndex2Matrix(self) :
-
-		self.assertEqual((0,0), shi(0, 0))
-
-		self.assertEqual((1,0), shi(1,-1))
-		self.assertEqual((1,1), shi(1, 0))
-		self.assertEqual((0,1), shi(1,+1))
-
-		self.assertEqual((2,0), shi(2,-2))
-		self.assertEqual((2,1), shi(2,-1))
-		self.assertEqual((2,2), shi(2, 0))
-		self.assertEqual((1,2), shi(2,+1))
-		self.assertEqual((0,2), shi(2,+2))
 
 
 	def test_sh_0_0(self) :
@@ -1013,6 +981,33 @@ class SphericalHarmonicsTests(unittest.TestCase) :
 		self.assertEqualAt((  30,   4), +0.599790327779047)
 		self.prepareOrder(5,+5)
 		self.assertEqualAt((  30,   4), +0.321147292404416)
+
+
+class SHComponentIndexingAndEnumerationTests(unittest.TestCase) :
+
+	def test_shIndexes_enumeratesIndexesUpToOrderN(self) :
+		self.assertEqual(
+			[
+				(0,0),
+				(1,-1), (1,0), (1,1),
+				(2,-2), (2,-1), (2,0), (2,1), (2,2)
+			],
+			shIndexes(2),
+			)
+
+	def test_shIndex2Matrix_mapsToOrdersToSquareMatrixIndex(self) :
+
+		self.assertEqual((0,0), shi(0, 0))
+
+		self.assertEqual((1,0), shi(1,-1))
+		self.assertEqual((1,1), shi(1, 0))
+		self.assertEqual((0,1), shi(1,+1))
+
+		self.assertEqual((2,0), shi(2,-2))
+		self.assertEqual((2,1), shi(2,-1))
+		self.assertEqual((2,2), shi(2, 0))
+		self.assertEqual((1,2), shi(2,+1))
+		self.assertEqual((0,2), shi(2,+2))
 
 
 class CoordsConversionTests(unittest.TestCase) :
