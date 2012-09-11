@@ -343,6 +343,7 @@ def semiNormalizedSH_cartesian(e, a, target=None) :
 	sn3d[shi(1,+1)] = x
 	sn3d[shi(1, 0)] = z
 	sn3d[shi(1,-1)] = y
+
 	sn3d[shi(2,-2)] = (x*y)*2       * np.sqrt(3./4)
 	sn3d[shi(2,-1)] = (y*z)*2       * np.sqrt(3./4)
 	sn3d[shi(2, 0)] = (3*z*z -1)/2

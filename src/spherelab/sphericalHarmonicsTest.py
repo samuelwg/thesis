@@ -107,6 +107,133 @@ class CoordsConversionTests(unittest.TestCase) :
 	def test_ead2xyz_mixed(self) :
 		self.assertCoordsEqual( [0.75, 0.4330127, 0.5], ead2xyz(30, 30, 1) )
 
+
+"""
+Peaks obtained from the following code:
+
+	import sympy as sp
+	from sympy.abc import z
+	for l in xrange(5+1) :
+		for m in xrange(l+1) :
+			try:
+				print "shExtremes(%i,%i) ="%(l,m), solve(
+					simplify(diff(assoc_legendre(l,m,z),z)), z)
+			except NotImplementedError :
+				print "Unsolvable", sp.diff(sp.assoc_legendre(l,m,z),z)
+
+For some reason 4,1 is not solveable so, it has been obtained by hand.
+Also the former code does not include z=+1,-1 for most l,0 components
+because these extremes have no zero derivative, still growing but the
+slope is not zero yet.
+"""
+from sympy import sqrt, S
+shExtremes = [
+((0,0) , []),
+((1,0) , []),
+((1,1) , [0]),
+((2,0) , [0]),
+((2,1) , [sqrt(2)/2]),
+((2,2) , [0]),
+((3,0) , [sqrt(5)/5, -sqrt(5)/5]),
+((3,1) , [0, -sqrt(165)/15, sqrt(165)/15]),
+((3,2) , [sqrt(3)/3, -sqrt(3)/3]),
+((3,3) , [0, 1, -1]),
+((4,0) , [-sqrt(21)/7, sqrt(21)/7, 0]),
+((4,1) , []), # Unsolvable
+((4,2) , [2*sqrt(7)/7, 0, -2*sqrt(7)/7]),
+((4,3) , [1, -1, -S(1)/2, S(1)/2]),
+((4,4) , [1, -1, 0]),
+((5,0) , [(2*sqrt(7)/21 + S(1)/3)**S(1./2), -(2*sqrt(7)/21 + S(1)/3)**S(1./2), (-2*sqrt(7)/21 + S(1)/3)**S(1./2), -(-2*sqrt(7)/21 + S(1)/3)**S(1./2)]),
+((5,1) , [0, sqrt(105)*(2*sqrt(231) + 63)**S(1./2)/105, -sqrt(105)*(2*sqrt(231) + 63)**S(1./2)/105, sqrt(105)*(-2*sqrt(231) + 63)**S(1./2)/105, -sqrt(105)*(-2*sqrt(231) + 63)**S(1./2)/105]),
+((5,2) , [(sqrt(21)/15 + S(2)/5)**S(1./2), -(-sqrt(21)/15 + S(2)/5)**S(1./2), -(sqrt(21)/15 + S(2)/5)**S(1./2), (-sqrt(21)/15 + S(2)/5)**S(1./2)]),
+((5,3) , [0, 1, -1, -sqrt(105)/15, sqrt(105)/15]),
+((5,4) , [1, sqrt(5)/5, -1, -sqrt(5)/5]),
+((5,5) , [0, 1, -1]),
+]
+
+shExtremes2 = dict([
+((0,0) , []),
+((1,0) , []),
+((1,1) , [0]),
+((2,0) , [0]),
+((2,1) , [1/sqrt(2)]),
+((2,2) , [0]),
+((3,0) , [1/sqrt(5), -1/sqrt(5)]),
+((3,1) , [0, -sqrt(11)/sqrt(15), sqrt(S(11)/15)]),
+((3,2) , [1/sqrt(3), -1/sqrt(3)]),
+((3,3) , [0, 1, -1]),
+((4,0) , [
+			-sqrt(3)/sqrt(7),
+			+sqrt(3)/sqrt(7),
+			0,
+		]),
+((4,1) , []), # Unsolvable
+((4,2) , [
+			+2/sqrt(7),
+			0,
+			-2/sqrt(7),
+		]),
+((4,3) , [
+			+1,
+			-1,
+			-S(1)/2,
+			+S(1)/2,
+			]),
+((4,4) , [
+			+1,
+			-1,
+			0,
+		]),
+((5,0) , [
+			+(2*sqrt(7)/21 + S(1)/3)**S(1./2),
+			-(2*sqrt(7)/21 + S(1)/3)**S(1./2),
+			+(-2*sqrt(7)/21 + S(1)/3)**S(1./2),
+			-(-2*sqrt(7)/21 + S(1)/3)**S(1./2)
+		]),
+((5,1) , [
+			0,
+			+sqrt(105)*(2*sqrt(231) + 63)**S(1./2)/105,
+			-sqrt(105)*(2*sqrt(231) + 63)**S(1./2)/105,
+			+sqrt(105)*(-2*sqrt(231) + 63)**S(1./2)/105,
+			-sqrt(105)*(-2*sqrt(231) + 63)**S(1./2)/105,
+		]),
+((5,2) , [
+			+sqrt(+sqrt(21)/15 + S(2)/5),
+			-sqrt(-sqrt(21)/15 + S(2)/5),
+			-sqrt(+sqrt(21)/15 + S(2)/5),
+			+sqrt(-sqrt(21)/15 + S(2)/5),
+		]),
+((5,3) , [
+			0,
+			+1,
+			-1,
+			-sqrt(7)/sqrt(15),
+			+sqrt(7)/sqrt(15),
+		]),
+((5,4) , [
+			+1,
+			+1/sqrt(5),
+			-1,
+			-1/sqrt(5),
+		]),
+((5,5) , [
+			0,
+			+1,
+			-1,
+		]),
+])
+
+
+class NodalSHStructureTests(unittest.TestCase) :
+	def test(self) :
+		""""""
+		for ((l,m), zs) in shExtremes :
+			self.assertEqual(zs, shExtremes2[l,m])
+
+
+
+
+
 class SphericalHarmonicsTests(unittest.TestCase) :
 
 	def sh(self, e, a) :
