@@ -1,1 +1,1 @@
-../delayHRTF_analytic/IEEEtran.bst
+../common/IEEEtran.bst

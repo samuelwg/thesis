@@ -24,122 +24,6 @@ environmental acoustic inference.
 The work done during this last year covers the areas of 
 analysing the 3D decoding and room inference.
 
-=== 3D audio decoding ===
-
-The first block of topics are related to 3D audio decoding.
-There is already a lot of previous literature in this topic
-so we have centered on several concrete aspects that
-has not received enough attention in existing literature.
-One is normalizing and compensating HRTF database
-for their use for simulating 3D ambisonics decodings in binaural setups.
-The other, and this is the bigger topic of our research,
-is analyzing the filtering effect that ambisonics 
-introduces for higher frequencies even for high order decodings.
-
-%==== Higher Order Ambisonics over regular 3D speaker arrays ====
-%==== Extension to Higher Order Ambisonics ====
-%==== Ambisonics decoding user tests ====
-%Ambisonics is a technology based on the decomposition the acoustic field
-%in spherical harmonics.
-
-
-
-
-==== Quality analysis of Ambisonics decoding ====
-
-
-In Ambisonics decoding,
-all loudspeakers participate of reproduction
-even for highly directional soundfields.
-The presence of the listener's head at the sweetspot 
-introduces different shadows and delays 
-to the signals arriving from each loudspeaker,
-thus disturbing the acoustic field reconstruction at both ears. 
-Although this does not necessarily affect localization cues, 
-it does create a filter which is clearly noticeable,
-specially when reproducing frequency-rich content like music. 
-Such degradation is also present in binaural signals obtained from Ambisonics,
-a procedure which simulates a perfect setup in terms of loudspeakers and listener placement.
-
-We have quantified this effect and its dependence on parameters such as
-the Ambisonics order and decoding scheme used, and the listener's head radius.
-Exact analytic expressions for the filters generated in 2D and 3D speaker arrays 
-have been obtained, for frequency and time domains, under some approximations
-that still capture the main features of the empirically measured filters.
-We still need to empirically evaluate the predictions from the analytical model
-that we didn't measure.
-
-A paper covering this research is almost ready for submission,
-and, it will be the main body the thesis,
-so we would like to incorporate some of the early feedback
-we will receive from the reviewers.
-The current working draft of the paper, is attached to this repport as annex.
-It has the following structure:
-
-# '''Formalism of Ambisonics to binaural conversion:''' We introduce mathematical formalisms required for the rest of the paper.
-## '''Ambisonics decoding''': We obtain general expressions to decode ambisonics using 2D or 3D regular arrays of speakers of any order.
-## '''Ambisonics to binaural''': By formalizing the standard conversion from ambisonics to binaural, we get to the concept of HRTF field and its spherical harmonic expansion which are quantities that appear naturally when doing such conversions.
-# '''Analytical expressions for the HRTF spherical harmonics''': By providing a given set of simplifications, we get analytical expressions for the spherical hamonic components of the HRTF field in time and frequency domains for 3D and 2D spherical harmonics components.
-# '''Perceived filter for plane wave decodings:''' By using the previous components, we obtain the perceived filters when decoding a plane wave. Such filter depends on the incoming orientation and is quite different depending on the decoding criteria.
-# '''Realistic conditions:''' We release the simplifications we did to obtain the analytical expressions and see whether the conclusions still stand.
-
-The results of this research state that 3D Ambisonics
-sensitively deteriorates the high frequencies, even for high order Ambisonics,
-but the analytical results point to some feasible compensations strategies.
-We would like to develop and evaluate such strategies
-by means of analytical evaluation and user tests.
-Equalization and evaluation might lead to a new paper to be written.
-
-Figures: fig:singleOrderEncodingDifferentOrientations figures/singleOrderEncodingDifferentOrientations3D-maxre_01.pdf
-Filter variation depending on the orientation of the plane wave relative to the head
-of a 1\textsuperscript{st} order max$_{rE}$ 3D decoding.
--90 degrees means ipsilateral to the considered ear,
-90 is contralateral and
-0 degrees, front or back.
-
-
-
-==== Gathering, standardization and compensation of existing HRTF databases ====
-
-Head Related Transfer Functions (HRTF)
-capture the impulse response of a sound at the ear entrance
-coming from a point at a given direction related to the head.
-HRTF's are used for binaural and transaural
-3D audio exhibition 
-as well as for simulating actual hearing of other exhibition systems.
-HRTF can be obtained by recording, by simulation or, 
-in very simplified cases, by analytical formulas.
-
-In any case, HRTF performance as to localization
-heavily depends on how much the original head they were obtained from
-matches the listener's one.
-Many HRTF databases are available for research 
-but they very heterogeneous regarding 
-storage format, quality, postprocessing,
-coordinate system conventions, angular sampling and others.
-
-A first work of this research was to gather such databases and 
-make them available under a common set of conventions and formats,
-so that subsequent experiments can easily switch from one database
-to another.
-
-Several databases were collected including the ones from @cite:MitHrtf,
-@cite:IrcamHrtf and @cite:KreuzerHrtf.
-They were recoded in the same way regarding format (wav), sampling rate,
-and indexes were generated so that the collect the mapping 
-between each audio file to its orientation.
-
-Also a procedure was defined so that given an HRTF database
-its decomposition in spherical harmonics can be obtained provided
-several strategies to compensates the irregularities that deviate them
-from a continuous infinitesimal array of speakers.
-The strategies included are:
-* Vbap generation of missing hrtfs for the lower cap, which is often missing
-* Ponderation by the solid angle which includes orientations which are nearer to each real speaker
-
-
-
-
 
 
 %=== Hybridisation of VBAP and Ambisonics ===
@@ -238,21 +122,133 @@ The results of such algorithm are already useful for practical usage,
 but its convergence, target extension and the goodness of the solutions have been slightly tested.
 So further testing, facing, for instance, different real scenarios, is required.
 
+=== 3D audio decoding ===
+
+The first block of topics are related to 3D audio decoding.
+There is already a lot of previous literature in this topic
+so we have centered on several concrete aspects that
+has not received enough attention in existing literature.
+One is normalizing and compensating HRTF database
+for their use for simulating 3D ambisonics decodings in binaural setups.
+The other, and this is the bigger topic of our research,
+is analyzing the filtering effect that ambisonics 
+introduces for higher frequencies even for high order decodings.
+
+%==== Higher Order Ambisonics over regular 3D speaker arrays ====
+%==== Extension to Higher Order Ambisonics ====
+%==== Ambisonics decoding user tests ====
+%Ambisonics is a technology based on the decomposition the acoustic field
+%in spherical harmonics.
+
+
+
+
+
+==== Quality analysis of Ambisonics decoding ====
+
+
+In Ambisonics decoding,
+all loudspeakers participate of reproduction
+even for highly directional soundfields.
+The presence of the listener's head at the sweetspot 
+introduces different shadows and delays 
+to the signals arriving from each loudspeaker,
+thus disturbing the acoustic field reconstruction at both ears. 
+Although this does not necessarily affect localization cues, 
+it does create a filter which is clearly noticeable,
+specially when reproducing frequency-rich content like music. 
+Such degradation is also present in binaural signals obtained from Ambisonics,
+a procedure which simulates a perfect setup in terms of loudspeakers and listener placement.
+
+We have quantified this effect and its dependence on parameters such as
+the Ambisonics order and decoding scheme used, and the listener's head radius.
+Exact analytic expressions for the filters generated in 2D and 3D speaker arrays 
+have been obtained, for frequency and time domains, under some approximations
+that still capture the main features of the empirically measured filters.
+We still need to empirically evaluate the predictions from the analytical model
+that we didn't measure.
+
+A paper covering this research has been submitted to the AES Journal
+and, it will be the main body the thesis.
+It has the following structure:
+
+# '''Formalism of Ambisonics to binaural conversion:''' We introduce mathematical formalisms required for the rest of the paper.
+## '''Ambisonics decoding''': We obtain general expressions to decode ambisonics using 2D or 3D regular arrays of speakers of any order.
+## '''Ambisonics to binaural''': By formalizing the standard conversion from ambisonics to binaural, we get to the concept of HRTF field and its spherical harmonic expansion which are quantities that appear naturally when doing such conversions.
+# '''Analytical expressions for the HRTF spherical harmonics''': By providing a given set of simplifications, we get analytical expressions for the spherical hamonic components of the HRTF field in time and frequency domains for 3D and 2D spherical harmonics components.
+# '''Perceived filter for plane wave decodings:''' By using the previous components, we obtain the perceived filters when decoding a plane wave. Such filter depends on the incoming orientation and is quite different depending on the decoding criteria.
+# '''Realistic conditions:''' We release the simplifications we did to obtain the analytical expressions and see whether the conclusions still stand.
+
+
+The conclusions of that research are that 3D Ambisonics
+sensitively deteriorates the high frequencies, even for high order Ambisonics,
+but the analytical results point to some feasible compensations strategies
+Such strategies have been explored on the last month and although they show
+to be analytically valid, they still require user testing on a realistic setup.
+
+
+Figures: fig:singleOrderEncodingDifferentOrientations figures/singleOrderEncodingDifferentOrientations3D-maxre_01.pdf
+Filter variation depending on the orientation of the plane wave relative to the head
+of a 1\textsuperscript{st} order max$_{rE}$ 3D decoding.
+-90 degrees means ipsilateral to the considered ear,
+90 is contralateral and
+0 degrees, front or back.
+
+
+==== Gathering, standardization and compensation of existing HRTF databases ====
+
+Head Related Transfer Functions (HRTF)
+capture the impulse response of a sound at the ear entrance
+coming from a point at a given direction related to the head.
+HRTF's are used for binaural and transaural
+3D audio exhibition 
+as well as for simulating actual hearing of other exhibition systems.
+HRTF can be obtained by recording, by simulation or, 
+in very simplified cases, by analytical formulas.
+
+In any case, HRTF performance as to localization
+heavily depends on how much the original head they were obtained from
+matches the listener's one.
+Many HRTF databases are available for research 
+but they very heterogeneous regarding 
+storage format, quality, postprocessing,
+coordinate system conventions, angular sampling and others.
+
+A first work of this research was to gather such databases and 
+make them available under a common set of conventions and formats,
+so that subsequent experiments can easily switch from one database
+to another.
+
+Several databases were collected including the ones from @cite:MitHrtf,
+@cite:IrcamHrtf and @cite:KreuzerHrtf.
+They were recoded in the same way regarding format (wav), sampling rate,
+and indexes were generated so that the collect the mapping 
+between each audio file to its orientation.
+
+Also a procedure was defined so that given an HRTF database
+its decomposition in spherical harmonics can be obtained provided
+several strategies to compensates the irregularities that deviate them
+from a continuous infinitesimal array of speakers.
+The strategies included are:
+* Vbap generation of missing hrtfs for the lower cap, which is often missing
+* Ponderation by the solid angle which includes orientations which are nearer to each real speaker
+* Extrapolation using iterative spherical harmonic decomposition, which ensures that the spherical harmonic recomposition until certain order matches at least on known orientations
+
+Those corrections must be made to databases in order to use properly generated HRTF in pending user test.
 
 == Extension request ==
 
 As described in the report there are several areas that require further work.
 
-First, there is a paper we are about to submit about the destructive effect
-of the Ambisonics decodings.
-We would like to introduce the eventual input of the reviewers into the
+First feedback has not been received on the paper
+about the destructive effect of the Ambisonics decodings
+and we are willing to introduce the eventual input of the reviewers into the
 thesis to improve the quality of the thesis.
 Regarding the results highlighted in that paper,
-we want to perform measurements the predicted filter effect in real set scenarios.
-Also, as described in previously, analytical results
-suggest that several equalization strategies could be applied
-to compensate the effects of the head. We want to test such
-equalization strategies and evaluate with user tests.
+we want to perform measurements the predicted filter effect in real set scenarios.a
+Also, we want to evaluate with user tests
+how compensation strategies are affecting localization,
+and whether they actually improve the peceived quality.
 
 Regarding SIFA problem, current approach has been tested in a quite weak way. 
 A more exhaustive evaluation is needed to back the results.
@@ -260,17 +256,16 @@ We need to take measurements of real rooms and test psychoacoustic tests
 either using objective measurements or user tests.
 We would also write and submit a paper covering such evaluation.
 
-Finally, the thesis itself must be written.
+Finally, the thesis writting must be finished including those last issues.
 The two topics that have received most of the focus are quite far
 components of the wider work-flow of relating the audio to the 3D scene,
 so they must be properly contextualized and connected.
 
 So, considering this scenario,
-we ask for an extension of six months to the submission date,
-in order to conclude the research,
-writing and submitting pending publications,
+we ask for an extension of, at least, six months to the submission date,
+in order to support the theoretical research with user tests,
 incorporate reviewers feedback into our work
-and writing the thesis.
+and finishing the writing of the thesis.
 
 \bibliographystyle{IEEEtran}
 \bibliography{BinauralSynthesis,our_papers}
@@ -280,7 +275,7 @@ and writing the thesis.
 
 \vspace{1in}
 
-Barcelona, 23/05/2011
+Barcelona, 09/09/2012
 
 \vspace{.7in}
 
