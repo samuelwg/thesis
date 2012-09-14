@@ -250,8 +250,8 @@ def semiNormalizedSH_genericNumpy(e, a, target=None) :
 			factor = math.sqrt(2) if m else 1.
 			sn3d[shi(l,m)] = (factor
 				/ math.sqrt(
-					sp.factorial(l+absm) / sp.factorial(l-absm) # clearest for the next one
-#					np.prod(xrange(l-absm+1, l+absm+1))
+#					sp.factorial(l+absm) / sp.factorial(l-absm) # clearest for the next one
+					np.prod(xrange(l-absm+1, l+absm+1))
 					)
 				* ( sp.assoc_legendre(l,absm,z) * S(-1)**m ).evalf()
 				* ( np.cos(m*ra) if m>=0 else np.sin(absm*ra) )
