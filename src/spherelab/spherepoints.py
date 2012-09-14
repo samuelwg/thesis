@@ -194,7 +194,6 @@ class SpherePointScene(QtGui.QGraphicsScene) :
 	def __init__(self) :
 		super(SpherePointScene, self).__init__()
 		self._frame = 0
-		self._distance = 600
 
 		self._trackballs = [
 			TrackBall(),
@@ -206,6 +205,7 @@ class SpherePointScene(QtGui.QGraphicsScene) :
 		self._vertices = None
 		self._indexes = None
 		self._normals = None
+		self._distance = 20
 
 	def timerEvent(self, event) :
 		self.update()
@@ -226,13 +226,17 @@ class SpherePointScene(QtGui.QGraphicsScene) :
 
 		GL.glMatrixMode(GL.GL_PROJECTION)
 		GLU.gluPerspective(60.0, width / height, 0.01, 150.0);
-		GLU.gluLookAt(-20,0,0,0,0,0,0,0,1);
+		GLU.gluLookAt(self._distance,0,0,0,0,0,0,0,1);
 
 		GL.glMatrixMode(GL.GL_MODELVIEW);
 
 		view = QtGui.QMatrix4x4()
 		view.rotate(self._trackballs[2].rotation())
-#		view.data().reshape(4,4)[2, 3] -= 2.0 * math.exp(self._distance / 1200.0);
+
+#		view = np.array(list(view.data())).reshape((4,4))
+#		view[2, 3] -= 2.0 * math.exp(self._distance / 1200.0)
+#		view = QtGui.QMatrix4x4(*view.reshape((16,)))
+
 		GL.glLoadMatrixf(view.data())
 		self.drawAxis()
 #		self.drawPoints()
@@ -416,9 +420,9 @@ class SpherePointScene(QtGui.QGraphicsScene) :
 		QtGui.QGraphicsScene.wheelEvent(self,event)
 		if event.isAccepted() : return
 
-		self._distance += event.delta();
-		if self._distance < -8 * 120 : self._distance = -8 * 120
-		if self._distance > 10 * 120 : self._distance = 10 * 120
+		self._distance += event.delta()/120.
+		if self._distance < 10  : self._distance = 10
+		if self._distance > 50  : self._distance = 50
 		event.accept()
 
 	def pixelPosToViewPos(self, p) :
@@ -490,7 +494,6 @@ class SpherePointScene(QtGui.QGraphicsScene) :
 		if event.buttons() & Qt.MidButton :
 			self._trackballs[2].release(mousePos, QtGui.QQuaternion())
 			event.accept();
-
 
 
 
