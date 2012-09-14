@@ -705,31 +705,120 @@ class SphericalHarmonicsTests(unittest.TestCase) :
 		self.assertEqualAt((  30,   4), -0.42686588506525242)
 
 	def test_sh_4_2(self) :
-		self.prepareOrder(4,+2)
+		self.prepareOrder(4,+2) 
+
+		from math import asin, sqrt, degrees
+
+		zeroangle  = degrees(asin( 1/sqrt(7) ))
+		maxvalue0 = 0.55901699437494745
+		maxangle1 = degrees(asin( 2/sqrt(7) ))
+		maxvalue1 = 0.71873613562493233
+
+		self.assertPeakAtElevation(+2, +90, 0)
+		self.assertPeakAtElevation(+2, +maxangle1, +maxvalue1)
+		self.assertPeakAtElevation(+2, +zeroangle, 0)
+		self.assertPeakAtElevation(+2,  0, -maxvalue0)
+		self.assertPeakAtElevation(+2, -zeroangle, 0)
+		self.assertPeakAtElevation(+2, -maxangle1, +maxvalue1)
+		self.assertPeakAtElevation(+2, -90, 0)
+
 		self.assertEqualAt((  30,   4), 0.3113868821700353)
 
 	def test_sh_4_3(self) :
 		self.prepareOrder(4,+3)
+
+		from math import asin, sqrt, degrees
+
+		maxangle1 = degrees(asin( 1./2 ))
+		maxvalue1 = 0.6792832849776298
+		self.assertPeakAtElevation(+3, +90, 0)
+		self.assertPeakAtElevation(+3, +maxangle1, +maxvalue1)
+		self.assertPeakAtElevation(+3,  0, 0)
+		self.assertPeakAtElevation(+3, -maxangle1, -maxvalue1)
+		self.assertPeakAtElevation(+3, -90, 0)
+
 		self.assertEqualAt((  30,   4), 0.66443931541944656)
 
 	def test_sh_4_4(self) :
 		self.prepareOrder(4,+4)
+
+		from math import asin, sqrt, degrees
+
+		maxvalue0 = 0.73950997288745202
+		self.assertPeakAtElevation(+4, +90, 0)
+		self.assertPeakAtElevation(+4, 0, +maxvalue0)
+		self.assertPeakAtElevation(+4, -90, 0)
+
 		self.assertEqualAt((  30,   4), 0.39986021851936454)
 
 	def test_sh_4_m1(self) :
 		self.prepareOrder(4,-1)
+
+		from math import asin, sqrt, degrees
+
+		zeroangle = degrees(asin(sqrt(3./7)))
+		maxangle1 = degrees(asin(sqrt( (27-sqrt(393))/7/8) ))
+		maxvalue1 = 0.55571119769376354 # b2b, not analytically checked
+		maxangle2 = degrees(asin(sqrt( (27+sqrt(393))/7/8) )) # 66.1221762567095
+		maxvalue2 = 0.83486203359622035 # b2b, not analytically checked
+
+		self.assertPeakAtElevation(-1, +90, 0)
+		self.assertPeakAtElevation(-1, +maxangle2, +maxvalue2)
+		self.assertPeakAtElevation(-1, +zeroangle, 0)
+		self.assertPeakAtElevation(-1, +maxangle1, -maxvalue1)
+		self.assertPeakAtElevation(-1,  0, 0)
+		self.assertPeakAtElevation(-1, -maxangle1, +maxvalue1)
+		self.assertPeakAtElevation(-1, -zeroangle, 0)
+		self.assertPeakAtElevation(-1, -maxangle2, -maxvalue2)
+		self.assertPeakAtElevation(-1, -90, 0)
+
 		self.assertEqualAt((  30,   4), -0.029849370470058041)
 
 	def test_sh_4_m2(self) :
 		self.prepareOrder(4,-2)
+
+		from math import asin, sqrt, degrees
+
+		zeroangle  = degrees(asin( 1/sqrt(7) ))
+		maxvalue0 = 0.55901699437494745
+		maxangle1 = degrees(asin( 2/sqrt(7) ))
+		maxvalue1 = 0.71873613562493233
+
+		self.assertPeakAtElevation(-2, +90, 0)
+		self.assertPeakAtElevation(-2, +maxangle1, +maxvalue1)
+		self.assertPeakAtElevation(-2, +zeroangle, 0)
+		self.assertPeakAtElevation(-2,  0, -maxvalue0)
+		self.assertPeakAtElevation(-2, -zeroangle, 0)
+		self.assertPeakAtElevation(-2, -maxangle1, +maxvalue1)
+		self.assertPeakAtElevation(-2, -90, 0)
+
 		self.assertEqualAt((  30,   4), 0.043762572335551975)
 
 	def test_sh_4_m3(self) :
 		self.prepareOrder(4,-3)
+
+		from math import asin, sqrt, degrees
+
+		maxangle1 = degrees(asin( 1./2 ))
+		maxvalue1 = 0.6792832849776298
+		self.assertPeakAtElevation(-3, +90, 0)
+		self.assertPeakAtElevation(-3, +maxangle1, +maxvalue1)
+		self.assertPeakAtElevation(-3,  0, 0)
+		self.assertPeakAtElevation(-3, -maxangle1, -maxvalue1)
+		self.assertPeakAtElevation(-3, -90, 0)
+
 		self.assertEqualAt((  30,   4), 0.14123093632394088)
 
 	def test_sh_4_m4(self) :
 		self.prepareOrder(4,-4)
+
+		from math import asin, sqrt, degrees
+
+		maxvalue0 = 0.73950997288745202
+		self.assertPeakAtElevation(-4, +90, 0)
+		self.assertPeakAtElevation(-4, 0, +maxvalue0)
+		self.assertPeakAtElevation(-4, -90, 0)
+
 		self.assertEqualAt((  30,   4), 0.1146580726089364)
 
 	def assertPeakAtElevation(self, degree, elevation, maxvalue) :
@@ -977,31 +1066,31 @@ class SphericalHarmonicsTests(unittest.TestCase) :
 
 		self.assertEqualAt((  30,   4), +0.321147292404416)
 
-@unittest.skip("Slow")
+#@unittest.skip("Slow")
 class SphericalHarmonicsTests_cartesianRecursive(SphericalHarmonicsTests) :
 	def sh(self, e, a) :
 		"""Decodes the sh components for (e,a) position."""
 		return (self._components*semiNormalizedSH_cartesianRecursive(e,a)).sum()
 
-@unittest.skip("Slow")
+#@unittest.skip("Slow")
 class SphericalHarmonicsTests_cartesian(SphericalHarmonicsTests) :
 	def sh(self, e, a) :
 		"""Decodes the sh components for (e,a) position."""
 		return (self._components*semiNormalizedSH_cartesian(e,a)).sum()
 
-@unittest.skip("Slow")
+#@unittest.skip("Slow")
 class SphericalHarmonicsTests_lambdified(SphericalHarmonicsTests) :
 	def sh(self, e, a) :
 		"""Decodes the sh components for (e,a) position."""
 		return (self._components*semiNormalizedSH_lambdified(e,a)).sum()
 
-@unittest.skip("Slow")
+#@unittest.skip("Slow")
 class SphericalHarmonicsTests_genericNumpy(SphericalHarmonicsTests) :
 	def sh(self, e, a) :
 		"""Decodes the sh components for (e,a) position."""
 		return (self._components*semiNormalizedSH_genericNumpy(e,a)).sum()
 
-@unittest.skip("Slow")
+#@unittest.skip("Slow")
 class SphericalHarmonicsTests_sympyGeneratedExpressions(SphericalHarmonicsTests) :
 	def sh(self, e, a) :
 		"""Decodes the sh components for (e,a) position."""
