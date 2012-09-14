@@ -147,38 +147,38 @@ class TrackBall(object) :
 
 		currentTime = QtCore.QTime.currentTime()
 		msecs = self._lastTime.msecsTo(currentTime)
-		if msecs <= 20 : return # ignore frequent
+		if msecs <= 20 : return # ignore frequenta
+
+		def map3d(point2) :
+			point3 = QtGui.QVector3D(point2)
+			sqrZ = 1 - point2.x()**2 - point2.y()**2
+			if sqrZ > 0 :
+				point3.setZ(math.sqrt(sqrZ))
+			else :
+				point3.normalize()
+			return point3
+
+		dotProduct = QtGui.QVector3D.dotProduct
+		crossProduct = QtGui.QVector3D.crossProduct
 
 		if False : # Plane method
 			delta = QtCore.QLineF(self._lastPos, point)
-			self._angularVelocity = 180*delta.length() / (math.pi*msecs)
+			self._angularVelocity = math.degrees(delta.length()/msecs)
 			self._axis = QtGui.QVector3D(-delta.dy(), delta.dx(), 0.0).normalized()
 			self._axis = reference.rotatedVector(self._axis)
-			self._rotation = QtGui.QQuaternion.fromAxisAndAngle(self._axis, 180 / math.pi * delta.length()) * self._rotation
+			self._rotation = QtGui.QQuaternion.fromAxisAndAngle(self._axis, math.degrees(delta.length())) * self._rotation
 		else : # Sphere method
-			lastPos3D = QtGui.QVector3D(self._lastPos.x(), self._lastPos.y(), 0.0)
-			sqrZ = 1 - QtGui.QVector3D.dotProduct(lastPos3D, lastPos3D)
-			if sqrZ > 0 :
-				lastPos3D.setZ(math.sqrt(sqrZ))
-			else :
-				lastPos3D.normalize()
 
-			currentPos3D = QtGui.QVector3D(point.x(), point.y(), 0.0)
-			sqrZ = 1 - QtGui.QVector3D.dotProduct(currentPos3D, currentPos3D)
-			if sqrZ > 0 :
-				currentPos3D.setZ(math.sqrt(sqrZ))
-			else :
-				currentPos3D.normalize()
+			lastPos3D = map3d(self._lastPos)
+			currentPos3D = map3d(point)
 
-			self._axis = QtGui.QVector3D.crossProduct(lastPos3D, currentPos3D)
-			angle = 180 / math.pi * math.asin(math.sqrt(QtGui.QVector3D.dotProduct(self._axis, self._axis)))
+			self._axis = crossProduct(lastPos3D, currentPos3D)
+			angle = math.degrees(math.asin(math.sqrt(dotProduct(self._axis, self._axis))))
 
 			self._angularVelocity = angle / msecs
 			self._axis.normalize()
 			self._axis = reference.rotatedVector(self._axis)
 			self._rotation = QtGui.QQuaternion.fromAxisAndAngle(self._axis, angle) * self._rotation
-
-
 
 		self._lastTime = currentTime
 		self._lastPos = point
@@ -225,8 +225,8 @@ class SpherePointScene(QtGui.QGraphicsScene) :
 		GL.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT)
 
 		GL.glMatrixMode(GL.GL_PROJECTION)
-		GLU.gluPerspective(60.0, width / height, 0.01, 150.0);
-		GLU.gluLookAt(self._distance,0,0,0,0,0,0,0,1);
+		GLU.gluPerspective(60.0, width / height, 0.01, 450.0);
+		GLU.gluLookAt(-self._distance,0,0,0,0,0,0,0,1);
 
 		GL.glMatrixMode(GL.GL_MODELVIEW);
 
@@ -349,9 +349,6 @@ class SpherePointScene(QtGui.QGraphicsScene) :
 		GL.glPopAttrib()
 
 
-
-
-
 	def setStates(self) :
 		GL.glEnable(GL.GL_DEPTH_TEST)
 		GL.glEnable(GL.GL_CULL_FACE)
@@ -438,16 +435,20 @@ class SpherePointScene(QtGui.QGraphicsScene) :
 		mousePos = self.pixelPosToViewPos(event.scenePos())
 
 		if event.buttons() & Qt.LeftButton :
-			self._trackballs[0].move(mousePos, self._trackballs[2].rotation().conjugate())
+			self._trackballs[0].move(mousePos,
+				self._trackballs[2].rotation().conjugate())
 			event.accept()
 		else :
-			self._trackballs[0].release(mousePos, self._trackballs[2].rotation().conjugate())
+			self._trackballs[0].release(mousePos,
+				self._trackballs[2].rotation().conjugate())
 
 		if event.buttons() & Qt.RightButton :
-			self._trackballs[1].move(mousePos, self._trackballs[2].rotation().conjugate())
+			self._trackballs[1].move(mousePos,
+				self._trackballs[2].rotation().conjugate())
 			event.accept()
 		else :
-			self._trackballs[1].release(mousePos, self._trackballs[2].rotation().conjugate());
+			self._trackballs[1].release(mousePos,
+				self._trackballs[2].rotation().conjugate());
 
 
 		if event.buttons() & Qt.MidButton :
@@ -465,14 +466,19 @@ class SpherePointScene(QtGui.QGraphicsScene) :
 		mousePos = self.pixelPosToViewPos(event.scenePos())
 
 		if event.buttons() & Qt.LeftButton :
-			self._trackballs[0].push(mousePos, self._trackballs[2].rotation().conjugate())
+			print "Left"
+			self._trackballs[0].push(mousePos,
+				self._trackballs[2].rotation().conjugate())
 			event.accept()
 
 		if event.buttons() & Qt.RightButton :
-			self._trackballs[1].push(mousePos, self._trackballs[2].rotation().conjugate())
+			print "Right"
+			self._trackballs[1].push(mousePos,
+				self._trackballs[2].rotation().conjugate())
 			event.accept()
 
 		if event.buttons() & Qt.MidButton :
+			print "Mid"
 			self._trackballs[2].push(mousePos, QtGui.QQuaternion())
 			event.accept();
 
@@ -484,11 +490,13 @@ class SpherePointScene(QtGui.QGraphicsScene) :
 		mousePos = self.pixelPosToViewPos(event.scenePos())
 
 		if event.buttons() & Qt.LeftButton :
-			self._trackballs[0].release(mousePos, self._trackballs[2].rotation().conjugate())
+			self._trackballs[0].release(mousePos,
+				self._trackballs[2].rotation().conjugate())
 			event.accept()
 
 		if event.buttons() & Qt.RightButton :
-			self._trackballs[1].release(mousePos, self._trackballs[2].rotation().conjugate())
+			self._trackballs[1].release(mousePos,
+				self._trackballs[2].rotation().conjugate())
 			event.accept()
 
 		if event.buttons() & Qt.MidButton :
