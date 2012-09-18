@@ -8,7 +8,7 @@
 
 import os, sys, string
 sys.path.append('../../clam/CLAM/scripts/')
-from audiob2b import runBack2BackProgram
+from b2btest import runBack2BackProgram
 
 data_path='b2b/bformat2binaural'
 if not os.access(data_path, os.X_OK) :
