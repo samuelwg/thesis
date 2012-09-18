@@ -353,9 +353,9 @@ shZeros = dict([
 ((3,1) , [
 			1,
 			-1,
-			5**(S(1)/2)/5,
-			-5**(S(1)/2)/5],
-			),
+			+1/sqrt(5),
+			-1/sqrt(5),
+		]),
 ((3,2) , [1, -1, 0]),
 ((3,3) , [1, -1, 1, -1]),
 ((4,0) , [
@@ -449,6 +449,25 @@ class SphericalHarmonicsTests(unittest.TestCase) :
 		self._components = np.zeros(shShape)
 		self._components[shi(l,m)] = fuma[shi(l,m)]
 
+
+	def assertPeakAtElevation(self, degree, elevation, maxvalue) :
+		if degree > 0 :
+			for i in xrange(degree) :
+				self.assertEqualAt((elevation, 90.*(i*4+0)/degree), +maxvalue)
+				self.assertEqualAt((elevation, 90.*(i*4+1)/degree),  0)
+				self.assertEqualAt((elevation, 90.*(i*4+2)/degree), -maxvalue)
+				self.assertEqualAt((elevation, 90.*(i*4+3)/degree),  0)
+		elif degree < 0 :
+			degree = abs(degree)
+			for i in xrange(degree) :
+				self.assertEqualAt((elevation, 90.*(i*4+0)/degree),  0)
+				self.assertEqualAt((elevation, 90.*(i*4+1)/degree), +maxvalue)
+				self.assertEqualAt((elevation, 90.*(i*4+2)/degree),  0)
+				self.assertEqualAt((elevation, 90.*(i*4+3)/degree), -maxvalue)
+		else :
+			subdivision = 19
+			for i in xrange(subdivision) :
+				self.assertEqualAt((elevation, 360.*(i)/subdivision),  maxvalue)
 
 
 	def test_sh_0_0(self) :
@@ -548,7 +567,6 @@ class SphericalHarmonicsTests(unittest.TestCase) :
 		self.assertPeakAtElevation(-2, -90, 0)
 
 		self.assertEqualAt((  30,   4),  0.10437982572004907)
-
 
 	def test_sh_3_3(self) :
 		self.prepareOrder(3,+3)
@@ -820,25 +838,6 @@ class SphericalHarmonicsTests(unittest.TestCase) :
 		self.assertPeakAtElevation(-4, -90, 0)
 
 		self.assertEqualAt((  30,   4), 0.1146580726089364)
-
-	def assertPeakAtElevation(self, degree, elevation, maxvalue) :
-		if degree > 0 :
-			for i in xrange(degree) :
-				self.assertEqualAt((elevation, 90.*(i*4+0)/degree), +maxvalue)
-				self.assertEqualAt((elevation, 90.*(i*4+1)/degree),  0)
-				self.assertEqualAt((elevation, 90.*(i*4+2)/degree), -maxvalue)
-				self.assertEqualAt((elevation, 90.*(i*4+3)/degree),  0)
-		elif degree < 0 :
-			degree = abs(degree)
-			for i in xrange(degree) :
-				self.assertEqualAt((elevation, 90.*(i*4+0)/degree),  0)
-				self.assertEqualAt((elevation, 90.*(i*4+1)/degree), +maxvalue)
-				self.assertEqualAt((elevation, 90.*(i*4+2)/degree),  0)
-				self.assertEqualAt((elevation, 90.*(i*4+3)/degree), -maxvalue)
-		else :
-			subdivision = 19
-			for i in xrange(subdivision) :
-				self.assertEqualAt((elevation, 360.*(i)/subdivision),  maxvalue)
 
 	def test_sh_5_m5(self) :
 		self.prepareOrder(5,-5)
