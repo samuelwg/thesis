@@ -26,6 +26,8 @@ import numpy as np
 import time
 import math
 
+from geometry import ead2xyz
+
 order = 5
 shShape = (order+1,order+1)
 shSize = np.prod(shShape)
@@ -41,19 +43,6 @@ def shi(l,m) :
 
 def shi_reverse(i,j) :
 	return max(i,j), j-i
-
-def ead2xyz(e,a,d) :
-	"""
-		Converts polars to cartesian with those conventions:
-		x front, y left, z up
-		0 elevation and azimuth front
-		positive elevation up, positive azimuth left
-	"""
-	ra, re = np.radians(a), np.radians(e)
-	sa, se = np.sin(ra), np.sin(re)
-	ca, ce = np.cos(ra), np.cos(re)
-	x,y,z = d*ce*ca, d*ce*sa, d*se
-	return x,y,z
 
 
 ########################################
