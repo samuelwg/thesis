@@ -80,6 +80,42 @@ class CoordsConversionTests(unittest.TestCase) :
 		self.assertCoordsEqual( [0.75, 0.4330127, 0.5], ead2xyz(30, 30, 1) )
 
 
+class ChordDistanceTests(unittest.TestCase) :
+
+	def test_chordDistance_equal(self) :
+		self.assertEqual(0,  chordDistance(30, 3, 30, 3) )
+
+	def test_chordDistance_antipodal(self) :
+		self.assertEqual(4,  chordDistance(30, 0, -30, +180) )
+
+	def test_chordDistance_quarter(self) :
+		self.assertAlmostEqual(2, chordDistance(0, 0, 0, +90) )
+
+	def test_chordDistance_movingAlongEquatorLeft(self) :
+		self.assertAlmostEqual(0.26794919243112258,  chordDistance(0, 0, 0, +30) )
+
+	def test_chordDistance_movingAlongEquatorRight(self) :
+		self.assertAlmostEqual(0.26794919243112258,  chordDistance(0, 0, 0, -30) )
+
+	def test_chordDistance_movingAlongGreenwichUp(self) :
+		self.assertAlmostEqual(0.26794919243112258,  chordDistance(0, 0, +30, 0) )
+
+	def test_chordDistance_movingAlongGreenwichDown(self) :
+		self.assertAlmostEqual(0.26794919243112258,  chordDistance(0, 0, -30, 0) )
+
+	def test_chordDistance_movingAlongGreenwichUpper(self) :
+		self.assertAlmostEqual(0.26794919243112258,  chordDistance(30, 0, 60, 0) )
+
+	def test_chordDistance_azimuthAngleAreSmallerDistanceInUpperElevation(self) :
+		self.assertAlmostEqual(0.20096189432334199,  chordDistance(30, 0, 30, +30) )
+
+
+
+
+
+
+
+
 if __name__ == "__main__":
 	unittest.main()
 
