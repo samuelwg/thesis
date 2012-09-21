@@ -30,7 +30,7 @@ import math
 
 from colorfield import ColorField, Reloader
 
-from sphericalHarmonics import ead2xyz, semiNormalizedSH, sh, shi_reverse
+from audio3d.sphericalHarmonics import ead2xyz, semiNormalizedSH, sh, shi_reverse
 
 sampleResolution = 36*4, 18*4
 
@@ -774,7 +774,7 @@ if __name__ == "__main__" :
 		w0.setSphericalHarmonicsMatrix(imageInSH)
 		reloadData()
 
-	from sphericalHarmonics import shSize, shShape
+	from audio3d.sphericalHarmonics import shSize, shShape
 	imageInSH = np.arange(shSize).reshape(shShape)*100./shSize
 
 	w0.setSphericalHarmonicsMatrix(imageInSH)
