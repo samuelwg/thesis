@@ -24,6 +24,7 @@ TODO:
 """
 
 import os, sys
+from geometry import normalizeAngles
 
 def hrtf_path() :
 	if 'HRTF_PATH' not in os.environ.keys():
@@ -73,11 +74,24 @@ def selectHrtfDatabase( args ) :
 	return os.path.join(hrtf_path(),"mitKemarFull%s%s.hrtfs" % (earLetter, speakerInfix))
 
 
-class HrtfDatabase :
+class HrtfDatabase(object) :
 
 	def __init__(self, databaseFile) :
 		self._databaseFile = databaseFile
 		self._data = []
+		base = os.path.dirname(databaseFile)
+		for line in open(databaseFile) :
+			try : elevation, azimuth, filename = line.split()
+			except: continue
+			azimuth, elevation = normalizeAngles(float(azimuth), float(elevation))
+			self._data.append( ( float(elevation), float(azimuth), os.path.join(base,filename)) )
+		self._orientationToFilename = dict(((e,a),f) for e,a,f in self._data)
+
+
+class HrtfDatabase2 :
+
+	def __init__(self, databaseFile) :
+		self._databaseFile = databaseFile
 		self._audio = {}
 		base = os.path.dirname(databaseFile)
 		for line in open(databaseFile) :

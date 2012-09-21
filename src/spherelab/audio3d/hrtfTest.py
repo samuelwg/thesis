@@ -115,6 +115,47 @@ class SelecHrtfDatabaseTest(unittest.TestCase) :
 			'basepath/mitKemarCompactL.hrtfs',
 			selectHrtfDatabase("--mitcompact".split()))
 
+import shutil
+
+
+class HrtfDatabaseTest(unittest.TestCase) :
+	def setUp(self) :
+		os.mkdir("testhrtf")
+
+	def tearDown(self) :
+		shutil.rmtree("testhrtf")
+
+	def writefile(self, name, content) :
+		f = open(name, 'w')
+		f.write(content)
+		f.close()
+
+	def test_existing(self) :
+		self.writefile("testhrtf/db.hrtfs",
+			"0  0    front.wav\n"
+			"0  90   left.wav\n"
+			"0  270  right.wav\n"
+			"0  180  back.wav\n"
+			)
+		db = HrtfDatabase('testhrtf/db.hrtfs')
+		self.assertEqual('testhrtf/left.wav', db._orientationToFilename[0,90])
+
+	def test_missing(self) :
+		self.writefile("testhrtf/db.hrtfs",
+			"0  0    front.wav\n"
+			"0  90   left.wav\n"
+			"0  270  right.wav\n"
+			"0  180  back.wav\n"
+			)
+		db = HrtfDatabase('testhrtf/db.hrtfs')
+		try :
+			db._orientationToFilename[0,91]
+			self.fail("An exception was expected")
+		except KeyError, e:
+			self.assertEqual(e.message, (0,91))
+
+
+
 
 
 
