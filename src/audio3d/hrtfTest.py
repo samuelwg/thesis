@@ -25,6 +25,7 @@ TODO:
 
 from hrtf import selectHrtfDatabase, hrtf_path, HrtfDatabase
 import unittest
+from numpy.testing import assert_equal as np_assert_equal
 
 import os, sys
 
@@ -116,11 +117,31 @@ class SelecHrtfDatabaseTest(unittest.TestCase) :
 			selectHrtfDatabase("--mitcompact".split()))
 
 import shutil
-
+import wavefile
 
 class HrtfDatabaseTest(unittest.TestCase) :
 	def setUp(self) :
+		try: 
+			shutil.rmtree("testhrtf")
+		except OSError : pass
 		os.mkdir("testhrtf")
+		self.writefile("testhrtf/db.hrtfs",
+			"0  0    front.wav\n"
+			"0  90   left.wav\n"
+			"0  270  right.wav\n"
+			"0  180  back.wav\n"
+			)
+		import numpy as np
+		def saveWave(name, data) :
+			redata = data.astype(np.float32)[:,np.newaxis]
+			with wavefile.WaveWriter('testhrtf/%s.wav'%name) as writer :
+				writer.write(redata)
+			return redata
+			
+		self._audioFront = saveWave('front', np.arange(.1,.3,.01))
+		self._audioBack  = saveWave('back',  np.arange(.2,.4,.01))
+		self._audioLeft  = saveWave('left',  np.arange(.3,.5,.01))
+		self._audioRight = saveWave('right', np.arange(.4,.6,.01))
 
 	def tearDown(self) :
 		shutil.rmtree("testhrtf")
@@ -130,33 +151,87 @@ class HrtfDatabaseTest(unittest.TestCase) :
 		f.write(content)
 		f.close()
 
-	def test_existing(self) :
-		self.writefile("testhrtf/db.hrtfs",
-			"0  0    front.wav\n"
-			"0  90   left.wav\n"
-			"0  270  right.wav\n"
-			"0  180  back.wav\n"
-			)
+	def test_repr(self) :
 		db = HrtfDatabase('testhrtf/db.hrtfs')
-		self.assertEqual('testhrtf/left.wav', db._orientationToFilename[0,90])
+		self.assertEqual(
+			"HrtfDatabase:["
+				"(0.0, 0.0, 'testhrtf/front.wav'), "
+				"(0.0, 90.0, 'testhrtf/left.wav'), "
+				"(0.0, 270.0, 'testhrtf/right.wav'), "
+				"(0.0, 180.0, 'testhrtf/back.wav')]"
+			, repr(db))
+
+	def test_existing(self) :
+		db = HrtfDatabase('testhrtf/db.hrtfs')
+		self.assertEqual('testhrtf/left.wav', db.wavefile(0,90))
 
 	def test_missing(self) :
-		self.writefile("testhrtf/db.hrtfs",
-			"0  0    front.wav\n"
-			"0  90   left.wav\n"
-			"0  270  right.wav\n"
-			"0  180  back.wav\n"
-			)
 		db = HrtfDatabase('testhrtf/db.hrtfs')
 		try :
-			db._orientationToFilename[0,91]
+			db.wavefile(0,91)
 			self.fail("An exception was expected")
 		except KeyError, e:
 			self.assertEqual(e.message, (0,91))
 
+	def test_nearest_exact(self) :
+		db = HrtfDatabase('testhrtf/db.hrtfs')
+		self.assertEqual((0,90), db.nearest(0, 90))
 
+	def test_nearest_near(self) :
+		db = HrtfDatabase('testhrtf/db.hrtfs')
+		self.assertEqual((0,90), db.nearest(0, 91))
 
+	def test_nearestWavefile(self) :
+		db = HrtfDatabase('testhrtf/db.hrtfs')
+		self.assertEqual(
+			'testhrtf/left.wav',
+			db.nearestWavefile(0, 91))
 
+	def test_loadAudio_left(self) :
+		db = HrtfDatabase('testhrtf/db.hrtfs')
+		np_assert_equal(
+			self._audioLeft,
+			db.hrtf(0,90))
+
+	def test_loadAudio_nearleft(self) :
+		db = HrtfDatabase('testhrtf/db.hrtfs')
+		np_assert_equal(
+			self._audioLeft,
+			db.hrtf(0,91))
+
+	def test_cachedFiles_single(self) :
+		db = HrtfDatabase('testhrtf/db.hrtfs')
+		db.hrtf(0,90)
+		self.assertEqual([
+			"testhrtf/left.wav",
+			], db.cachedFiles())
+
+	def test_cachedFiles_many(self) :
+		db = HrtfDatabase('testhrtf/db.hrtfs')
+		db.hrtf(0,+90)
+		db.hrtf(0,-90)
+		self.assertEqual([
+			"testhrtf/left.wav",
+			"testhrtf/right.wav",
+			], db.cachedFiles())
+
+	def test_cachedFiles_same(self) :
+		db = HrtfDatabase('testhrtf/db.hrtfs')
+		db.hrtf(0,+90)
+		db.hrtf(0,+91)
+		self.assertEqual([
+			"testhrtf/left.wav",
+			], db.cachedFiles())
+
+	def test_cachedFiles_all(self) :
+		db = HrtfDatabase('testhrtf/db.hrtfs')
+		db.preload()
+		self.assertEqual([
+			"testhrtf/left.wav",
+			"testhrtf/front.wav",
+			"testhrtf/back.wav",
+			"testhrtf/right.wav",
+			], db.cachedFiles())
 
 
 if __name__ == "__main__" :

@@ -24,7 +24,7 @@ TODO:
 """
 
 import os, sys
-from geometry import normalizeAngles
+from geometry import normalizeAngles, chordDistance
 
 def hrtf_path() :
 	if 'HRTF_PATH' not in os.environ.keys():
@@ -86,21 +86,45 @@ class HrtfDatabase(object) :
 			azimuth, elevation = normalizeAngles(float(azimuth), float(elevation))
 			self._data.append( ( float(elevation), float(azimuth), os.path.join(base,filename)) )
 		self._orientationToFilename = dict(((e,a),f) for e,a,f in self._data)
+		self._cachedAudio = {}
 
+	def __repr__(self) :
+		return "%s:%r" % ( self.__class__.__name__, self._data )
 
-class HrtfDatabase2 :
+	def wavefile(self, e, a) :
+		return self._orientationToFilename[e,a]
 
-	def __init__(self, databaseFile) :
-		self._databaseFile = databaseFile
-		self._audio = {}
-		base = os.path.dirname(databaseFile)
-		for line in open(databaseFile) :
-			try : elevation, azimuth, filename = line.split()
-			except: continue
-			azimuth, elevation = normalizeAngles(float(azimuth), float(elevation))
-			self._data.append( ( float(elevation), float(azimuth), os.path.join(base,filename)) )
-		self._orientationToFilename = dict(((e,a),f) for e,a,f in self._data)
-		self._data.sort()
+	def nearest(self, e, a) :
+		return min(
+				( chordDistance(e,a, dbe,dba), (dbe, dba) )
+				for dbe, dba, filename in self._data)[1]
+		return e,a
+
+	def nearestWavefile(self, e, a) :
+		return self.wavefile(*self.nearest(e,a))
+
+	def cachedFiles(self) :
+		return self._cachedAudio.keys()
+
+	def _loadAudio(self, filename) :
+		import wavefile, numpy as np
+		with wavefile.WaveReader(filename) as reader :
+			data = np.empty((reader.frames, reader.channels))
+			nread = reader.read(data)
+			self._cachedAudio[filename] = data
+			return data
+
+	def hrtf(self, e,a) :
+		filename = self.nearestWavefile(e,a)
+		if filename not in self._cachedAudio :
+			self._loadAudio(filename)
+		return self._cachedAudio[filename]
+
+	def preload(self):
+		for elevation, azimuth, filename in self._data:
+			self._loadAudio(filename)
+
+# ones below, not tested
 
 	def equivalentPath(self,component) :
 		return hrtfDatabaseToEquivalentPath(self._databaseFile, component)
@@ -111,35 +135,10 @@ class HrtfDatabase2 :
 			layout[elevation] = layout.get(elevation, 0) + 1
 		return layout
 
-	def __repr__(self) :
-		return "%s:%r" % ( self.__class__.__name__, self._data )
-
-	def printOrientations(self) :
-		print "printOrientations", self.layout()
-		for elevation, n in self.layout() :
-			print elevation, []
-
 	def lowerElevation(self) :
 		"""Returns the lower elevation"""
 		return min( elevation for elevation, azimuth, filename in self._data )
 	
-	def nearestOrientation(self, e, a):
-		return min((angularDistance(a, e, azimuth, elevation),(elevation, azimuth)) for elevation, azimuth, filename in self._data)[1]
-
-	def preload(self):
-		for elevation, azimuth, filename in self._data:
-			loadHrtf(elevation, azimuth)
-
-	def loadHrtf(self, elevation, azimuth) :
-		samplerate, wave = loadWave(self._orientationToFilename[elevation,azimuth])
-		self._audio[elevation,azimuth] = wave
-		return wave
-
-	def hrtfWave(self, elevation, azimuth) :
-		if (elevation,azimuth) not in self._orientationToFilename :
-			elevation, azimuth = self.nearestOrientation(elevation, azimuth)
-		if (elevation, azimuth) in self._audio : return self._audio[elevation,azimuth]
-		return self.loadHrtf(elevation, azimuth)
 
 
 	def capCompensation(self, lowerElevation) :
