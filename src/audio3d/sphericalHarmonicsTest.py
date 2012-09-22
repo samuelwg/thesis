@@ -280,13 +280,27 @@ shZerosRef = [
 ((3,1) , [1, -1, 5**(S(1)/2)/5, -5**(S(1)/2)/5]),
 ((3,2) , [1, -1, 0]),
 ((3,3) , [1, -1, 1, -1]),
-((4,0) , [(2*30**(S(1)/2)/35 + S(3)/7)**(S(1)/2), -(-2*30**(S(1)/2)/35 + S(3)/7)**(S(1)/2), -(2*30**(S(1)/2)/35 + S(3)/7)**(S(1)/2), (-2*30**(S(1)/2)/35 + S(3)/7)**(S(1)/2)]),
+((4,0) , [
+		(2*30**(S(1)/2)/35 + S(3)/7)**(S(1)/2),
+		-(-2*30**(S(1)/2)/35 + S(3)/7)**(S(1)/2),
+		-(2*30**(S(1)/2)/35 + S(3)/7)**(S(1)/2),
+		(-2*30**(S(1)/2)/35 + S(3)/7)**(S(1)/2)]),
 ((4,1) , [0, 1, -1, -21**(S(1)/2)/7, 21**(S(1)/2)/7]),
 ((4,2) , [1, 7**(S(1)/2)/7, -1, -7**(S(1)/2)/7]),
 ((4,3) , [0, 1, -1, 1, -1]),
 ((4,4) , [1, -1]),
-((5,0) , [-(2*70**(S(1)/2)/63 + S(5)/9)**(S(1)/2), (2*70**(S(1)/2)/63 + S(5)/9)**(S(1)/2), -(-2*70**(S(1)/2)/63 + S(5)/9)**(S(1)/2), 0, (-2*70**(S(1)/2)/63 + S(5)/9)**(S(1)/2)]),
-((5,1) , [1, -1, 21**(S(1)/2)*(2*7**(S(1)/2) + 7)**(S(1)/2)/21, -21**(S(1)/2)*(2*7**(S(1)/2) + 7)**(S(1)/2)/21, 21**(S(1)/2)*(-2*7**(S(1)/2) + 7)**(S(1)/2)/21, -21**(S(1)/2)*(-2*7**(S(1)/2) + 7)**(S(1)/2)/21]),
+((5,0) , [
+	-(2*70**(S(1)/2)/63 + S(5)/9)**(S(1)/2),
+	(2*70**(S(1)/2)/63 + S(5)/9)**(S(1)/2),
+	-(-2*70**(S(1)/2)/63 + S(5)/9)**(S(1)/2),
+	0,
+	(-2*70**(S(1)/2)/63 + S(5)/9)**(S(1)/2)]),
+((5,1) , [
+	1, -1,
+	21**(S(1)/2)*(2*7**(S(1)/2) + 7)**(S(1)/2)/21,
+	-21**(S(1)/2)*(2*7**(S(1)/2) + 7)**(S(1)/2)/21,
+	21**(S(1)/2)*(-2*7**(S(1)/2) + 7)**(S(1)/2)/21,
+	-21**(S(1)/2)*(-2*7**(S(1)/2) + 7)**(S(1)/2)/21]),
 ((5,2) , [1, 3**(S(1)/2)/3, -1, 0, -3**(S(1)/2)/3]),
 ((5,3) , [1, -1, 1, S(1)/3, -1, -S(1)/3]),
 ((5,4) , [1, -1, 0]),
@@ -364,6 +378,115 @@ shZeros = dict([
 ((5,4) , [1, -1, 0]),
 ((5,5) , [1, -1]),
 ])
+
+"""
+for l in xrange(5+1) :
+	for m in xrange(l+1) :
+		try :
+			ylm = assoc_legendre(l,m,z); print "((%i,%i), "%(l, m)
+			extremes = solve(simplify(diff(ylm,z)),z)
+			for extreme in extremes :
+				print "(",extreme,",", simplify(ylm.subs(dict(z=extreme))),"),"
+		except: pass
+		print "),
+"""
+furseMalham = [
+((0,0), 
+),
+((1,0), 
+),
+((1,1), 
+	( 0 , -1 ),
+),
+((2,0), 
+	( 0 , -1/2 ),
+),
+((2,1), 
+	( 2**(1/2)/2 , -3/2 ),
+),
+((2,2), 
+	( 0 , 3 ),
+),
+((3,0), 
+	( 5**(1/2)/5 , -5**(1/2)/5 ),
+	( -5**(1/2)/5 , 5**(1/2)/5 ),
+),
+((3,1), 
+	( 0 , 3/2 ),
+	( -165**(1/2)/15 , -8*15**(1/2)/15 ),
+	( 165**(1/2)/15 , -8*15**(1/2)/15 ),
+),
+((3,2), 
+	( 3**(1/2)/3 , 10*3**(1/2)/3 ),
+	( -3**(1/2)/3 , -10*3**(1/2)/3 ),
+),
+((3,3), 
+	( 0 , -15 ),
+	( 1 , 0 ),
+	( -1 , 0 ),
+),
+((4,0), 
+	( -21**(1/2)/7 , -3/7 ),
+	( 21**(1/2)/7 , -3/7 ),
+	( 0 , 3/8 ),
+),
+((4,1), 
+),
+((4,2), 
+	( 2*7**(1/2)/7 , 135/14 ),
+	( 0 , -15/2 ),
+	( -2*7**(1/2)/7 , 135/14 ),
+),
+((4,3), 
+	( 1 , 0 ),
+	( -1 , 0 ),
+	( -1/2 , 315*3**(1/2)/16 ),
+	( 1/2 , -315*3**(1/2)/16 ),
+),
+((4,4), 
+	( 1 , 0 ),
+	( -1 , 0 ),
+	( 0 , 105 ),
+),
+((5,0), 
+	( (2*7**(1/2)/21 + 1/3)**(1/2) , (-7*3**(1/2) + 21**(1/2))*(2*7**(1/2) + 7)**(1/2)/63 ),
+	( -(2*7**(1/2)/21 + 1/3)**(1/2) , (2*7**(1/2) + 7)**(1/2)*(-21**(1/2) + 7*3**(1/2))/63 ),
+	( (-2*7**(1/2)/21 + 1/3)**(1/2) , (-2*7**(1/2) + 7)**(1/2)*(21**(1/2) + 7*3**(1/2))/63 ),
+	( -(-2*7**(1/2)/21 + 1/3)**(1/2) , (-7*3**(1/2) - 21**(1/2))*(-2*7**(1/2) + 7)**(1/2)/63 ),
+),
+((5,1), 
+	( 0 , -15/8 ),
+	( 105**(1/2)*(2*231**(1/2) + 63)**(1/2)/105 , 2*(-7*110**(1/2) - 3*210**(1/2))*(-231**(1/2) + 21)**(1/2)/175 ),
+	( -105**(1/2)*(2*231**(1/2) + 63)**(1/2)/105 , 2*(-7*110**(1/2) - 3*210**(1/2))*(-231**(1/2) + 21)**(1/2)/175 ),
+	( 105**(1/2)*(-2*231**(1/2) + 63)**(1/2)/105 , 2*(-3*210**(1/2) + 7*110**(1/2))*(231**(1/2) + 21)**(1/2)/175 ),
+	( -105**(1/2)*(-2*231**(1/2) + 63)**(1/2)/105 , 2*(-3*210**(1/2) + 7*110**(1/2))*(231**(1/2) + 21)**(1/2)/175 ),
+),
+((5,2), 
+	( (21**(1/2)/15 + 2/5)**(1/2) , 14*(-15**(1/2) + 2*35**(1/2))*(21**(1/2) + 6)**(1/2)/25 ),
+	( -(-21**(1/2)/15 + 2/5)**(1/2) , 14*(15**(1/2) + 2*35**(1/2))*(-21**(1/2) + 6)**(1/2)/25 ),
+	( -(21**(1/2)/15 + 2/5)**(1/2) , 14*(21**(1/2) + 6)**(1/2)*(-2*35**(1/2) + 15**(1/2))/25 ),
+	( (-21**(1/2)/15 + 2/5)**(1/2) , 14*(-21**(1/2) + 6)**(1/2)*(-2*35**(1/2) - 15**(1/2))/25 ),
+),
+((5,3), 
+	( 0 , 105/2 ),
+	( 1 , 0 ),
+	( -1 , 0 ),
+	( -105**(1/2)/15 , -896*30**(1/2)/75 ),
+	( 105**(1/2)/15 , -896*30**(1/2)/75 ),
+),
+	((5,4), 
+	( 1 , 0 ),
+	( 5**(1/2)/5 , 3024*5**(1/2)/25 ),
+	( -1 , 0 ),
+	( -5**(1/2)/5 , -3024*5**(1/2)/25 ),
+),
+	((5,5), 
+	( 0 , -945 ),
+	( 1 , 0 ),
+	( -1 , 0 ),
+),
+]
+
 
 
 class NodalSHStructureTests(unittest.TestCase) :
@@ -665,9 +788,9 @@ class SphericalHarmonicsTests(unittest.TestCase) :
 
 		zeroangle = degrees(asin(sqrt(3./7)))
 		maxangle1 = degrees(asin(sqrt( (27-sqrt(393))/7/8) ))
-		maxvalue1 = 0.55571119769376354 # b2b, not analytically checked
+		maxvalue1 = sqrt(10)*(sqrt(393) -3)*sqrt(27 -sqrt(393))*sqrt(29 +sqrt(393))/7/2**8 # 0.55571119769376354
 		maxangle2 = degrees(asin(sqrt( (27+sqrt(393))/7/8) )) # 66.1221762567095
-		maxvalue2 = 0.83486203359622035 # b2b, not analytically checked
+		maxvalue2 = sqrt(10)*(sqrt(393) +3)*sqrt(29 -sqrt(393))*sqrt(27 +sqrt(393))/7/2**8 # 0.83486203359622035
 
 		self.assertPeakAtElevation(+1, +90, 0)
 		self.assertPeakAtElevation(+1, +maxangle2, +maxvalue2)
@@ -687,9 +810,9 @@ class SphericalHarmonicsTests(unittest.TestCase) :
 		from math import asin, sqrt, degrees
 
 		zeroangle  = degrees(asin( 1/sqrt(7) ))
-		maxvalue0 = 0.55901699437494745
+		maxvalue0 = 7./ 9
 		maxangle1 = degrees(asin( 2/sqrt(7) ))
-		maxvalue1 = 0.71873613562493233
+		maxvalue1 = 1
 
 		self.assertPeakAtElevation(+2, +90, 0)
 		self.assertPeakAtElevation(+2, +maxangle1, +maxvalue1)
@@ -699,7 +822,7 @@ class SphericalHarmonicsTests(unittest.TestCase) :
 		self.assertPeakAtElevation(+2, -maxangle1, +maxvalue1)
 		self.assertPeakAtElevation(+2, -90, 0)
 
-		self.assertEqualAt((  30,   4), 0.3113868821700353)
+		self.assertEqualAt((  30,   4), 0.43324228007443671)
 
 	def test_sh_4_3(self) :
 		self.prepareOrder(4,+3)
@@ -707,26 +830,26 @@ class SphericalHarmonicsTests(unittest.TestCase) :
 		from math import asin, sqrt, degrees
 
 		maxangle1 = degrees(asin( 1./2 ))
-		maxvalue1 = 0.6792832849776298
+		maxvalue1 = 1
 		self.assertPeakAtElevation(+3, +90, 0)
 		self.assertPeakAtElevation(+3, +maxangle1, +maxvalue1)
 		self.assertPeakAtElevation(+3,  0, 0)
 		self.assertPeakAtElevation(+3, -maxangle1, -maxvalue1)
 		self.assertPeakAtElevation(+3, -90, 0)
 
-		self.assertEqualAt((  30,   4), 0.66443931541944656)
+		self.assertEqualAt((  30,   4), 0.97814760073380547)
 
 	def test_sh_4_4(self) :
 		self.prepareOrder(4,+4)
 
 		from math import asin, sqrt, degrees
 
-		maxvalue0 = 0.73950997288745202
+		maxvalue0 = 1.
 		self.assertPeakAtElevation(+4, +90, 0)
 		self.assertPeakAtElevation(+4, 0, +maxvalue0)
 		self.assertPeakAtElevation(+4, -90, 0)
 
-		self.assertEqualAt((  30,   4), 0.39986021851936454)
+		self.assertEqualAt((  30,   4), 0.54070970396530438)
 
 	def test_sh_4_m1(self) :
 		self.prepareOrder(4,-1)
@@ -735,9 +858,9 @@ class SphericalHarmonicsTests(unittest.TestCase) :
 
 		zeroangle = degrees(asin(sqrt(3./7)))
 		maxangle1 = degrees(asin(sqrt( (27-sqrt(393))/7/8) ))
-		maxvalue1 = 0.55571119769376354 # b2b, not analytically checked
+		maxvalue1 = sqrt(10)*(sqrt(393) -3)*sqrt(27 -sqrt(393))*sqrt(29 +sqrt(393))/7/2**8 # 0.55571119769376354
 		maxangle2 = degrees(asin(sqrt( (27+sqrt(393))/7/8) )) # 66.1221762567095
-		maxvalue2 = 0.83486203359622035 # b2b, not analytically checked
+		maxvalue2 = sqrt(10)*(sqrt(393) +3)*sqrt(29 -sqrt(393))*sqrt(27 +sqrt(393))/7/2**8 # 0.83486203359622035
 
 		self.assertPeakAtElevation(-1, +90, 0)
 		self.assertPeakAtElevation(-1, +maxangle2, +maxvalue2)
@@ -757,9 +880,9 @@ class SphericalHarmonicsTests(unittest.TestCase) :
 		from math import asin, sqrt, degrees
 
 		zeroangle  = degrees(asin( 1/sqrt(7) ))
-		maxvalue0 = 0.55901699437494745
+		maxvalue0 = 7./ 9
 		maxangle1 = degrees(asin( 2/sqrt(7) ))
-		maxvalue1 = 0.71873613562493233
+		maxvalue1 = 1.
 
 		self.assertPeakAtElevation(-2, +90, 0)
 		self.assertPeakAtElevation(-2, +maxangle1, +maxvalue1)
@@ -769,7 +892,7 @@ class SphericalHarmonicsTests(unittest.TestCase) :
 		self.assertPeakAtElevation(-2, -maxangle1, +maxvalue1)
 		self.assertPeakAtElevation(-2, -90, 0)
 
-		self.assertEqualAt((  30,   4), 0.043762572335551975)
+		self.assertEqualAt((  30,   4), 0.060888231670028603)
 
 	def test_sh_4_m3(self) :
 		self.prepareOrder(4,-3)
@@ -777,39 +900,39 @@ class SphericalHarmonicsTests(unittest.TestCase) :
 		from math import asin, sqrt, degrees
 
 		maxangle1 = degrees(asin( 1./2 ))
-		maxvalue1 = 0.6792832849776298
+		maxvalue1 = 1
 		self.assertPeakAtElevation(-3, +90, 0)
 		self.assertPeakAtElevation(-3, +maxangle1, +maxvalue1)
 		self.assertPeakAtElevation(-3,  0, 0)
 		self.assertPeakAtElevation(-3, -maxangle1, -maxvalue1)
 		self.assertPeakAtElevation(-3, -90, 0)
 
-		self.assertEqualAt((  30,   4), 0.14123093632394088)
+		self.assertEqualAt((  30,   4), 0.20791169081775931)
 
 	def test_sh_4_m4(self) :
 		self.prepareOrder(4,-4)
 
 		from math import asin, sqrt, degrees
 
-		maxvalue0 = 0.73950997288745202
+		maxvalue0 = 1
 		self.assertPeakAtElevation(-4, +90, 0)
 		self.assertPeakAtElevation(-4, 0, +maxvalue0)
 		self.assertPeakAtElevation(-4, -90, 0)
 
-		self.assertEqualAt((  30,   4), 0.1146580726089364)
+		self.assertEqualAt((  30,   4), 0.15504601264706205)
 
 	def test_sh_5_m5(self) :
 		self.prepareOrder(5,-5)
 
 		from math import sqrt, asin, degrees
 
-		maxvalue = 3*sqrt(7./2)/8 # 0.70156076002011403
+		maxvalue = 1
 
 		self.assertPeakAtElevation(-5, +90, 0)
 		self.assertPeakAtElevation(-5, 0, maxvalue)
 		self.assertPeakAtElevation(-5, -90, 0)
 
-		self.assertEqualAt((  30,   4), +0.116888055250392)
+		self.assertEqualAt((  30,   4), 0.16661144965838839)
 
 
 	def test_sh_5_m4(self) :
@@ -835,8 +958,8 @@ class SphericalHarmonicsTests(unittest.TestCase) :
 
 		peakelevation  = degrees(asin( sqrt(7./15) ))
 		zeroelevation = degrees(asin( 1./3 ))
-		maxvalue = 0.65174409883816409
-		maxvalueAtZero = 0.52291251658379723
+		maxvalue = 32*sqrt(7./27)/25 # 0.65174409883816409
+		maxvalueAtZero = sqrt(7*5*2)/16 # 0.52291251658379723a
 
 		self.assertPeakAtElevation(-3, +90, 0)
 		self.assertPeakAtElevation(-3, +peakelevation, +maxvalue)
@@ -856,8 +979,8 @@ class SphericalHarmonicsTests(unittest.TestCase) :
 		peakelevation2 = degrees(asin( sqrt((2 +sqrt(7./3))/5) ))
 		zeroelevation = degrees(asin( sqrt(1./3) ))
 		peakelevation1 = degrees(asin( sqrt((2 -sqrt(7./3))/5) ))
-		maxvalue1 = 0.51092271611124063
-		maxvalue2 = 0.70750122131450299
+		maxvalue1 = (+3*sqrt(7) + 14*sqrt(3))*sqrt(-sqrt(21) + 6)/75 # 0.51092271611124063
+		maxvalue2 = (-3*sqrt(7) + 14*sqrt(3))*sqrt(+sqrt(21) + 6)/75 # 0.70750122131450299
 
 		self.assertPeakAtElevation(-2, -90, 0)
 		self.assertPeakAtElevation(-2, +peakelevation2, +maxvalue2)
@@ -880,9 +1003,9 @@ class SphericalHarmonicsTests(unittest.TestCase) :
 		peakelevation1  = degrees(asin( sqrt( +3 -2*sqrt(11)/sqrt(3*7))/sqrt(5) ))
 		zeroelevation2 = degrees(asin( sqrt( (1+2/sqrt(7))/3) ))
 		zeroelevation1 = degrees(asin( sqrt( (1-2/sqrt(7))/3) ))
-		maxvalue2 = 0.83078704673985981
-		maxvalue1 = 0.53159466040326442
-		maxvalue0 = 0.48412291827592713
+		maxvalue2 = 2*(7*sqrt(2*3*11)+9*sqrt(2*7))*sqrt(21-sqrt(3*7*11))/25/21 # 0.83078704673985981
+		maxvalue1 = 2*(7*sqrt(2*3*11)-9*sqrt(2*7))*sqrt(21+sqrt(3*7*11))/25/21 # 0.53159466040326442
+		maxvalue0 = sqrt(15)/8 # 0.48412291827592713
 
 		self.assertPeakAtElevation(-1, -90, 0)
 		self.assertPeakAtElevation(-1, +peakelevation2, +maxvalue2)
@@ -908,10 +1031,11 @@ class SphericalHarmonicsTests(unittest.TestCase) :
 		peakelevation2 = degrees(asin( sqrt((1 +2/sqrt(7))/3) ))
 		peakelevation1 = degrees(asin( sqrt((1 -2/sqrt(7))/3) ))
 		peakelevation0  = 0
-		maxvalue1 = 0.34662772505541772
-		maxvalue2 = 0.41969693413128728
+		maxvalue1 = sqrt(3)*(sqrt(7)+1)*sqrt(1-2/sqrt(7))/9  # 0.34662772505541772
+		maxvalue2 = sqrt(3)*(sqrt(7)-1)*sqrt(1+2/sqrt(7))/9  # 0.41969693413128728
+		maxvalue3 = 1
 
-		self.assertPeakAtElevation(0, +90,+1)
+		self.assertPeakAtElevation(0, +90,+maxvalue3)
 		self.assertPeakAtElevation(0, +zeroelevation2, 0)
 		self.assertPeakAtElevation(0, +peakelevation2, -maxvalue2)
 		self.assertPeakAtElevation(0, +zeroelevation1, 0)
@@ -921,7 +1045,7 @@ class SphericalHarmonicsTests(unittest.TestCase) :
 		self.assertPeakAtElevation(0, -zeroelevation1, 0)
 		self.assertPeakAtElevation(0, -peakelevation2 ,+maxvalue2)
 		self.assertPeakAtElevation(0, -zeroelevation2, 0)
-		self.assertPeakAtElevation(0, -90,-1)
+		self.assertPeakAtElevation(0, -90,-maxvalue3)
 
 		self.assertEqualAt((  30,   4), +0.0898437500000000)
 
@@ -934,9 +1058,9 @@ class SphericalHarmonicsTests(unittest.TestCase) :
 		peakelevation1  = degrees(asin( sqrt( +3 -2*sqrt(11)/sqrt(3*7))/sqrt(5) ))
 		zeroelevation2 = degrees(asin( sqrt( (1+2/sqrt(7))/3) ))
 		zeroelevation1 = degrees(asin( sqrt( (1-2/sqrt(7))/3) ))
-		maxvalue2 = 0.83078704673985981
-		maxvalue1 = 0.53159466040326442
-		maxvalue0 = 0.48412291827592713
+		maxvalue2 = 2*(7*sqrt(2*3*11)+9*sqrt(2*7))*sqrt(21-sqrt(3*7*11))/25/21 # 0.83078704673985981
+		maxvalue1 = 2*(7*sqrt(2*3*11)-9*sqrt(2*7))*sqrt(21+sqrt(3*7*11))/25/21 # 0.53159466040326442
+		maxvalue0 = sqrt(15)/8 # 0.48412291827592713
 
 		self.assertPeakAtElevation(+1, -90, 0)
 		self.assertPeakAtElevation(+1, +peakelevation2 , +maxvalue2)
@@ -960,8 +1084,9 @@ class SphericalHarmonicsTests(unittest.TestCase) :
 		peakelevation2 = degrees(asin( sqrt((2 +sqrt(7./3))/5) ))
 		zeroelevation = degrees(asin( sqrt(1./3) ))
 		peakelevation1 = degrees(asin( sqrt((2 -sqrt(7./3))/5) ))
-		maxvalue1 = 0.51092271611124063
-		maxvalue2 = 0.70750122131450299
+		maxvalue1 = sqrt(5)/125*(34*sqrt(3) -7*sqrt(7))
+
+		maxvalue2 = 1 
 
 		self.assertPeakAtElevation(+2, -90, 0)
 		self.assertPeakAtElevation(+2, +peakelevation2, +maxvalue2)
@@ -973,7 +1098,7 @@ class SphericalHarmonicsTests(unittest.TestCase) :
 		self.assertPeakAtElevation(+2, -peakelevation2, -maxvalue2)
 		self.assertPeakAtElevation(+2, +90, 0)
 
-		self.assertEqualAt((  30,   4), -0.237825659660080)
+		self.assertEqualAt((  30,   4), -0.33614876200243482)
 
 	def test_sh_5_3(self) :
 		self.prepareOrder(5,+3)
@@ -982,8 +1107,8 @@ class SphericalHarmonicsTests(unittest.TestCase) :
 
 		peakelevation  = degrees(asin( sqrt(7./15) ))
 		zeroelevation = degrees(asin( 1./3 ))
-		maxvalue = 0.65174409883816409
-		maxvalueAtZero = 0.52291251658379723
+		maxvalue = 1
+		maxvalueAtZero = 25*3*sqrt(5*2*3)/2**9
 
 		self.assertPeakAtElevation(+3, +90, 0)
 		self.assertPeakAtElevation(+3, +peakelevation, +maxvalue)
@@ -993,7 +1118,7 @@ class SphericalHarmonicsTests(unittest.TestCase) :
 		self.assertPeakAtElevation(+3, -peakelevation, +maxvalue)
 		self.assertPeakAtElevation(+3, -90, 0)
 
-		self.assertEqualAt((  30,   4), +0.415274572137154)
+		self.assertEqualAt((  30,   4), +0.6371742726592321)
 
 	def test_sh_5_4(self) :
 		self.prepareOrder(5,+4)
@@ -1001,7 +1126,7 @@ class SphericalHarmonicsTests(unittest.TestCase) :
 		from math import sqrt, asin, degrees
 
 		peakelevation = degrees(asin( 1/sqrt(5) ))
-		maxvalue = 6./25*sqrt(7)
+		maxvalue = 1
 
 		self.assertPeakAtElevation(+4, +90, 0)
 		self.assertPeakAtElevation(+4, +peakelevation, +maxvalue)
@@ -1009,46 +1134,46 @@ class SphericalHarmonicsTests(unittest.TestCase) :
 		self.assertPeakAtElevation(+4, -peakelevation, -maxvalue)
 		self.assertPeakAtElevation(+4, -90, 0)
 
-		self.assertEqualAt((  30,   4), +0.599790327779047)
+		self.assertEqualAt((  30,   4), +0.94458097981266254)
 
 	def test_sh_5_5(self) :
 		self.prepareOrder(5,+5)
 
 		from math import sqrt, asin, degrees
 
-		maxvalue = 3*sqrt(7./2)/8 # 0.70156076002011403
+		maxvalue = 1
 
 		self.assertPeakAtElevation(+5, +90, 0)
 		self.assertPeakAtElevation(+5, 0, maxvalue)
 		self.assertPeakAtElevation(+5, -90, 0)
 
-		self.assertEqualAt((  30,   4), +0.321147292404416)
+		self.assertEqualAt((  30,   4), +0.45776119575902269)
 
-#@unittest.skip("Slow")
+@unittest.skip("Slow")
 class SphericalHarmonicsTests_cartesianRecursive(SphericalHarmonicsTests) :
 	def sh(self, e, a) :
 		"""Decodes the sh components for (e,a) position."""
 		return (self._components*semiNormalizedSH_cartesianRecursive(e,a)).sum()
 
-#@unittest.skip("Slow")
+@unittest.skip("Slow")
 class SphericalHarmonicsTests_cartesian(SphericalHarmonicsTests) :
 	def sh(self, e, a) :
 		"""Decodes the sh components for (e,a) position."""
 		return (self._components*semiNormalizedSH_cartesian(e,a)).sum()
 
-#@unittest.skip("Slow")
+@unittest.skip("Slow")
 class SphericalHarmonicsTests_lambdified(SphericalHarmonicsTests) :
 	def sh(self, e, a) :
 		"""Decodes the sh components for (e,a) position."""
 		return (self._components*semiNormalizedSH_lambdified(e,a)).sum()
 
-#@unittest.skip("Slow")
+@unittest.skip("Slow")
 class SphericalHarmonicsTests_genericNumpy(SphericalHarmonicsTests) :
 	def sh(self, e, a) :
 		"""Decodes the sh components for (e,a) position."""
 		return (self._components*semiNormalizedSH_genericNumpy(e,a)).sum()
 
-#@unittest.skip("Slow")
+@unittest.skip("Slow")
 class SphericalHarmonicsTests_sympyGeneratedExpressions(SphericalHarmonicsTests) :
 	def sh(self, e, a) :
 		"""Decodes the sh components for (e,a) position."""

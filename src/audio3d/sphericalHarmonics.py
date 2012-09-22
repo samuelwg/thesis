@@ -86,27 +86,27 @@ maxn[shi(3,-2)] = math.sqrt(9./5)
 maxn[shi(3,-3)] = math.sqrt(8./5)
 
 # TODO: maxn for 4th order and beyond
-maxn[shi(4,+4)] = 1.
-maxn[shi(4,+3)] = 1.
-maxn[shi(4,+2)] = 1.
-maxn[shi(4,+1)] = 1.
+maxn[shi(4,+4)] = 2**3/math.sqrt(5*7)
+maxn[shi(4,+3)] = 2**6/math.sqrt(2*3*5*7*9)
+maxn[shi(4,+2)] = 4*7/math.sqrt(5)/9
+maxn[shi(4,+1)] = 1. # TODO
 maxn[shi(4, 0)] = 1.
-maxn[shi(4,-1)] = 1.
-maxn[shi(4,-2)] = 1.
-maxn[shi(4,-3)] = 1.
-maxn[shi(4,-4)] = 1.
+maxn[shi(4,-1)] = 1. # TODO
+maxn[shi(4,-2)] = 4*7/math.sqrt(5)/9
+maxn[shi(4,-3)] = 2**6/math.sqrt(2*3*5*7*9)
+maxn[shi(4,-4)] = 2**3/math.sqrt(5*7)
 
-maxn[shi(5,+5)] = 1.
-maxn[shi(5,+4)] = 1.
-maxn[shi(5,+3)] = 1.
-maxn[shi(5,+2)] = 1.
+maxn[shi(5,+5)] = 2**4/math.sqrt(2*7*9)
+maxn[shi(5,+4)] = 25*math.sqrt(1./7)/6
+maxn[shi(5,+3)] = 25*math.sqrt(27./7)/32
+maxn[shi(5,+2)] = 1.*(3*math.sqrt(7) + 14*math.sqrt(3))/7/math.sqrt(+math.sqrt(21) + 6) # 0.70750122131450299
 maxn[shi(5,+1)] = 1.
 maxn[shi(5, 0)] = 1.
 maxn[shi(5,-1)] = 1.
 maxn[shi(5,-2)] = 1.
 maxn[shi(5,-3)] = 1.
 maxn[shi(5,-4)] = 1.
-maxn[shi(5,-5)] = 1.
+maxn[shi(5,-5)] = 2**4/math.sqrt(2*7*9)
 
 # factors to be applied to sn3d sh to get fuma normalization.
 # fuma is like maxn but applying a sqrt(1./2) factor to the 0,0 channel
