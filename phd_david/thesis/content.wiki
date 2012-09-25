@@ -32,7 +32,7 @@
 ** Binaural recording using (ear inserted microphones) on subjects or mannequin
 *** :-( How to do synthetic?
 *** :-( Not able to manipulate
-*** :-( Personal
+*** :-( Individualized
 
 * Is a linear system so:
 ** record IR from a position on the space to the ear (HRTF)
@@ -65,8 +65,7 @@
 
 * HRTF can be learnt, visual cues reinforce them
 * Crosstalk systems
-* Virtual speakeer systems
-
+* Virtual speaker systems
 
 
 %\section{Ambisonics}
@@ -76,7 +75,10 @@
 \section{Other}
 
 * Continuous speaker synthesis
-* HTRF interpolation using SH
+* Practical considerations
+** Sampling uniformly a sphere @cite:sphereSampling
+** HRTF interpolation using SH
+** HRTF extrapolation using SH
 
 
 \chapter{Excess filter in Ambisonic to binaural conversion}
