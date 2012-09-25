@@ -85,13 +85,12 @@ for name, data in E.iteritems() :
 		normalizationFactor*max(abs(data))
 		)
 	sys.exit(-1)
-	
 
 for name, data in E.iteritems() :
 	audio3d.wavefile.saveWave("E%s.wav"%name, data, samplingRate, verbose=True)
 
 for name in "xyz" :
-	audio3d.wavefile.saveWave("%sM.wav"%name, E['w']+E[name], samplingRate, verbose=False)
-	audio3d.wavefile.saveWave("%sm.wav"%name, E['w']-E[name], samplingRate, verbose=False)
+	audio3d.wavefile.saveWave("%sM.wav"%name, E['w']+E[name], samplingRate)
+	audio3d.wavefile.saveWave("%sm.wav"%name, E['w']-E[name], samplingRate)
 
 
