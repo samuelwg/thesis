@@ -210,7 +210,7 @@ class HrtfDatabase :
 	def lowerElevation(self) :
 		"""Returns the lower elevation"""
 		return min( elevation for elevation, azimuth, filename in self._data )
-	
+
 	def nearestOrientation(self, e, a):
 		return min((angularDistance(a, e, azimuth, elevation),(elevation, azimuth)) for elevation, azimuth, filename in self._data)[1]
 
@@ -268,7 +268,7 @@ def fileToSpectrum(file) :
 
 def spectrumMagnitudeInDb(spectrum) :
 	return 20*numpy.log(abs(spectrum))
-	
+
 def spectrumPhase(spectrum) :
 	return numpy.angle(spectrum)
 
@@ -286,7 +286,7 @@ def minimumPhaseSpectrum(spectrumMagnitude) :
 	filter = numpy.array([1] + [2]*halfLen + [1]*oddLen + [0]*halfLen)
 	complexSpectrum = filter*realCepstrum
 	return numpy.exp(numpy.fft.rfft(complexSpectrum))
-	
+
 def delayWithMinimumPhaseCorrelation(buffer, filterFreq=None, interpolate=True, sampleRate=44100) :
 	"""Returns the time of arrival of an impulse response.
 	The computation is done by cross-correlating, in the frequency domain,

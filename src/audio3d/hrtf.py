@@ -147,6 +147,7 @@ class HrtfDatabase(object) :
 		returns the number of missing speakers and two factors for the pressure and the
 		velocity of the lower elevation speakers in order to compensate the missing speakers.
 		"""
+		import math
 		layout = self.layout()
 		if len(layout) == 1 : return 0, 1., 1.
 		lowerElevationSize = layout[lowerElevation]

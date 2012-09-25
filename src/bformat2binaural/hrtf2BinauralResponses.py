@@ -2,7 +2,9 @@
 
 import glob, os, re, math, numpy, sys
 sys.path.append(os.path.join(os.path.dirname(__file__),"../src/libs/python"))
-import bmaudio
+import audio3d.hrtf
+import audio3d.wavefile
+import audio3d
 
 compensating = '--compensate' in sys.argv
 verbose = '--verbose' in sys.argv or '-v' in sys.argv
@@ -16,7 +18,7 @@ relativeNormalization = 0
 if '--relative-normalization' in sys.argv :
 	relativeNormalization = float(sys.argv[sys.argv.index('--relative-normalization')+1])
 
-databaseFile = bmaudio.selectHrtfDatabase(sys.argv)
+databaseFile = audio3d.hrtf.selectHrtfDatabase(sys.argv)
 
 print "Using", databaseFile, "database."
 
@@ -35,7 +37,7 @@ sphericalHarmonics = [ #  order, name, (m,n,rho), function, weight
 
 
 print "Gathering files..."
-hrtfDatabase = bmaudio.HrtfDatabase(databaseFile)
+hrtfDatabase = audio3d.hrtf.HrtfDatabase(databaseFile)
 nImpulseResponses = len(hrtfDatabase._data)
 
 lowerElevation = hrtfDatabase.lowerElevation()
@@ -56,7 +58,7 @@ for elevationDegrees, azimuthDegrees, response in hrtfDatabase._data :
 		print "c",
 		compensation = (pCompensation, vCompensation,1.)
 	# print "elevation:", elevation, 'azimuth:', azimuth, "x:", x, "y:", y, "z:", z, "len:", len(data)
-	samplingRate, data = bmaudio.loadWave(response)
+	samplingRate, data = audio3d.wavefile.loadWave(response)
 	for order, name, coefs, sphericalFunction, normFactor in sphericalHarmonics :
 		if order > higherOrder : continue
 		try :
@@ -86,10 +88,10 @@ for name, data in E.iteritems() :
 	
 
 for name, data in E.iteritems() :
-	bmaudio.saveWave("E%s.wav"%name, data, samplingRate, verbose=True)
+	audio3d.wavefile.saveWave("E%s.wav"%name, data, samplingRate, verbose=True)
 
 for name in "xyz" :
-	bmaudio.saveWave("%sM.wav"%name, E['w']+E[name], samplingRate, verbose=False)
-	bmaudio.saveWave("%sm.wav"%name, E['w']-E[name], samplingRate, verbose=False)
+	audio3d.wavefile.saveWave("%sM.wav"%name, E['w']+E[name], samplingRate, verbose=False)
+	audio3d.wavefile.saveWave("%sm.wav"%name, E['w']-E[name], samplingRate, verbose=False)
 
 
