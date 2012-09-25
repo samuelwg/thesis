@@ -90,69 +90,6 @@ def interpolateMaxima(y0,y1,y2) :
 	ymax = b*xmax/2 + y0
 	return xmax, ymax
 
-# warning: this code is duplicated in scripts/AngleNormalizationTest.py,
-# update it as well!!!
-def normalizeAngles(azimuth, elevation) :
-	elevation += 90.
-	elevation %= 360.
-	if elevation > 180. :
-		azimuth += 180.
-		elevation = 360 - elevation
-	elevation -= 90.
-	azimuth %= 360.
-	return azimuth,elevation
-
-# algorithm copied from livecoreo/widget/Geometry.hxx
-def spherical2Cartesian(azimuthDegrees, elevationDegrees, distance) :
-	a = math.radians(azimuthDegrees)
-	e = math.radians(elevationDegrees)
-	ce = math.cos(e)
-	ca = math.cos(a)
-	se = math.sin(e)
-	sa = math.sin(a)
-	return distance * ce * ca, distance * ce * sa, distance * se
-
-def cartesian2Spherical(x, y, z) :
-	"""Returns spherical coordinates for x,y,z in a tuple azimuth, elevation, distance"""
-
-	d = math.sqrt(x*x+y*y+z*z)
-
-	if (d < 0.00001):
-		return 0, 0, 0
-
-	return math.degrees(math.atan2(y,x)), math.degrees(math.asin(z/d)), d
-
-def angularDistance(a1,e1,a2,e2):
-	""" Implements the haversine formula (see Wikipedia) """
-	return 2*math.asin(math.sqrt((math.sin((e1 - e2)/2))**2 + math.cos(e1)*math.cos(e2)*(math.sin((a1 - a2)/2))**2));
-
-#algorithm copied from AbsoluteCoordinates2RelativeAngles.hxx (CLAM/plugins/spacialization)
-def absoluteCoordinates2RelativeAngles(listenerX,listenerY,listenerZ,listenerAzimuthDegrees,listenerElevationDegrees,listenerRollDegrees,sourceX,sourceY,sourceZ):
-	listenerAzimuth=math.radians(listenerAzimuthDegrees)
-	listenerElevation=math.radians(listenerElevationDegrees)
-	listenerRoll=math.radians(listenerRollDegrees)		
-	dx=(sourceX-listenerX)
-	dy=(sourceY-listenerY)
-	dz=(sourceZ-listenerZ)
-	cosAzimuth=math.cos(listenerAzimuth)
-	sinAzimuth=math.sin(listenerAzimuth)
-	cosElevation=math.cos(listenerElevation)
-	sinElevation=math.sin(listenerElevation)
-	cosRoll=math.cos(listenerRoll)
-	sinRoll=math.sin(listenerRoll)
-	cosASinE=cosAzimuth*sinElevation
-	sinASinE=sinAzimuth*sinElevation
-	rotatedX = dx*cosAzimuth*cosElevation + dy*sinAzimuth*cosElevation + dz*sinElevation
-	rotatedY = dx*(-sinAzimuth*cosRoll -cosASinE*sinRoll) + dy*(cosAzimuth*cosRoll - sinASinE*sinRoll) + dz*(cosElevation*sinRoll)
-	rotatedZ = dx*(-cosASinE*cosRoll + sinAzimuth*sinRoll) + dy*(-sinASinE*cosRoll - cosAzimuth*sinRoll) + dz*(cosElevation*cosRoll)
-	azimuth=math.atan2(rotatedY,rotatedX)
-	module=math.sqrt(rotatedX*rotatedX+rotatedY*rotatedY+rotatedZ*rotatedZ)
-	if module < 1e-12:
-		elevation=rotatedZ
-	else:
-		elevation=math.asin(rotatedZ/module)
-	return math.degrees(azimuth), math.degrees(elevation), module
-
 def calculateGainByDistance(distance,exponent=1.0,minimumDistance=1.0,distanceThreshold=0.0):
 	gain=0
 	if minimumDistance==0:
