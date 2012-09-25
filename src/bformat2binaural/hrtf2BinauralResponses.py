@@ -63,7 +63,7 @@ for elevationDegrees, azimuthDegrees, response in hrtfDatabase._data :
 		if order > higherOrder : continue
 		try :
 			E[name] += data * sphericalFunction(azimuth,elevation) * compensation[order]
-		except:
+		except KeyError :
 			E[name]  = data * sphericalFunction(azimuth,elevation) * compensation[order]
 	sys.stdout.write(".")
 	sys.stdout.flush()
