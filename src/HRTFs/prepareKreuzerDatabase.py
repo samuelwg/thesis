@@ -12,30 +12,20 @@ normalizationFactor = 4.
 delay = 60 # in samples
 
 def saveWave(filename, data, samplerate, verbose=False) :
-	wavefile = wave.open( filename, 'w' )
-	wavefile.setframerate( samplerate )
-	wavefile.setnchannels( 1 )
-	wavefile.setsampwidth( 2 ) # number of bytes per sample
-	wavefile.writeframesraw((32767.0*data).astype(numpy.int16).tostring())
-	wavefile.close()
+	import wavefile
+	with wavefile.WaveWriter(
+		filename,
+		channels=1,
+		samplerate=samplerate,
+		format = wavefile.Format.WAV | wavefile.Format.FLOAT
+		) as writer :
+		writer.write(data[:,numpy.newaxis])
 
 def loadWave(filename, verbose=False) :
-	wavefile = wave.open( filename, 'r' )
-	samplingRate   = wavefile.getframerate()
-	bytesPerSample = wavefile.getsampwidth()
-	nFrames        = wavefile.getnframes()
-	data           = wavefile.readframes( nFrames )
-	wavefile.close()
-	if bytesPerSample==2:  # 16 bits per sample
-		data = numpy.fromstring( data, numpy.int16 ) / 32767.0 # -1..1 values
-	elif bytesPerSample==1: # 8 bits per sample
-		data = (numpy.fromstring( data, numpy.uint8 ) / 128.0 ) - 1.0 # -1..1 values
-	elif bytesPerSample==4 : # 32 bits per sample
-		data = (numpy.fromstring( data, numpy.int32 ) / 2.**(32-1) ) # -1..1 values
-	else :
-		print bytesPerSample
-		2+"asdfasdf"
-	return samplingRate, data
+	import wavefile
+	with wavefile.WaveReader(filename) as reader :
+		data = numpy.zeros((reader.frames, reader.channels))
+		return reader.samplerate, data
 
 outputPattern = "kreuzer2/output_e%+03.f_a%05.1f.wav"
 print "Reading positions..."
