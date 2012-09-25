@@ -1718,11 +1718,31 @@ America. ͓DOI: 10.1121/1.1349185͔
 	month={6},
 	year={2001},
 	url={http://www.aes.org/e-lib/browse.cfm?elib=10070},
-	download = {{{http://pcfarina.eng.unipr.it/Public/O-format/AES19-Malham.pdf}},
+	download = {{http://pcfarina.eng.unipr.it/Public/O-format/AES19-Malham.pdf}},
 	comments = {{{
 		Coding the shape of sources in ambisonics
 	}}},
 }
 
-
+@techreport{sphereSampling,
+	title = {{Spherical Sampling by Archimedes’ Theorem}},
+	author = {{Min-Zhi Shao and Norman Badler}},
+	number = {{MS-CIS-96-02}},
+	month = {January},
+	year = {1996},
+	institution = {{Department of Computer and Information Science, University of Pennsylvania}},
+	abstract = {{
+		In this paper we present a simple and efficient algorithm for generating uniformaly distributed samples on the unit sphere based on an Archimedes' theorem. The implementation is straightforward and may be easily extended to include stratified sampling for variance reduction. Applications in image synthesis include solid angle measurement, irradiance computation, and rendering equation solution for geometrically complex environments.
+		}},
+	uri = {{http://repository.upenn.edu/cis_reports/184}},
+	download = {{http://repository.upenn.edu/cgi/viewcontent.cgi?article=1188&context=cis_reports}},
+	comment = {{
+		Generating random uniform points (Montecarlo sampling) in the sphere
+		by generating a uniformly distributed points on a circumscribed cylinder
+		and then maping them by axial projection.
+		Archimedes theorem ensures that surfaces on the cylinder
+		match the surface of projected on the sphere.
+		Special cases for the poles, considers a circle as projection with area 0.
+	}},
+}
 
