@@ -1003,8 +1003,9 @@ class SphericalHarmonicsTests(unittest.TestCase) :
 		peakelevation1  = degrees(asin( sqrt( +3 -2*sqrt(11)/sqrt(3*7))/sqrt(5) ))
 		zeroelevation2 = degrees(asin( sqrt( (1+2/sqrt(7))/3) ))
 		zeroelevation1 = degrees(asin( sqrt( (1-2/sqrt(7))/3) ))
-		maxvalue2 = 2*(7*sqrt(2*3*11)+9*sqrt(2*7))*sqrt(21-sqrt(3*7*11))/25/21 # 0.83078704673985981
-		maxvalue1 = 2*(7*sqrt(2*3*11)-9*sqrt(2*7))*sqrt(21+sqrt(3*7*11))/25/21 # 0.53159466040326442
+		maxvalue2 = 4*sqrt(21)*sqrt( 399 +11*sqrt(21*11) ) /525 # 0.83078704673985981
+		maxvalue1 = 4*sqrt(21)*sqrt( 399 -11*sqrt(21*11) ) /525 # 0.53159466040326442
+		# maxvalue1 = ( ( 399 -11*sqrt(21*11) ) ) / sqrt(7*5*3*2 ) / 25
 		maxvalue0 = sqrt(15)/8 # 0.48412291827592713
 
 		self.assertPeakAtElevation(-1, -90, 0)
@@ -1058,9 +1059,10 @@ class SphericalHarmonicsTests(unittest.TestCase) :
 		peakelevation1  = degrees(asin( sqrt( +3 -2*sqrt(11)/sqrt(3*7))/sqrt(5) ))
 		zeroelevation2 = degrees(asin( sqrt( (1+2/sqrt(7))/3) ))
 		zeroelevation1 = degrees(asin( sqrt( (1-2/sqrt(7))/3) ))
-		maxvalue2 = 2*(7*sqrt(2*3*11)+9*sqrt(2*7))*sqrt(21-sqrt(3*7*11))/25/21 # 0.83078704673985981
-		maxvalue1 = 2*(7*sqrt(2*3*11)-9*sqrt(2*7))*sqrt(21+sqrt(3*7*11))/25/21 # 0.53159466040326442
-		maxvalue0 = sqrt(15)/8 # 0.48412291827592713
+		maxvalue2 = 1. # was 4*sqrt(21)*sqrt( 399 +11*sqrt(21*11) ) /525
+		maxvalue1 = 4*sqrt(21)*sqrt( 399 -11*sqrt(21*11) ) /525  # 0.53159466040326442
+		maxvalue1 = ( ( 399 -11*sqrt(21*11) ) ) / sqrt(7*5*3*2 ) / 25 # relative
+		maxvalue0 = sqrt(15)/8 / ( 4*sqrt(21)*sqrt( 399 +11*sqrt(21*11) ) /525 )  # 0.48412291827592713
 
 		self.assertPeakAtElevation(+1, -90, 0)
 		self.assertPeakAtElevation(+1, +peakelevation2 , +maxvalue2)
@@ -1074,7 +1076,7 @@ class SphericalHarmonicsTests(unittest.TestCase) :
 		self.assertPeakAtElevation(+1, -peakelevation2 , +maxvalue2)
 		self.assertPeakAtElevation(+1, +90, 0)
 
-		self.assertEqualAt((  30,   4), -0.496661713330414)
+		self.assertEqualAt((  30,   4), -0.59782072346866)
 
 	def test_sh_5_2(self) :
 		self.prepareOrder(5,+2)
