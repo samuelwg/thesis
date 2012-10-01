@@ -32,93 +32,6 @@ from colorfield import ColorField, Reloader
 
 from audio3d.sphericalHarmonics import ead2xyz, semiNormalizedSH, sh, shi_reverse
 
-sampleResolution = 36*4, 18*4
-
-def cartesian_product(*arrays):
-	import operator
-	broadcastable = np.ix_(*arrays)
-	broadcasted = np.broadcast_arrays(*broadcastable)
-	rows, cols = reduce(operator.mul, broadcasted[0].shape), len(broadcasted)
-	out = np.empty(rows * cols, dtype=broadcasted[0].dtype)
-	start, end = 0, rows
-	for a in broadcasted:
-		out[start:end] = a.reshape(-1)
-		start, end = end, end + rows
-	return out.reshape(cols, rows).T
-
-def sample_map() :
-	w,h = sampleResolution
-	image = imageData("16bit_world_height.png", w, h)
-	max = float(image.max())
-	min = float(image.min())
-	image = (image-min)/(max-min)
-	loadFromSamples(image)
-
-def sample_omni() :
-	w,h = sampleResolution
-	image = np.ones((h,w))
-	loadFromSamples(image)
-
-def sample_frontPoint() :
-	w,h = sampleResolution
-	image = np.zeros((h,w))
-	image[h/2,w/2] = +1
-	loadFromSamples(image)
-
-def sample_frontNegativePoint() :
-	w,h = sampleResolution
-	image = np.zeros((h,w))
-	image[h/2,w/2] = -1
-	loadFromSamples(image)
-
-def sample_backNegativePoint() :
-	w,h = sampleResolution
-	image = np.zeros((h,w))
-	image[h/2,0] = -1
-	loadFromSamples(image)
-
-def sample_backPoint() :
-	w,h = sampleResolution
-	image = np.zeros((h,w))
-	image[h/2,0] = +1
-	loadFromSamples(image)
-
-def sample_rightPoint() :
-	w,h = sampleResolution
-	image = np.zeros((h,w))
-	image[h/2,w/4] = +1
-	loadFromSamples(image)
-
-def sample_leftPoint() :
-	w,h = sampleResolution
-	image = np.zeros((h,w))
-	image[h/2,3*w/4] = +1
-	loadFromSamples(image)
-
-def sample_topPoint() :
-	w,h = sampleResolution
-	image = np.zeros((h,w))
-	image[1,:] = +1 # north pole
-	loadFromSamples(image)
-
-def sample_downPoint() :
-	w,h = sampleResolution
-	image = np.zeros((h,w))
-	image[-2,:] = +1 # south pole
-	loadFromSamples(image)
-
-def sample_equator() :
-	w,h = sampleResolution
-	image = np.zeros((h,w))
-	image[h/2,:] = +1 # equator
-	loadFromSamples(image)
-
-def sample_greenwitch() :
-	w,h = sampleResolution
-	image = np.zeros((h,w))
-	image[:,w/2] = +1 # Grenwitch
-	loadFromSamples(image)
-
 
 class TrackBall(object) :
 	def __init__(self, angularVelocity=0., axis=QtGui.QVector3D(0,1,0)) :
@@ -560,16 +473,16 @@ class SphericalHarmonicsControl(QtGui.QWidget) :
 		addButton(topLayout, "Negate", self.negate)
 		presetLayout1 = QtGui.QHBoxLayout()
 		presetLayout2 = QtGui.QHBoxLayout()
-		addButton(presetLayout1, "Front", sample_frontPoint)
-		addButton(presetLayout1, "Back", sample_backPoint)
-		addButton(presetLayout1, "Top", sample_topPoint)
-		addButton(presetLayout1, "Down", sample_downPoint)
-		addButton(presetLayout1, "Left", sample_leftPoint)
-		addButton(presetLayout1, "Right", sample_rightPoint)
-		addButton(presetLayout2, "Omni", sample_omni)
-		addButton(presetLayout2, "Equator", sample_equator)
-		addButton(presetLayout2, "Greenwitch", sample_greenwitch)
-		addButton(presetLayout2, "Map", sample_map)
+		addButton(presetLayout1, "Front", self.sample_frontPoint)
+		addButton(presetLayout1, "Back", self.sample_backPoint)
+		addButton(presetLayout1, "Top", self.sample_topPoint)
+		addButton(presetLayout1, "Down", self.sample_downPoint)
+		addButton(presetLayout1, "Left", self.sample_leftPoint)
+		addButton(presetLayout1, "Right", self.sample_rightPoint)
+		addButton(presetLayout2, "Omni", self.sample_omni)
+		addButton(presetLayout2, "Equator", self.sample_equator)
+		addButton(presetLayout2, "Greenwitch", self.sample_greenwitch)
+		addButton(presetLayout2, "Map", self.sample_map)
 
 		leftPanel.addLayout(topLayout)
 		leftPanel.addLayout(presetLayout1)
@@ -601,6 +514,27 @@ class SphericalHarmonicsControl(QtGui.QWidget) :
 			componentKnob(i,j)
 			for j in xrange(order+1) ]
 			for i in xrange(order+1) ]
+
+		rightPanel = QtGui.QVBoxLayout()
+		self.layout().addLayout(rightPanel)
+
+		self.w2 = SpherePointView()
+		rightPanel.addWidget(self.w2)
+
+		self.w1 = ColorField(width, height)
+	#	reloader1 = Reloader(self.w1)
+	#	reloader1.startTimer(0)
+		rightPanel.addWidget(self.w1)
+
+		self.w3 = ColorField(width, height)
+		rightPanel.addWidget(self.w3)
+
+		rightPanel.setStretch(0,3)
+		rightPanel.setStretch(1,1)
+		rightPanel.setStretch(2,1)
+		self.layout().setStretch(0,1)
+		self.layout().setStretch(1,1)
+
 
 	functionChanged = QtCore.Signal()
 	resolutionChanged = QtCore.Signal()
@@ -639,6 +573,107 @@ class SphericalHarmonicsControl(QtGui.QWidget) :
 		self._editing = False
 		self.functionChanged.emit()
 
+	def loadFromSamples(self, image) :
+		h,w = image.shape
+		imageBytesIn8Bits = 127 + image*127./(max(1.,abs(image.max())))
+
+		self.w3.format(w, h, ColorField.signedScale)
+		self.w3.data()[:,:] = imageBytesIn8Bits
+		self.w3.reload()
+
+		imageInSH = projectImageToSH(image)
+		imageInSH *= 100./max(1.,abs(imageInSH).max())
+
+		self.setSphericalHarmonicsMatrix(imageInSH)
+		reloadData()
+
+	sampleResolution = 36*4, 18*4
+
+	def cartesian_product(*arrays):
+		import operator
+		broadcastable = np.ix_(*arrays)
+		broadcasted = np.broadcast_arrays(*broadcastable)
+		rows, cols = reduce(operator.mul, broadcasted[0].shape), len(broadcasted)
+		out = np.empty(rows * cols, dtype=broadcasted[0].dtype)
+		start, end = 0, rows
+		for a in broadcasted:
+			out[start:end] = a.reshape(-1)
+			start, end = end, end + rows
+		return out.reshape(cols, rows).T
+
+	def sample_map(self) :
+		w,h = self.sampleResolution
+		image = imageData("16bit_world_height.png", w, h)
+		max = float(image.max())
+		min = float(image.min())
+		image = (image-min)/(max-min)
+		self.loadFromSamples(image)
+
+	def sample_omni(self) :
+		w,h = self.sampleResolution
+		image = np.ones((h,w))
+		self.loadFromSamples(image)
+
+	def sample_frontPoint(self) :
+		w,h = self.sampleResolution
+		image = np.zeros((h,w))
+		image[h/2,w/2] = +1
+		self.loadFromSamples(image)
+
+	def sample_frontNegativePoint(self) :
+		w,h = self.sampleResolution
+		image = np.zeros((h,w))
+		image[h/2,w/2] = -1
+		self.loadFromSamples(image)
+
+	def sample_backNegativePoint(self) :
+		w,h = self.sampleResolution
+		image = np.zeros((h,w))
+		image[h/2,0] = -1
+		self.loadFromSamples(image)
+
+	def sample_backPoint(self) :
+		w,h = self.sampleResolution
+		image = np.zeros((h,w))
+		image[h/2,0] = +1
+		self.loadFromSamples(image)
+
+	def sample_rightPoint(self) :
+		w,h = self.sampleResolution
+		image = np.zeros((h,w))
+		image[h/2,w/4] = +1
+		self.loadFromSamples(image)
+
+	def sample_leftPoint(self) :
+		w,h = self.sampleResolution
+		image = np.zeros((h,w))
+		image[h/2,3*w/4] = +1
+		self.loadFromSamples(image)
+
+	def sample_topPoint(self) :
+		w,h = self.sampleResolution
+		image = np.zeros((h,w))
+		image[1,:] = +1 # north pole
+		self.loadFromSamples(image)
+
+	def sample_downPoint(self) :
+		w,h = self.sampleResolution
+		image = np.zeros((h,w))
+		image[-2,:] = +1 # south pole
+		self.loadFromSamples(image)
+
+	def sample_equator(self) :
+		w,h = self.sampleResolution
+		image = np.zeros((h,w))
+		image[h/2,:] = +1 # equator
+		self.loadFromSamples(image)
+
+	def sample_greenwitch(self) :
+		w,h = self.sampleResolution
+		image = np.zeros((h,w))
+		image[:,w/2] = +1 # Grenwitch
+		self.loadFromSamples(image)
+
 
 
 if __name__ == "__main__" :
@@ -653,27 +688,6 @@ if __name__ == "__main__" :
 
 	w0 = SphericalHarmonicsControl()
 	w.layout().addWidget(w0)
-
-	leftLayout = QtGui.QVBoxLayout()
-	w.layout().addLayout(leftLayout)
-
-	w2 = SpherePointView()
-	leftLayout.addWidget(w2)
-
-	w1 = ColorField(width, height)
-#	reloader1 = Reloader(w1)
-#	reloader1.startTimer(0)
-	leftLayout.addWidget(w1)
-
-	w3 = ColorField(width, height)
-	leftLayout.addWidget(w3)
-
-	leftLayout.setStretch(0,3)
-	leftLayout.setStretch(1,1)
-	leftLayout.setStretch(2,1)
-	w.layout().setStretch(0,1)
-	w.layout().setStretch(1,1)
-
 	w.resize(width, height)
 
 
@@ -707,18 +721,18 @@ if __name__ == "__main__" :
 
 		sphericalPoints[:,2] = (5*data).reshape(nelevations*nazimuths)
 
-		w2.setEadPoints(sphericalPoints)
+		w0.w2.setEadPoints(sphericalPoints)
 		xyzs = np.array([ead2xyz(e,a,abs(d)) for e,a,d in sphericalPoints])
-		w2.scene()._vertices = xyzs
-		w2.scene()._normals = xyzs
-		w2.scene()._meshColors = np.array([[1.,.0,.0, .6] if d<0 else [0.,0.,1., .9] for e,a,d in sphericalPoints])
-		w2.scene()._indexes = indexes
-		w2.update()
+		w0.w2.scene()._vertices = xyzs
+		w0.w2.scene()._normals = xyzs
+		w0.w2.scene()._meshColors = np.array([[1.,.0,.0, .6] if d<0 else [0.,0.,1., .9] for e,a,d in sphericalPoints])
+		w0.w2.scene()._indexes = indexes
+		w0.w2.update()
 		maxValue = abs(data).max()
 		if maxValue > 1 : data /= maxValue
-		w1.format(nazimuths, nelevations, ColorField.signedScale)
-		w1.data()[:] = data/(2/255.)+127
-		w1.reload()
+		w0.w1.format(nazimuths, nelevations, ColorField.signedScale)
+		w0.w1.data()[:] = data/(2/255.)+127
+		w0.w1.reload()
 
 	def imageData(filename, width=None, height=None) :
 		qimage = QtGui.QImage(filename)
@@ -761,20 +775,6 @@ if __name__ == "__main__" :
 		imageInSH = image.reshape(w*h).dot(sh.reshape(w*h,(shSize))).reshape(shShape)
 		return imageInSH
 
-
-	def loadFromSamples(image) :
-		h,w = image.shape
-		imageBytesIn8Bits = 127 + image*127./(max(1.,abs(image.max())))
-
-		w3.format(w, h, ColorField.signedScale)
-		w3.data()[:,:] = imageBytesIn8Bits
-		w3.reload()
-
-		imageInSH = projectImageToSH(image)
-		imageInSH *= 100./max(1.,abs(imageInSH).max())
-
-		w0.setSphericalHarmonicsMatrix(imageInSH)
-		reloadData()
 
 	from audio3d.sphericalHarmonics import shSize, shShape
 	imageInSH = np.arange(shSize).reshape(shShape)*100./shSize
