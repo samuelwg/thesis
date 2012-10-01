@@ -542,7 +542,9 @@ class SphericalHarmonicsControl(QtGui.QWidget) :
 
 		QtGui.QWidget.__init__(self)
 		self._editing = False
-		self.setLayout(QtGui.QVBoxLayout())
+		self.setLayout(QtGui.QHBoxLayout())
+		leftPanel = QtGui.QVBoxLayout()
+		self.layout().addLayout(leftPanel)
 		self._grid = QtGui.QGridLayout()
 		topLayout = QtGui.QHBoxLayout()
 		self._parallelsSpin = addSpin("Parallels", 4, 50, 400, self.resolutionChanged)
@@ -569,10 +571,10 @@ class SphericalHarmonicsControl(QtGui.QWidget) :
 		addButton(presetLayout2, "Greenwitch", sample_greenwitch)
 		addButton(presetLayout2, "Map", sample_map)
 
-		self.layout().addLayout(topLayout)
-		self.layout().addLayout(presetLayout1)
-		self.layout().addLayout(presetLayout2)
-		self.layout().addLayout(self._grid)
+		leftPanel.addLayout(topLayout)
+		leftPanel.addLayout(presetLayout1)
+		leftPanel.addLayout(presetLayout2)
+		leftPanel.addLayout(self._grid)
 
 
 		def componentKnob(i,j) :
