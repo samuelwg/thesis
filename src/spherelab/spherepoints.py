@@ -585,9 +585,50 @@ class SphericalHarmonicsControl(QtGui.QWidget) :
 		imageInSH *= 100./max(1.,abs(imageInSH).max())
 
 		self.setSphericalHarmonicsMatrix(imageInSH)
-		reloadData()
+		self.reloadData()
 
 	sampleResolution = 36*4, 18*4
+
+	def reloadData(self) :
+		global shProjections, elevations, azimuths, xyzs, sphericalPoints, indexes
+		nelevations = self._parallelsSpin.value()
+		nazimuths = self._meridiansSpin.value()
+		if shProjections.shape[:2] != (nelevations, nazimuths) :
+			print "Reshaping..."
+			elevations, azimuths, shProjections = shGrid(nelevations, nazimuths)
+			sphericalPoints = np.array([
+				[elevations[ei], azimuths[ai], 0 ]
+				for ei in xrange(nelevations)
+				for ai in xrange(nazimuths)
+				])
+			indexes = np.array(
+				[[
+					[i+nazimuths*j,i+nazimuths*(j+1)]
+					for i in xrange(nazimuths) ]
+					for j in xrange(nelevations-1) ]
+				).flatten()
+
+		shMatrix = self.sphericalHarmonicsMatrix()
+
+		data = shProjections.reshape(nazimuths*nelevations, shMatrix.size).dot(
+			shMatrix.reshape(shMatrix.size )
+			).reshape(shProjections.shape[:2])
+
+		sphericalPoints[:,2] = (5*data).reshape(nelevations*nazimuths)
+
+		self.w2.setEadPoints(sphericalPoints)
+		xyzs = np.array([ead2xyz(e,a,abs(d)) for e,a,d in sphericalPoints])
+		self.w2.scene()._vertices = xyzs
+		self.w2.scene()._normals = xyzs
+		self.w2.scene()._meshColors = np.array([[1.,.0,.0, .6] if d<0 else [0.,0.,1., .9] for e,a,d in sphericalPoints])
+		self.w2.scene()._indexes = indexes
+		self.w2.update()
+		maxValue = abs(data).max()
+		if maxValue > 1 : data /= maxValue
+		self.w1.format(nazimuths, nelevations, ColorField.signedScale)
+		self.w1.data()[:] = data/(2/255.)+127
+		self.w1.reload()
+
 
 	def cartesian_product(*arrays):
 		import operator
@@ -694,46 +735,6 @@ if __name__ == "__main__" :
 	global shProjections
 	shProjections = np.array([[[[]]]])
 
-	def reloadData() :
-		global shProjections, elevations, azimuths, xyzs, sphericalPoints, indexes
-		nelevations = w0._parallelsSpin.value()
-		nazimuths = w0._meridiansSpin.value()
-		if shProjections.shape[:2] != (nelevations, nazimuths) :
-			print "Reshaping..."
-			elevations, azimuths, shProjections = shGrid(nelevations, nazimuths)
-			sphericalPoints = np.array([
-				[elevations[ei], azimuths[ai], 0 ]
-				for ei in xrange(nelevations)
-				for ai in xrange(nazimuths)
-				])
-			indexes = np.array(
-				[[
-					[i+nazimuths*j,i+nazimuths*(j+1)]
-					for i in xrange(nazimuths) ]
-					for j in xrange(nelevations-1) ]
-				).flatten()
-
-		shMatrix = w0.sphericalHarmonicsMatrix()
-
-		data = shProjections.reshape(nazimuths*nelevations, shMatrix.size).dot(
-			shMatrix.reshape(shMatrix.size )
-			).reshape(shProjections.shape[:2])
-
-		sphericalPoints[:,2] = (5*data).reshape(nelevations*nazimuths)
-
-		w0.w2.setEadPoints(sphericalPoints)
-		xyzs = np.array([ead2xyz(e,a,abs(d)) for e,a,d in sphericalPoints])
-		w0.w2.scene()._vertices = xyzs
-		w0.w2.scene()._normals = xyzs
-		w0.w2.scene()._meshColors = np.array([[1.,.0,.0, .6] if d<0 else [0.,0.,1., .9] for e,a,d in sphericalPoints])
-		w0.w2.scene()._indexes = indexes
-		w0.w2.update()
-		maxValue = abs(data).max()
-		if maxValue > 1 : data /= maxValue
-		w0.w1.format(nazimuths, nelevations, ColorField.signedScale)
-		w0.w1.data()[:] = data/(2/255.)+127
-		w0.w1.reload()
-
 	def imageData(filename, width=None, height=None) :
 		qimage = QtGui.QImage(filename)
 		scaled = qimage if width is None and height is None else (
@@ -781,10 +782,10 @@ if __name__ == "__main__" :
 
 	w0.setSphericalHarmonicsMatrix(imageInSH)
 
-	w0.resolutionChanged.connect(reloadData)
-	w0.functionChanged.connect(reloadData)
+	w0.resolutionChanged.connect(w0.reloadData)
+	w0.functionChanged.connect(w0.reloadData)
 
-	reloadData()
+	w0.reloadData()
 
 	w.show()
 
