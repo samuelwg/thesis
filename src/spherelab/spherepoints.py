@@ -511,7 +511,7 @@ class SpherePointView(QtGui.QGraphicsView) :
 		self.scene().setEadPoints( points)
 
 
-class SphericalHarmonicsControl(QtGui.QWidget) :
+class SphereLab(QtGui.QWidget) :
 
 	def __init__(self) :
 		self.shProjections = np.array([[[[]]]])
@@ -591,16 +591,16 @@ class SphericalHarmonicsControl(QtGui.QWidget) :
 		rightPanel = QtGui.QVBoxLayout()
 		self.layout().addLayout(rightPanel)
 
-		self.w2 = SpherePointView()
-		rightPanel.addWidget(self.w2)
+		self.blobView = SpherePointView()
+		rightPanel.addWidget(self.blobView)
 
-		self.w1 = ColorField(width, height)
-	#	reloader1 = Reloader(self.w1)
+		self.synthetizedFunction = ColorField(width, height)
+	#	reloader1 = Reloader(self.synthetizedFunction)
 	#	reloader1.startTimer(0)
-		rightPanel.addWidget(self.w1)
+		rightPanel.addWidget(self.synthetizedFunction)
 
-		self.w3 = ColorField(width, height)
-		rightPanel.addWidget(self.w3)
+		self.targetFunction = ColorField(width, height)
+		rightPanel.addWidget(self.targetFunction)
 
 		rightPanel.setStretch(0,3)
 		rightPanel.setStretch(1,1)
@@ -653,9 +653,9 @@ class SphericalHarmonicsControl(QtGui.QWidget) :
 		h,w = image.shape
 		imageBytesIn8Bits = 127 + image*127./(max(1.,abs(image.max())))
 
-		self.w3.format(w, h, ColorField.signedScale)
-		self.w3.data()[:,:] = imageBytesIn8Bits
-		self.w3.reload()
+		self.targetFunction.format(w, h, ColorField.signedScale)
+		self.targetFunction.data()[:,:] = imageBytesIn8Bits
+		self.targetFunction.reload()
 
 		imageInSH = projectImageToSH(image)
 		imageInSH *= 100./max(1.,abs(imageInSH).max())
@@ -691,23 +691,22 @@ class SphericalHarmonicsControl(QtGui.QWidget) :
 
 		self.sphericalPoints[:,2] = (5*data).reshape(nelevations*nazimuths)
 
-		self.w2.setEadPoints(self.sphericalPoints)
+		self.blobView.setEadPoints(self.sphericalPoints)
 		xyzs = np.array([ead2xyz(e,a,abs(d)) for e,a,d in self.sphericalPoints])
-		self.w2.scene()._vertices = xyzs
-		self.w2.scene()._normals = xyzs
-		self.w2.scene()._meshColors = np.array([[1.,.0,.0, .6] if d<0 else [0.,0.,1., .9] for e,a,d in self.sphericalPoints])
-		self.w2.scene()._indexes = self.indexes
-		self.w2.update()
+		self.blobView.scene()._vertices = xyzs
+		self.blobView.scene()._normals = xyzs
+		self.blobView.scene()._meshColors = np.array([[1.,.0,.0, .6] if d<0 else [0.,0.,1., .9] for e,a,d in self.sphericalPoints])
+		self.blobView.scene()._indexes = self.indexes
+		self.blobView.update()
 		maxValue = abs(data).max()
 		if maxValue > 1 : data /= maxValue
-		self.w1.format(nazimuths, nelevations, ColorField.signedScale)
-		self.w1.data()[:] = data/(2/255.)+127
-		self.w1.reload()
+		self.synthetizedFunction.format(nazimuths, nelevations, ColorField.signedScale)
+		self.synthetizedFunction.data()[:] = data/(2/255.)+127
+		self.synthetizedFunction.reload()
 
 
 	# Sphere sampling resolution for the synthetic data sets
 	sampleResolution = 36*4, 18*4
-	sampleElevations, sampleAzimuth, sampleSH = shGrid(sampleResolution[1], sampleResolution[0])
 
 	def sample_map(self) :
 		w,h = self.sampleResolution
@@ -794,7 +793,7 @@ if __name__ == "__main__" :
 	w = QtGui.QDialog()
 	w.setLayout(QtGui.QHBoxLayout())
 
-	w0 = SphericalHarmonicsControl()
+	w0 = SphereLab()
 	w.layout().addWidget(w0)
 #	w.resize(width, height)
 
