@@ -32,6 +32,80 @@ from colorfield import ColorField, Reloader
 
 from audio3d.sphericalHarmonics import ead2xyz, semiNormalizedSH, sh, shi_reverse
 
+def cartesian_product(*arrays):
+	import operator
+	broadcastable = np.ix_(*arrays)
+	broadcasted = np.broadcast_arrays(*broadcastable)
+	rows, cols = reduce(operator.mul, broadcasted[0].shape), len(broadcasted)
+	out = np.empty(rows * cols, dtype=broadcasted[0].dtype)
+	start, end = 0, rows
+	for a in broadcasted:
+		out[start:end] = a.reshape(-1)
+		start, end = end, end + rows
+	return out.reshape(cols, rows).T
+
+def imageData(filename, width=None, height=None) :
+	qimage = QtGui.QImage(filename)
+	scaled = qimage if width is None and height is None else (
+		qimage.scaled(width,height) )
+	buffer = scaled.bits()
+	return np.ndarray(
+		shape = (height,width),
+		dtype = np.uint8,
+		buffer = buffer,
+		)[:,:width].copy() # copy needed because the buffer is not persistent
+
+def projectImageToSH(image) :
+	"""
+	Maps an array representing samples of a function defined in the surface
+	of an sphere into spherical harmonics of the specified representation
+	and order.
+	Points are sampled at equal angular intervals for azimuth and elevation.
+	(plate-carree projection).
+	"""
+	h,w = image.shape
+	elevations, azimuths, sh = shGrid(h,w)
+	cosines = np.cos(np.radians(elevations))
+	sh = sh*cosines.reshape(-1,1,1,1)
+	shShape = sh.shape[2:]
+	shSize = shShape[0]*shShape[1]
+	# normalize, regarding its concentration on higher elevations
+#	for ei, e in enumerate(elevations) :
+#		sh[ei] = np.cos(np.radians(e))
+
+	result = image.reshape(w*h).dot(sh.reshape(w*h,(shSize))).reshape(shShape)
+	return result
+
+
+class memoize:
+	def __init__(self, function):
+		self.function = function
+		self.memoized = {}
+	def __call__(self, *args):
+		try:
+			return self.memoized[args]
+		except KeyError:
+			self.memoized[args] = self.function(*args)
+			return self.memoized[args]
+
+
+@memoize
+def shGrid(nelevations, nazimuths) :
+	"""Given a number of elevation and azimuth sampling position returns
+	the elevations and azimuths and a matrix ne X na X sho X sho
+	the sampling of the Seminormalized Spherical Harmonic functions
+	for the cross product of the elevation and the azimuth sampling.
+	"""
+	# inverted elevation order
+	elevations = np.linspace(90,  -90, nelevations)
+	azimuths = np.linspace( -180, 180, nazimuths, endpoint=False)
+	shsampling = np.array([[
+		semiNormalizedSH(e,a)
+		for a in azimuths]
+		for e in elevations]
+		)
+	return elevations, azimuths, shsampling
+
 
 class TrackBall(object) :
 	def __init__(self, angularVelocity=0., axis=QtGui.QVector3D(0,1,0)) :
@@ -379,19 +453,16 @@ class SpherePointScene(QtGui.QGraphicsScene) :
 		mousePos = self.pixelPosToViewPos(event.scenePos())
 
 		if event.buttons() & Qt.LeftButton :
-			print "Left"
 			self._trackballs[0].push(mousePos,
 				self._trackballs[2].rotation().conjugate())
 			event.accept()
 
 		if event.buttons() & Qt.RightButton :
-			print "Right"
 			self._trackballs[1].push(mousePos,
 				self._trackballs[2].rotation().conjugate())
 			event.accept()
 
 		if event.buttons() & Qt.MidButton :
-			print "Mid"
 			self._trackballs[2].push(mousePos, QtGui.QQuaternion())
 			event.accept();
 
@@ -443,6 +514,8 @@ class SpherePointView(QtGui.QGraphicsView) :
 class SphericalHarmonicsControl(QtGui.QWidget) :
 
 	def __init__(self) :
+		self.shProjections = np.array([[[[]]]])
+
 		def addSpin(name, minimum, default, maximum, slot) :
 			topLayout.addWidget(QtGui.QLabel(name+":"))
 			spin = QtGui.QSpinBox()
@@ -534,6 +607,9 @@ class SphericalHarmonicsControl(QtGui.QWidget) :
 		rightPanel.setStretch(2,1)
 		self.layout().setStretch(0,1)
 		self.layout().setStretch(1,1)
+		self.resolutionChanged.connect(self.reloadData)
+		self.functionChanged.connect(self.reloadData)
+
 
 
 	functionChanged = QtCore.Signal()
@@ -587,41 +663,40 @@ class SphericalHarmonicsControl(QtGui.QWidget) :
 		self.setSphericalHarmonicsMatrix(imageInSH)
 		self.reloadData()
 
-	sampleResolution = 36*4, 18*4
-
 	def reloadData(self) :
-		global shProjections, elevations, azimuths, xyzs, sphericalPoints, indexes
 		nelevations = self._parallelsSpin.value()
 		nazimuths = self._meridiansSpin.value()
-		if shProjections.shape[:2] != (nelevations, nazimuths) :
+		if self.shProjections.shape[:2] != (nelevations, nazimuths) :
 			print "Reshaping..."
-			elevations, azimuths, shProjections = shGrid(nelevations, nazimuths)
-			sphericalPoints = np.array([
-				[elevations[ei], azimuths[ai], 0 ]
+			self.elevations, self.azimuths, self.shProjections = shGrid(nelevations, nazimuths)
+			print "Reshape outputs..."
+			self.sphericalPoints = np.array([
+				[self.elevations[ei], self.azimuths[ai], 0 ]
 				for ei in xrange(nelevations)
 				for ai in xrange(nazimuths)
 				])
-			indexes = np.array(
+			self.indexes = np.array(
 				[[
 					[i+nazimuths*j,i+nazimuths*(j+1)]
 					for i in xrange(nazimuths) ]
 					for j in xrange(nelevations-1) ]
 				).flatten()
 
+		# taking coeficients from the knobs
 		shMatrix = self.sphericalHarmonicsMatrix()
 
-		data = shProjections.reshape(nazimuths*nelevations, shMatrix.size).dot(
+		data = self.shProjections.reshape(nazimuths*nelevations, shMatrix.size).dot(
 			shMatrix.reshape(shMatrix.size )
-			).reshape(shProjections.shape[:2])
+			).reshape(self.shProjections.shape[:2])
 
-		sphericalPoints[:,2] = (5*data).reshape(nelevations*nazimuths)
+		self.sphericalPoints[:,2] = (5*data).reshape(nelevations*nazimuths)
 
-		self.w2.setEadPoints(sphericalPoints)
-		xyzs = np.array([ead2xyz(e,a,abs(d)) for e,a,d in sphericalPoints])
+		self.w2.setEadPoints(self.sphericalPoints)
+		xyzs = np.array([ead2xyz(e,a,abs(d)) for e,a,d in self.sphericalPoints])
 		self.w2.scene()._vertices = xyzs
 		self.w2.scene()._normals = xyzs
-		self.w2.scene()._meshColors = np.array([[1.,.0,.0, .6] if d<0 else [0.,0.,1., .9] for e,a,d in sphericalPoints])
-		self.w2.scene()._indexes = indexes
+		self.w2.scene()._meshColors = np.array([[1.,.0,.0, .6] if d<0 else [0.,0.,1., .9] for e,a,d in self.sphericalPoints])
+		self.w2.scene()._indexes = self.indexes
 		self.w2.update()
 		maxValue = abs(data).max()
 		if maxValue > 1 : data /= maxValue
@@ -630,17 +705,9 @@ class SphericalHarmonicsControl(QtGui.QWidget) :
 		self.w1.reload()
 
 
-	def cartesian_product(*arrays):
-		import operator
-		broadcastable = np.ix_(*arrays)
-		broadcasted = np.broadcast_arrays(*broadcastable)
-		rows, cols = reduce(operator.mul, broadcasted[0].shape), len(broadcasted)
-		out = np.empty(rows * cols, dtype=broadcasted[0].dtype)
-		start, end = 0, rows
-		for a in broadcasted:
-			out[start:end] = a.reshape(-1)
-			start, end = end, end + rows
-		return out.reshape(cols, rows).T
+	# Sphere sampling resolution for the synthetic data sets
+	sampleResolution = 36*4, 18*4
+	sampleElevations, sampleAzimuth, sampleSH = shGrid(sampleResolution[1], sampleResolution[0])
 
 	def sample_map(self) :
 		w,h = self.sampleResolution
@@ -729,61 +796,13 @@ if __name__ == "__main__" :
 
 	w0 = SphericalHarmonicsControl()
 	w.layout().addWidget(w0)
-	w.resize(width, height)
-
-
-	global shProjections
-	shProjections = np.array([[[[]]]])
-
-	def imageData(filename, width=None, height=None) :
-		qimage = QtGui.QImage(filename)
-		scaled = qimage if width is None and height is None else (
-			qimage.scaled(width,height) )
-		buffer = scaled.bits()
-		return np.ndarray(
-			shape = (height,width),
-			dtype = np.uint8,
-			buffer = buffer,
-			)[:,:width].copy() # copy needed because the buffer is not persistent
-
-	def shGrid(nelevations, nazimuths) :
-		# inverted elevation order
-		elevations = np.linspace(90,  -90, nelevations)
-		azimuths = np.linspace( -180, 180, nazimuths, endpoint=False)
-		shProjections = np.array([[
-			semiNormalizedSH(e,a)
-			for a in azimuths]
-			for e in elevations]
-			)
-		return elevations, azimuths, shProjections
-
-	def projectImageToSH(image) :
-		"""
-		Maps an array representing samples of a function defined in the surface
-		of an sphere into spherical harmonics of the specified representation
-		and order.
-		Points are sampled at equal angular intervals for azimuth and elevation.
-		(plate-carree projection).
-		"""
-		h,w = image.shape
-		elevations, azimuths, sh = shGrid(h,w)
-		shShape = sh.shape[2:]
-		shSize = shShape[0]*shShape[1]
-		# normalize, regarding its concentration on higher elevations
-		for ei, e in enumerate(elevations) :
-			sh[ei] *= np.cos(np.radians(e))
-
-		imageInSH = image.reshape(w*h).dot(sh.reshape(w*h,(shSize))).reshape(shShape)
-		return imageInSH
-
+#	w.resize(width, height)
 
 	from audio3d.sphericalHarmonics import shSize, shShape
+
 	imageInSH = np.arange(shSize).reshape(shShape)*100./shSize
 
 	w0.setSphericalHarmonicsMatrix(imageInSH)
-
-	w0.resolutionChanged.connect(w0.reloadData)
-	w0.functionChanged.connect(w0.reloadData)
 
 	w0.reloadData()
 
