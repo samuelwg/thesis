@@ -510,58 +510,13 @@ class SpherePointView(QtGui.QGraphicsView) :
 	def setEadPoints(self, points) :
 		self.scene().setEadPoints( points)
 
-
-class SphereLab(QtGui.QWidget) :
+class SphericalHarmonicsKnobs(QtGui.QWidget) :
 
 	def __init__(self) :
-		self.shProjections = np.array([[[[]]]])
-
-		def addSpin(name, minimum, default, maximum, slot) :
-			topLayout.addWidget(QtGui.QLabel(name+":"))
-			spin = QtGui.QSpinBox()
-			spin.setMinimum(minimum)
-			spin.setMaximum(maximum)
-			spin.setValue(default)
-			spin.valueChanged.connect(slot)
-			topLayout.addWidget(spin)
-			return spin
-
 		QtGui.QWidget.__init__(self)
-		self._editing = False
-		self.setLayout(QtGui.QHBoxLayout())
-		leftPanel = QtGui.QVBoxLayout()
-		self.layout().addLayout(leftPanel)
+		self._editing = True
 		self._grid = QtGui.QGridLayout()
-		topLayout = QtGui.QHBoxLayout()
-		self._parallelsSpin = addSpin("Parallels", 4, 50, 400, self.resolutionChanged)
-		topLayout.addStretch(1)
-		self._meridiansSpin = addSpin("Meridians", 4, 80, 400, self.resolutionChanged)
-
-		def addButton(layout, name, slot) :
-			button = QtGui.QPushButton(name)
-			button.clicked.connect(slot)
-			layout.addWidget(button)
-
-		addButton(topLayout, "Reset", self.reset)
-		addButton(topLayout, "Negate", self.negate)
-		presetLayout1 = QtGui.QHBoxLayout()
-		presetLayout2 = QtGui.QHBoxLayout()
-		addButton(presetLayout1, "Front", self.sample_frontPoint)
-		addButton(presetLayout1, "Back", self.sample_backPoint)
-		addButton(presetLayout1, "Top", self.sample_topPoint)
-		addButton(presetLayout1, "Down", self.sample_downPoint)
-		addButton(presetLayout1, "Left", self.sample_leftPoint)
-		addButton(presetLayout1, "Right", self.sample_rightPoint)
-		addButton(presetLayout2, "Omni", self.sample_omni)
-		addButton(presetLayout2, "Equator", self.sample_equator)
-		addButton(presetLayout2, "Greenwitch", self.sample_greenwitch)
-		addButton(presetLayout2, "Map", self.sample_map)
-
-		leftPanel.addLayout(topLayout)
-		leftPanel.addLayout(presetLayout1)
-		leftPanel.addLayout(presetLayout2)
-		leftPanel.addLayout(self._grid)
-
+		self.setLayout(self._grid)
 
 		def componentKnob(i,j) :
 			l,m = shi_reverse(i,j)
@@ -588,36 +543,10 @@ class SphereLab(QtGui.QWidget) :
 			for j in xrange(order+1) ]
 			for i in xrange(order+1) ]
 
-		rightPanel = QtGui.QVBoxLayout()
-		self.layout().addLayout(rightPanel)
 
-		self.blobView = SpherePointView()
-		rightPanel.addWidget(self.blobView)
-
-		self.synthetizedFunction = ColorField(width, height)
-	#	reloader1 = Reloader(self.synthetizedFunction)
-	#	reloader1.startTimer(0)
-		rightPanel.addWidget(self.synthetizedFunction)
-
-		self.targetFunction = ColorField(width, height)
-		rightPanel.addWidget(self.targetFunction)
-
-		rightPanel.setStretch(0,3)
-		rightPanel.setStretch(1,1)
-		rightPanel.setStretch(2,1)
-		self.layout().setStretch(0,1)
-		self.layout().setStretch(1,1)
-		self.resolutionChanged.connect(self.reloadData)
-		self.functionChanged.connect(self.reloadData)
-
-
+		self._editing = False
 
 	functionChanged = QtCore.Signal()
-	resolutionChanged = QtCore.Signal()
-
-	def knobEdited(self) :
-		if self._editing : return
-		self.functionChanged.emit()
 
 	def sphericalHarmonicsMatrix(self) :
 		return np.array([[
@@ -631,6 +560,10 @@ class SphereLab(QtGui.QWidget) :
 			for j,knob in enumerate(row) :
 				knob.setValue(array[i,j])
 		self._editing = False
+		self.functionChanged.emit()
+
+	def knobEdited(self) :
+		if self._editing : return
 		self.functionChanged.emit()
 
 	def reset(self) :
@@ -648,6 +581,88 @@ class SphereLab(QtGui.QWidget) :
 				knob.setValue(-knob.value())
 		self._editing = False
 		self.functionChanged.emit()
+
+
+
+class SphereLab(QtGui.QWidget) :
+
+	def __init__(self) :
+
+		def addSpin(name, minimum, default, maximum, slot) :
+			topLayout.addWidget(QtGui.QLabel(name+":"))
+			spin = QtGui.QSpinBox()
+			spin.setMinimum(minimum)
+			spin.setMaximum(maximum)
+			spin.setValue(default)
+			spin.valueChanged.connect(slot)
+			topLayout.addWidget(spin)
+			return spin
+
+		QtGui.QWidget.__init__(self)
+		self.shProjections = np.array([[[[]]]])
+		self._editing = False
+		self.setLayout(QtGui.QHBoxLayout())
+		leftPanel = QtGui.QVBoxLayout()
+		self.layout().addLayout(leftPanel)
+		self._shknobs = SphericalHarmonicsKnobs()
+		topLayout = QtGui.QHBoxLayout()
+		self._parallelsSpin = addSpin("Parallels", 4, 50, 400, self.updateResolution)
+		topLayout.addStretch(1)
+		self._meridiansSpin = addSpin("Meridians", 4, 80, 400, self.updateResolution)
+
+		def addButton(layout, name, slot) :
+			button = QtGui.QPushButton(name)
+			button.clicked.connect(slot)
+			layout.addWidget(button)
+
+		addButton(topLayout, "Reset", self._shknobs.reset)
+		addButton(topLayout, "Negate", self._shknobs.negate)
+		presetLayout1 = QtGui.QHBoxLayout()
+		presetLayout2 = QtGui.QHBoxLayout()
+		addButton(presetLayout1, "Front", self.sample_frontPoint)
+		addButton(presetLayout1, "Back", self.sample_backPoint)
+		addButton(presetLayout1, "Top", self.sample_topPoint)
+		addButton(presetLayout1, "Down", self.sample_downPoint)
+		addButton(presetLayout1, "Left", self.sample_leftPoint)
+		addButton(presetLayout1, "Right", self.sample_rightPoint)
+		addButton(presetLayout2, "Omni", self.sample_omni)
+		addButton(presetLayout2, "Equator", self.sample_equator)
+		addButton(presetLayout2, "Greenwitch", self.sample_greenwitch)
+		addButton(presetLayout2, "Map", self.sample_map)
+
+		leftPanel.addLayout(topLayout)
+		leftPanel.addLayout(presetLayout1)
+		leftPanel.addLayout(presetLayout2)
+		leftPanel.addWidget(self._shknobs)
+
+
+		rightPanel = QtGui.QVBoxLayout()
+		self.layout().addLayout(rightPanel)
+
+		self.blobView = SpherePointView()
+		rightPanel.addWidget(self.blobView)
+
+		self.synthetizedFunction = ColorField(width, height)
+		rightPanel.addWidget(self.synthetizedFunction)
+
+		self.targetFunction = ColorField(width, height)
+		rightPanel.addWidget(self.targetFunction)
+
+		rightPanel.setStretch(0,3)
+		rightPanel.setStretch(1,1)
+		rightPanel.setStretch(2,1)
+		self.layout().setStretch(0,1)
+		self.layout().setStretch(1,1)
+		self._shknobs.functionChanged.connect(self.reloadData)
+
+	def updateResolution(self) :
+		self.reloadData()
+
+	def sphericalHarmonicsMatrix(self) :
+		return self._shknobs.sphericalHarmonicsMatrix()
+
+	def setSphericalHarmonicsMatrix(self, array) :
+		self._shknobs.setSphericalHarmonicsMatrix(array)
 
 	def loadFromSamples(self, image) :
 		h,w = image.shape
