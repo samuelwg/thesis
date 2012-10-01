@@ -1061,8 +1061,8 @@ class SphericalHarmonicsTests(unittest.TestCase) :
 		zeroelevation1 = degrees(asin( sqrt( (1-2/sqrt(7))/3) ))
 		maxvalue2 = 1. # was 4*sqrt(21)*sqrt( 399 +11*sqrt(21*11) ) /525
 		maxvalue1 = 4*sqrt(21)*sqrt( 399 -11*sqrt(21*11) ) /525  # 0.53159466040326442
-		maxvalue1 = ( ( 399 -11*sqrt(21*11) ) ) / sqrt(7*5*3*2 ) / 25 # relative
-		maxvalue0 = sqrt(15)/8 / ( 4*sqrt(21)*sqrt( 399 +11*sqrt(21*11) ) /525 )  # 0.48412291827592713
+		maxvalue1 = ( 399 -11*sqrt(21*11) ) / sqrt(7*5*3*2 ) / 25 # relative
+		maxvalue0 = 525*sqrt(5)/32 / sqrt(7) /sqrt( 399 +11*sqrt(21*11) )  # 0.48412291827592713
 
 		self.assertPeakAtElevation(+1, -90, 0)
 		self.assertPeakAtElevation(+1, +peakelevation2 , +maxvalue2)
@@ -1087,8 +1087,7 @@ class SphericalHarmonicsTests(unittest.TestCase) :
 		zeroelevation = degrees(asin( sqrt(1./3) ))
 		peakelevation1 = degrees(asin( sqrt((2 -sqrt(7./3))/5) ))
 		maxvalue1 = sqrt(5)/125*(34*sqrt(3) -7*sqrt(7))
-
-		maxvalue2 = 1 
+		maxvalue2 = 1
 
 		self.assertPeakAtElevation(+2, -90, 0)
 		self.assertPeakAtElevation(+2, +peakelevation2, +maxvalue2)
