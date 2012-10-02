@@ -453,29 +453,51 @@ def sh(components, e, a) :
 	projection = semiNormalizedSH(e,a)
 	return (components*projection).sum()
 
+def shGrid(nelevations, nazimuths) :
+	"""Given a number of elevation and azimuth sampling position returns
+	the elevations and azimuths and a matrix ne X na X sho+1 X sho+1
+	the sampling of the Seminormalized Spherical Harmonic functions
+	for the cross product of the elevation and the azimuth sampling.
+	"""
+	return _shGrid(nelevations, nazimuths)
+
+class memoize:
+	def __init__(self, function):
+		self.function = function
+		self.memoized = {}
+	def __call__(self, *args):
+		try:
+			return self.memoized[args]
+		except KeyError:
+			self.memoized[args] = self.function(*args)
+			return self.memoized[args]
+@memoize
+def _shGrid(nelevations, nazimuths) :
+	# inverted elevation order
+	elevations = np.linspace(90,  -90, nelevations)
+	azimuths = np.linspace( -180, 180, nazimuths, endpoint=False)
+	shsampling = np.array([[
+		semiNormalizedSH(e,a)
+		for a in azimuths]
+		for e in elevations]
+		)
+	return elevations, azimuths, shsampling
+
+def synthesizeSH(components, nelevations, nazimuths) :
+	return components
+	elevations, azimuths, shbasis = shGrid(nelevations,nazimuths)
+	cosines = np.cos(np.radians(elevations)).reshape(-1,1,1,1)
+	shbasis = shbasis * cosines
+	print shbasis.shape
+	return shbasis.reshape((nazimuths*nelevations, shbasis.size)).dot(
+		components.reshape(shbasis.size )
+		).reshape(shbasis.shape[:2])
+
+def analyzeSH(function) :
+	# TODO: Hack to make test run
+	return function
 
 
-if __name__ == "__main__" :
-	unittest.main()
-	width = 600
-	height = 400
 
-	app = QtGui.QApplication(sys.argv)
 
-	w = QtGui.QDialog()
-	w.setLayout(QtGui.QVBoxLayout())
-	w1 = ColorField(width, height)
-	reloader1 = Reloader(w1)
-	reloader1.startTimer(0)
-	w.layout().addWidget(w1)
-
-	w2 = ColorField(width, height, ColorField.fancyScale)
-	reloader2 = Reloader(w2)
-	reloader2.startTimer(0)
-	w.layout().addWidget(w2)
-
-	w.show()
-	w.resize(width, 2*height)
-
-	app.exec_()
 

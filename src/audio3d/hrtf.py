@@ -138,7 +138,7 @@ class HrtfDatabase(object) :
 	def lowerElevation(self) :
 		"""Returns the lower elevation"""
 		return min( elevation for elevation, azimuth, filename in self._data )
-	
+
 
 
 	def capCompensation(self, lowerElevation) :

@@ -30,7 +30,7 @@ import math
 
 from colorfield import ColorField, Reloader
 
-from audio3d.sphericalHarmonics import ead2xyz, semiNormalizedSH, sh, shi_reverse
+from audio3d.sphericalHarmonics import ead2xyz, semiNormalizedSH, sh, shi_reverse, on3d as orthonormalization, shGrid
 
 def cartesian_product(*arrays):
 	import operator
@@ -65,46 +65,11 @@ def projectImageToSH(image) :
 	"""
 	h,w = image.shape
 	elevations, azimuths, sh = shGrid(h,w)
-	cosines = np.cos(np.radians(elevations))
-	sh = sh*cosines.reshape(-1,1,1,1)
-	shShape = sh.shape[2:]
-	shSize = shShape[0]*shShape[1]
-	# normalize, regarding its concentration on higher elevations
-#	for ei, e in enumerate(elevations) :
-#		sh[ei] = np.cos(np.radians(e))
-
-	result = image.reshape(w*h).dot(sh.reshape(w*h,(shSize))).reshape(shShape)
-	return result
+	cosines = np.cos(np.radians(elevations)).reshape(-1,1,1,1)
+	sh = sh * cosines
+	return image.reshape(w*h).dot(sh.reshape(w*h,-1)).reshape(sh.shape[2:])
 
 
-class memoize:
-	def __init__(self, function):
-		self.function = function
-		self.memoized = {}
-	def __call__(self, *args):
-		try:
-			return self.memoized[args]
-		except KeyError:
-			self.memoized[args] = self.function(*args)
-			return self.memoized[args]
-
-
-@memoize
-def shGrid(nelevations, nazimuths) :
-	"""Given a number of elevation and azimuth sampling position returns
-	the elevations and azimuths and a matrix ne X na X sho X sho
-	the sampling of the Seminormalized Spherical Harmonic functions
-	for the cross product of the elevation and the azimuth sampling.
-	"""
-	# inverted elevation order
-	elevations = np.linspace(90,  -90, nelevations)
-	azimuths = np.linspace( -180, 180, nazimuths, endpoint=False)
-	shsampling = np.array([[
-		semiNormalizedSH(e,a)
-		for a in azimuths]
-		for e in elevations]
-		)
-	return elevations, azimuths, shsampling
 
 
 class TrackBall(object) :
@@ -521,8 +486,8 @@ class SphericalHarmonicsKnobs(QtGui.QWidget) :
 		def componentKnob(i,j) :
 			l,m = shi_reverse(i,j)
 			knob = QtGui.QDial()
-			knob.setMinimum(-100)
-			knob.setMaximum(+100)
+			knob.setMinimum(-1000)
+			knob.setMaximum(+1000)
 			knob.setStyleSheet("background-color: %s"%orderColors[l%len(orderColors)])
 			label = QtGui.QLabel("%d,%+d"%(l,m))
 			label.setAlignment(Qt.AlignCenter)
@@ -550,12 +515,13 @@ class SphericalHarmonicsKnobs(QtGui.QWidget) :
 
 	def sphericalHarmonicsMatrix(self) :
 		return np.array([[
-			knob.value()/100.
+			knob.value()/1000.
 			for knob in row ]
 			for row in self._knobs ])
 
 	def setSphericalHarmonicsMatrix(self, array) :
 		self._editing = True
+		array *= 1000./max(1.,abs(array).max())
 		for i, row in enumerate(self._knobs) :
 			for j,knob in enumerate(row) :
 				knob.setValue(array[i,j])
@@ -598,6 +564,12 @@ class SphereLab(QtGui.QWidget) :
 			topLayout.addWidget(spin)
 			return spin
 
+		def addButton(layout, name, slot) :
+			button = QtGui.QPushButton(name)
+			button.clicked.connect(slot)
+			layout.addWidget(button)
+
+
 		QtGui.QWidget.__init__(self)
 		self.shProjections = np.array([[[[]]]])
 		self._editing = False
@@ -610,13 +582,9 @@ class SphereLab(QtGui.QWidget) :
 		topLayout.addStretch(1)
 		self._meridiansSpin = addSpin("Meridians", 4, 80, 400, self.updateResolution)
 
-		def addButton(layout, name, slot) :
-			button = QtGui.QPushButton(name)
-			button.clicked.connect(slot)
-			layout.addWidget(button)
-
 		addButton(topLayout, "Reset", self._shknobs.reset)
 		addButton(topLayout, "Negate", self._shknobs.negate)
+		addButton(topLayout, "Resynth", self.resynthesize)
 		presetLayout1 = QtGui.QHBoxLayout()
 		presetLayout2 = QtGui.QHBoxLayout()
 		addButton(presetLayout1, "Front", self.sample_frontPoint)
@@ -666,24 +634,27 @@ class SphereLab(QtGui.QWidget) :
 
 	def loadFromSamples(self, image) :
 		h,w = image.shape
-		imageBytesIn8Bits = 127 + image*127./(max(1.,abs(image.max())))
-
+		print "Display data..."
 		self.targetFunction.format(w, h, ColorField.signedScale)
-		self.targetFunction.data()[:,:] = imageBytesIn8Bits
+		self.targetFunction.data()[:] = 127 + image*127./(max(1.,abs(image.max())))
 		self.targetFunction.reload()
 
+		print "Project to SH..."
 		imageInSH = projectImageToSH(image)
-		imageInSH *= 100./max(1.,abs(imageInSH).max())
+		imageInSH *= orthonormalization
 
+		print "Upload SH components to knobs..."
 		self.setSphericalHarmonicsMatrix(imageInSH)
+		print "Reloading..."
 		self.reloadData()
 
 	def reloadData(self) :
 		nelevations = self._parallelsSpin.value()
 		nazimuths = self._meridiansSpin.value()
 		if self.shProjections.shape[:2] != (nelevations, nazimuths) :
-			print "Reshaping..."
+			print "Reshaping %ix%x..."%(nelevations, nazimuths)
 			self.elevations, self.azimuths, self.shProjections = shGrid(nelevations, nazimuths)
+			self.shProjections *= orthonormalization
 			print "Reshape outputs..."
 			self.sphericalPoints = np.array([
 				[self.elevations[ei], self.azimuths[ai], 0 ]
@@ -700,28 +671,36 @@ class SphereLab(QtGui.QWidget) :
 		# taking coeficients from the knobs
 		shMatrix = self.sphericalHarmonicsMatrix()
 
-		data = self.shProjections.reshape(nazimuths*nelevations, shMatrix.size).dot(
+		self.data = self.shProjections.reshape(nazimuths*nelevations, shMatrix.size).dot(
 			shMatrix.reshape(shMatrix.size )
 			).reshape(self.shProjections.shape[:2])
 
-		self.sphericalPoints[:,2] = (5*data).reshape(nelevations*nazimuths)
+		self.sphericalPoints[:,2] = (5*self.data).reshape(nelevations*nazimuths)
 
 		self.blobView.setEadPoints(self.sphericalPoints)
 		xyzs = np.array([ead2xyz(e,a,abs(d)) for e,a,d in self.sphericalPoints])
 		self.blobView.scene()._vertices = xyzs
 		self.blobView.scene()._normals = xyzs
-		self.blobView.scene()._meshColors = np.array([[1.,.0,.0, .6] if d<0 else [0.,0.,1., .9] for e,a,d in self.sphericalPoints])
+		self.blobView.scene()._meshColors = np.array([
+			[1.,.0,.0, .6] if d<0 else [0.,0.,1., .9]
+			for e,a,d in self.sphericalPoints])
 		self.blobView.scene()._indexes = self.indexes
 		self.blobView.update()
-		maxValue = abs(data).max()
-		if maxValue > 1 : data /= maxValue
+
+		maxValue = abs(self.data).max()
+		if maxValue > 1 : self.data /= maxValue
 		self.synthetizedFunction.format(nazimuths, nelevations, ColorField.signedScale)
-		self.synthetizedFunction.data()[:] = data/(2/255.)+127
+		self.synthetizedFunction.data()[:] = self.data/(2/255.)+127
 		self.synthetizedFunction.reload()
 
 
 	# Sphere sampling resolution for the synthetic data sets
 	sampleResolution = 36*4, 18*4
+
+	def resynthesize(self) :
+		w,h = self.sampleResolution
+		image = self.data
+		self.loadFromSamples(image)
 
 	def sample_map(self) :
 		w,h = self.sampleResolution
@@ -814,7 +793,7 @@ if __name__ == "__main__" :
 
 	from audio3d.sphericalHarmonics import shSize, shShape
 
-	imageInSH = np.arange(shSize).reshape(shShape)*100./shSize
+	imageInSH = np.arange(shSize).reshape(shShape)*1000./shSize
 
 	w0.setSphericalHarmonicsMatrix(imageInSH)
 

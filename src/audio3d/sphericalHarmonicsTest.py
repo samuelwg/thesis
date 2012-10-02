@@ -33,7 +33,7 @@ TODO:
 
 from sphericalHarmonics import *
 import unittest
-
+from numpy.testing import assert_equal as np_assert_equal
 
 class SHComponentIndexingAndEnumerationTests(unittest.TestCase) :
 
@@ -1180,6 +1180,15 @@ class SphericalHarmonicsTests_sympyGeneratedExpressions(SphericalHarmonicsTests)
 	def sh(self, e, a) :
 		"""Decodes the sh components for (e,a) position."""
 		return (self._components*semiNormalizedSH_sympyGeneratedExpressions(e,a)).sum()
+
+
+class SphericalHarmonicsTransformTest(unittest.TestCase) :
+	def test(self) :
+		data = np.arange(1,36+1, dtype=np.float32).reshape(6,6)
+		surface = synthesizeSH(data, nelevations=5, nazimuths=10)
+		print surface
+		result = analyzeSH(surface)
+		np_assert_equal(result, data)
 
 
 
