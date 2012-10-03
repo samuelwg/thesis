@@ -33,7 +33,7 @@ TODO:
 
 from sphericalHarmonics import *
 import unittest
-from numpy.testing import assert_equal as np_assert_equal
+from numpy.testing import assert_equal as np_assert_equal, assert_almost_equal as npAlmostEqual
 
 class SHComponentIndexingAndEnumerationTests(unittest.TestCase) :
 
@@ -1182,12 +1182,34 @@ class SphericalHarmonicsTests_sympyGeneratedExpressions(SphericalHarmonicsTests)
 
 
 class SphericalHarmonicsTransformTest(unittest.TestCase) :
-	def test(self) :
-		data = np.arange(1,36+1, dtype=np.float32).reshape(6,6)
-		surface = synthesizeSH(data, nelevations=5, nazimuths=10)
+	def test_synthesize_continuous(self) :
+		components = np.zeros((6,6), dtype=np.float32)
+		components[shi(0, 0)] = 1
+		surface = synthesizeSH(components, nelevations=5, nazimuths=8)
+		np_assert_equal(np.ones((5,8)), surface)
+
+	def test_synthesize_front(self) :
+		components = np.zeros((6,6), dtype=np.float32)
+		components[shi(0,+1)] = fuma[shi(0,+1)]
+		surface = synthesizeSH(components, nelevations=5, nazimuths=8)
+		npAlmostEqual( 0, surface[2,4])
+		npAlmostEqual(-1, surface[2,2])
+		npAlmostEqual(+1, surface[2,6])
+		npAlmostEqual( 0, surface[2,0])
+
+	def _test_analyze_continuous(self) :
+		surface = np.ones((5,10))
+		result = analyzeSH(surface)
+		expected = np.zeros((6,6), dtype=np.float32)
+		npAlmostEqual(expected, result)
+
+
+	def _test(self) :
+		components = np.arange(1,36+1, dtype=np.float32).reshape(6,6)
+		surface = synthesizeSH(components, nelevations=5, nazimuths=10)
 		print surface
 		result = analyzeSH(surface)
-		np_assert_equal(result, data)
+		np_assert_equal(result, components)
 
 
 

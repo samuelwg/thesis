@@ -484,18 +484,22 @@ def _shGrid(nelevations, nazimuths) :
 	return elevations, azimuths, shsampling
 
 def synthesizeSH(components, nelevations, nazimuths) :
-	return components
 	elevations, azimuths, shbasis = shGrid(nelevations,nazimuths)
-	cosines = np.cos(np.radians(elevations)).reshape(-1,1,1,1)
-	shbasis = shbasis * cosines
-	print shbasis.shape
-	return shbasis.reshape((nazimuths*nelevations, shbasis.size)).dot(
-		components.reshape(shbasis.size )
+	shbasis = shbasis.copy()
+	return shbasis.reshape((nelevations*nazimuths, -1)).dot(
+		components.reshape(-1 )
 		).reshape(shbasis.shape[:2])
 
 def analyzeSH(function) :
-	# TODO: Hack to make test run
-	return function
+	nelevations, nazimuths = function.shape
+	elevations, azimuths, shbasis = shGrid(nelevations,nazimuths)
+	cosines = np.cos(np.radians(elevations)).reshape(-1,1,1,1)
+	shbasis = shbasis.copy()
+	shbasis = shbasis * cosines
+	return function.reshape(-1).dot(
+		shbasis.reshape((nelevations*nazimuths, -1))
+		).reshape(shbasis.shape[2:])
+
 
 
 
