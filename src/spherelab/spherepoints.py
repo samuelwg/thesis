@@ -141,10 +141,10 @@ class TrackBall(object) :
 		self._pressed = False
 
 
-class SpherePointScene(QtGui.QGraphicsScene) :
+class BlobViewScene(QtGui.QGraphicsScene) :
 
 	def __init__(self) :
-		super(SpherePointScene, self).__init__()
+		super(BlobViewScene, self).__init__()
 		self._frame = 0
 
 		self._trackballs = [
@@ -167,6 +167,8 @@ class SpherePointScene(QtGui.QGraphicsScene) :
 		self.update()
 
 	def drawBackground(self, painter, rect) :
+
+		super(BlobViewScene, self).drawBackground(painter,rect)
 		height = float(painter.device().height())
 		width = float(painter.device().width())
 
@@ -454,23 +456,23 @@ class SpherePointScene(QtGui.QGraphicsScene) :
 
 
 
-class SpherePointView(QtGui.QGraphicsView) :
+class BlobView(QtGui.QGraphicsView) :
 
 	def __init__(self) :
-		super(SpherePointView, self).__init__()
+		super(BlobView, self).__init__()
 		self.setRenderHints(QtGui.QPainter.Antialiasing | QtGui.QPainter.SmoothPixmapTransform)
 #		self.setRenderHints(QtGui.QPainter.SmoothPixmapTransform)
 		viewPort = QtOpenGL.QGLWidget()
 		self.setViewport(viewPort)
 		self.setViewportUpdateMode(QtGui.QGraphicsView.FullViewportUpdate);
-		scene = SpherePointScene()
+		scene = BlobViewScene()
 		self.setScene(scene);
 
 
 	def resizeEvent(self, event) :
 		if self.scene() :
 			self.scene().setSceneRect(QtCore.QRect(QtCore.QPoint(0, 0), event.size()))
-		super(SpherePointView, self).resizeEvent(event)
+		super(BlobView, self).resizeEvent(event)
 
 	def setEadPoints(self, points) :
 		self.scene().setEadPoints( points)
@@ -607,7 +609,7 @@ class SphereLab(QtGui.QWidget) :
 		rightPanel = QtGui.QVBoxLayout()
 		self.layout().addLayout(rightPanel)
 
-		self.blobView = SpherePointView()
+		self.blobView = BlobView()
 		rightPanel.addWidget(self.blobView)
 
 		self.synthetizedFunction = ColorField(width, height)
