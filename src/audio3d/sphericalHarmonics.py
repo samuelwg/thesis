@@ -484,6 +484,10 @@ def _shGrid(nelevations, nazimuths) :
 	return elevations, azimuths, shsampling
 
 def synthesizeSH(components, nelevations, nazimuths) :
+	"""
+	Synthesizes a function expresed as SH components
+	into a grid of sampled points.
+	"""
 	elevations, azimuths, shbasis = shGrid(nelevations,nazimuths)
 	shbasis = shbasis.copy()
 	return shbasis.reshape((nelevations*nazimuths, -1)).dot(
