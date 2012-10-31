@@ -121,7 +121,7 @@ import wavefile
 
 class HrtfDatabaseTest(unittest.TestCase) :
 	def setUp(self) :
-		try: 
+		try :
 			shutil.rmtree("testhrtf")
 		except OSError : pass
 		os.mkdir("testhrtf")
@@ -135,9 +135,9 @@ class HrtfDatabaseTest(unittest.TestCase) :
 		def saveWave(name, data) :
 			redata = data.astype(np.float32)[:,np.newaxis]
 			with wavefile.WaveWriter('testhrtf/%s.wav'%name) as writer :
-				writer.write(redata)
-			return redata
-			
+				writer.write(redata.T)
+			return redata.T
+
 		self._audioFront = saveWave('front', np.arange(.1,.3,.01))
 		self._audioBack  = saveWave('back',  np.arange(.2,.4,.01))
 		self._audioLeft  = saveWave('left',  np.arange(.3,.5,.01))

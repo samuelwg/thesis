@@ -109,7 +109,7 @@ class HrtfDatabase(object) :
 	def _loadAudio(self, filename) :
 		import wavefile, numpy as np
 		with wavefile.WaveReader(filename) as reader :
-			data = np.empty((reader.frames, reader.channels))
+			data = reader.buffer(reader.frames)
 			nread = reader.read(data)
 			self._cachedAudio[filename] = data
 			return data
