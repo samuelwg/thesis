@@ -36,7 +36,7 @@ def xyz2ead(x, y, z) :
 	if (d < 0.00001):
 		return 0, 0, 0
 
-	return np.degrees(np.atan2(y,x)), np.degrees(np.asin(z/d)), d
+	return np.degrees(np.arctan2(y,x)), np.degrees(np.arcsin(z/d)), d
 
 
 def chordDistance(e1, a1, e2, a2) :
@@ -82,7 +82,7 @@ def absoluteCoordinates2RelativeAngles(
 		) :
 	listenerAzimuth = math.radians(listenerAzimuthDegrees)
 	listenerElevation = math.radians(listenerElevationDegrees)
-	listenerRoll = math.radians(listenerRollDegrees)		
+	listenerRoll = math.radians(listenerRollDegrees)
 	dx = sourceX - listenerX
 	dy = sourceY - listenerY
 	dz = sourceZ - listenerZ
