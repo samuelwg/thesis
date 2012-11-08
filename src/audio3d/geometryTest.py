@@ -42,8 +42,8 @@ class CoordsConversionTests(unittest.TestCase) :
 
 	def assertCoordsEqual(self, expected, result) :
 		self.assertEqual(
-			[round(v,7) for v in expected],
-			[round(v,7) for v in result],
+			[round(v,6) for v in expected],
+			[round(v,6) for v in result],
 			)
 
 	def test_ead2xyz_front(self) :
@@ -79,6 +79,32 @@ class CoordsConversionTests(unittest.TestCase) :
 	def test_ead2xyz_mixed(self) :
 		self.assertCoordsEqual( [0.75, 0.4330127, 0.5], ead2xyz(30, 30, 1) )
 
+	def test_xyz2ead_front(self) :
+		self.assertCoordsEqual( xyz2ead(*[1.0, 0.0, 0.0]), (0, 0, 1) )
+
+	def test_xyz2ead_further_front(self) :
+		self.assertCoordsEqual( xyz2ead(*[2.0, 0.0, 0.0]), (0, 0, 2) )
+
+	def test_xyz2ead_back_turning_left(self) :
+		self.assertCoordsEqual( xyz2ead(*[-1.0, 0.0, 0.0]), (0, 180, 1) )
+
+	def test_xyz2ead_left(self) :
+		self.assertCoordsEqual( xyz2ead(*[0.0, 1.0, 0.0]), (0, 90, 1) )
+
+	def test_xyz2ead_right(self) :
+		self.assertCoordsEqual( xyz2ead(*[0.0, -1.0, 0.0]), (0, -90, 1) )
+
+	def test_xyz2ead_up(self) :
+		self.assertCoordsEqual( xyz2ead(*[0.0, 0.0, 1.0]), (90, 0, 1) )
+
+	def test_xyz2ead_down(self) :
+		self.assertCoordsEqual( xyz2ead(*[0.0, 0.0, -1.0]), (-90, 0, 1) )
+
+	def test_xyz2ead_mid_elevated(self) :
+		self.assertCoordsEqual( xyz2ead(*[0.8660254, 0.0, 0.5]), (30, 0, 1) )
+
+	def test_xyz2ead_mixed(self) :
+		self.assertCoordsEqual( xyz2ead(*[0.75, 0.4330127, 0.5]), (30, 30, 1) )
 
 class ChordDistanceTests(unittest.TestCase) :
 
