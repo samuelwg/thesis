@@ -433,7 +433,6 @@ class BlobView(QtGui.QGraphicsView) :
 
 
 if __name__ == "__main__" :
-
 	width = 800
 	height = 600
 	import sys
@@ -444,17 +443,13 @@ if __name__ == "__main__" :
 	w = QtGui.QDialog()
 	w.setLayout(QtGui.QHBoxLayout())
 
-	w0 = SphereLab()
+	w0 = BlobView()
 	w.layout().addWidget(w0)
 #	w.resize(width, height)
 
 	from audio3d.sphericalHarmonics import shSize, shShape
 
 	imageInSH = np.arange(shSize).reshape(shShape)*1000./shSize
-
-	w0.setSphericalHarmonicsMatrix(imageInSH)
-
-	w0.reloadData()
 
 	w.show()
 
